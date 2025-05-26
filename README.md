@@ -68,7 +68,7 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
         let savedVC = VodQaSDK.makeOpenSavedController(
             secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
-            mobileNumber: "88776630",
+            mobileNumber: "xxxxxxxx",
             iPayCustomerID: "x",
             savedBillID: "x"
         )
