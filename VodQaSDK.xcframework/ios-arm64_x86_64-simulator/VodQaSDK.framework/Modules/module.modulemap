@@ -1,0 +1,11 @@
+framework module VodQaSDK {
+  umbrella header "VodQaSDK.h"
+  export *
+
+  module * { export * }
+}
+
+module VodQaSDK.Swift {
+  header "VodQaSDK-Swift.h"
+  requires objc
+}
