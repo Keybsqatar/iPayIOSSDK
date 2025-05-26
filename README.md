@@ -50,10 +50,10 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
 
     @objc private func openTopUp() {
         let topUpVC = VodQaSDK.makeTopUpController(
-            secretKey: "24c780d671d0bcbf63651be1734093e3833e91584db6a4468ed644ab517f3718",
+            secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
-            mobileNumber: "88776630",
-            iPayCustomerID: "13"
+            mobileNumber: "xxxxxxxx",
+            iPayCustomerID: "x"
         )
         topUpVC.modalPresentationStyle = .fullScreen
         present(topUpVC, animated: true)
@@ -66,11 +66,11 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
 
     @objc private func openSaved() {
         let savedVC = VodQaSDK.makeOpenSavedController(
-            secretKey: "24c780d671d0bcbf63651be1734093e3833e91584db6a4468ed644ab517f3718",
+            secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
             mobileNumber: "88776630",
-            iPayCustomerID: "13",
-            savedBillID: "2"
+            iPayCustomerID: "x",
+            savedBillID: "x"
         )
         savedVC.modalPresentationStyle = .fullScreen
         present(savedVC, animated: true)
