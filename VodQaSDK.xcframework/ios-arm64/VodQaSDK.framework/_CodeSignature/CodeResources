@@ -6,11 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		DL2mK1a8A9/O7mr5C5p6eruTAtI=
+		kusThUMlf4/3S3U8yxi4tNiHsNw=
 		</data>
 		<key>Headers/VodQaSDK-Swift.h</key>
 		<data>
-		ElyQ5mJsx3y1qIQa6Z0JQHZHlqs=
+		v3hhgQYGoxb13wyDtG7H2A48h5o=
 		</data>
 		<key>Headers/VodQaSDK.h</key>
 		<data>
@@ -18,27 +18,27 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		t8kNICzBbRCS3DKo/MqVGPrmTEU=
+		JBUYUIznZOdiWUrmI5XLzOZHKqI=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
-		hiwXd31rMcQc6DSrbf7y/kYLTvw=
+		k9iotUXcr1ilV2lxYXYE7ZQ+wVQ=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<data>
-		K906LiDHxjoQw+CR9md5zv8hYt4=
+		sLv33FvpJiTV53c58Mxn9Qsx+Yg=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		sIGJHgj6VLDRvvo530h+ID2w7Ek=
+		/E7WZ9Vn48ZymXbp5qk2wII1CR4=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		K906LiDHxjoQw+CR9md5zv8hYt4=
+		sLv33FvpJiTV53c58Mxn9Qsx+Yg=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		VkhdBPdhWn4gThcGOY2yHMY/bGA=
+		SQoTKXwhWFmu/lOwYV4sCZ99pIM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -83,14 +83,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			riXtSq+xKEfsj9ECk4CFAL6FFfxfxiA8Ps5k5yhmoqc=
+			8LbJF+BNWcxtH3AVs0HsNAG1+NwHJra5qpCzMJ+7AOo=
 			</data>
 		</dict>
 		<key>Headers/VodQaSDK-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			J6a0+OnqI8iPx2WxptrSOVNfxWPiE2E8XZWuvXgjjhk=
+			x5NJJfPpAXi2tpE0SmNMSXH+ddQ+r40koGB0jAWU3lM=
 			</data>
 		</dict>
 		<key>Headers/VodQaSDK.h</key>
@@ -104,35 +104,35 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			npF8Hmef77JI+kFnTKg/LPOHERtR9fncyeF4dxpwAHQ=
+			/fJ05dtojtjvu3NYuy5WheeVA3U1zrwH1j80/Rey6YE=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ilw64VGK+WH4XyLQ1+QLcD2kw9PVYZltthH/8FTzWWY=
+			gMk5ghvApnhjKOHnmUh5TuFgiKw1DPit3sDzs+1N67g=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DjmdnWQ7DV171cePA8Pj8s0ZaIskOCjoYnO4rwXFows=
+			z0DP5fBf3TlG/ypigUpbsYGpEYU9JbJTcM8pXOrz6Vw=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ilw64VGK+WH4XyLQ1+QLcD2kw9PVYZltthH/8FTzWWY=
+			gMk5ghvApnhjKOHnmUh5TuFgiKw1DPit3sDzs+1N67g=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			4+GinPtCpP3rXLZM/HPBYO+SSPLkRle6meHtOw4Vp4Q=
+			nS5xYDB9lWIQu51ghj1LRlRpYwjs8t5Ht7hpk5YRRUY=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

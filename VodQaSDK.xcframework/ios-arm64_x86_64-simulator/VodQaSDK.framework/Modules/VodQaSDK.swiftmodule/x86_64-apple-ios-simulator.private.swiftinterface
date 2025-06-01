@@ -1,7 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
-// swift-module-flags: -target x86_64-apple-ios17.2-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name VodQaSDK
-// swift-module-flags-ignorable: -enable-bare-slash-regex
+// swift-compiler-version: Apple Swift version 6.1.2 effective-5.10 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)
+// swift-module-flags: -target x86_64-apple-ios17.2-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name VodQaSDK
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -interface-compiler-version 6.1.2
 import Combine
 import ContactsUI
 import CoreText
@@ -19,21 +19,17 @@ import _StringProcessing
 import _SwiftConcurrencyShims
 public class CheckTransactionRepository {
   public init(api: any VodQaSDK.CheckTransactionAPIProtocol = CheckTransactionAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func checkTransaction(reference: Swift.String) async throws -> VodQaSDK.CheckTransactionResponse
-  #endif
   @objc deinit
 }
 final public class CountriesRepository {
   public init(api: any VodQaSDK.CountriesAPIProtocol = CountriesAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   final public func getCountries(mobileNumber: Swift.String, serviceCode: Swift.String) async throws -> [VodQaSDK.CountryItem]
-  #endif
   @objc deinit
 }
-@_Concurrency.MainActor(unsafe) public struct TopUpView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public init(mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct TopUpView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public init(mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK9TopUpViewV4bodyQrvp", 0) __
@@ -47,15 +43,11 @@ public enum FontLoader {
   public static func registerFonts()
 }
 public protocol ProvidersAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func fetchProviders(request: VodQaSDK.ProvidersRequest) async throws -> VodQaSDK.ProvidersResponse
-  #endif
 }
 public class ProvidersAPI : VodQaSDK.ProvidersAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func fetchProviders(request: VodQaSDK.ProvidersRequest) async throws -> VodQaSDK.ProvidersResponse
-  #endif
   @objc deinit
 }
 @_Concurrency.MainActor public class ProductsViewModel : Foundation.ObservableObject {
@@ -264,9 +256,7 @@ public class ProvidersAPI : VodQaSDK.ProvidersAPIProtocol {
     set
   }
   @_Concurrency.MainActor public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, productSku: Swift.String, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String, dismissMode: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func loadProducts() async
-  #endif
   public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
   @objc deinit
 }
@@ -303,33 +293,25 @@ public struct SavedBillItem : Swift.Identifiable, Swift.Decodable {
 }
 public class IPayOtpRepository {
   public init(api: any VodQaSDK.IPayOtpAPIProtocol = IPayOtpAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func sendOtp(mobileNumber: Swift.String, iPayCustomerID: Swift.String, targetNumber: Swift.String, serviceCode: Swift.String, productSku: Swift.String, saveRecharge: Swift.String) async throws -> VodQaSDK.IPayOtpResponse
-  #endif
   @objc deinit
 }
 public class IPayOrderRepository {
   public init(api: any VodQaSDK.IPayOrderAPIProtocol = IPayOrderAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func placeOrder(otp: Swift.String, transactionId: Swift.String) async throws -> VodQaSDK.IPayOrderResponse
-  #endif
   @objc deinit
 }
 public protocol IPayOrderAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func placeOrder(otp: Swift.String, transactionId: Swift.String) async throws -> VodQaSDK.IPayOrderResponse
-  #endif
 }
 public class IPayOrderAPI : VodQaSDK.IPayOrderAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func placeOrder(otp: Swift.String, transactionId: Swift.String) async throws -> VodQaSDK.IPayOrderResponse
-  #endif
   @objc deinit
 }
-@_Concurrency.MainActor(unsafe) public struct OpenSavedTopupView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public init(vm: VodQaSDK.OpenSavedTopupViewModel)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct OpenSavedTopupView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public init(vm: VodQaSDK.OpenSavedTopupViewModel)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK18OpenSavedTopupViewV4bodyQrvp", 0) __
@@ -397,12 +379,10 @@ public struct ProductsResponse : Swift.Codable {
 }
 public class ProvidersRepository {
   public init(api: any VodQaSDK.ProvidersAPIProtocol = ProvidersAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func getProviders(mobileNumber: Swift.String, serviceCode: Swift.String, countryCode: Swift.String) async throws -> [VodQaSDK.ProviderItem]
-  #endif
   @objc deinit
 }
-public struct SegmentTabView : SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct SegmentTabView : SwiftUICore.View {
   public enum Tab {
     case new, saved
     public static func == (a: VodQaSDK.SegmentTabView.Tab, b: VodQaSDK.SegmentTabView.Tab) -> Swift.Bool
@@ -411,30 +391,24 @@ public struct SegmentTabView : SwiftUI.View {
       get
     }
   }
-  public init(selection: SwiftUI.Binding<VodQaSDK.SegmentTabView.Tab>)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+  @_Concurrency.MainActor @preconcurrency public init(selection: SwiftUICore.Binding<VodQaSDK.SegmentTabView.Tab>)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK14SegmentTabViewV4bodyQrvp", 0) __
 }
 public protocol SavedBillAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func fetchSavedBill(mobileNumber: Swift.String, iPayCustomerID: Swift.String, id: Swift.String) async throws -> VodQaSDK.SavedBillResponse
-  #endif
 }
 public class SavedBillAPI : VodQaSDK.SavedBillAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func fetchSavedBill(mobileNumber: Swift.String, iPayCustomerID: Swift.String, id: Swift.String) async throws -> VodQaSDK.SavedBillResponse
-  #endif
   @objc deinit
 }
 @_hasMissingDesignatedInitializers final public class HTTPClient {
   public static let shared: VodQaSDK.HTTPClient
   final public func initialize(secretKey: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   final public func request<T>(_ endpoint: any VodQaSDK.Endpoint) async throws -> T where T : Swift.Decodable
-  #endif
   @objc deinit
 }
 @_Concurrency.MainActor public class OtpViewModel : Foundation.ObservableObject {
@@ -547,20 +521,14 @@ public class SavedBillAPI : VodQaSDK.SavedBillAPIProtocol {
   @_Concurrency.MainActor final public let serviceCode: Swift.String
   @_Concurrency.MainActor final public let iPayCustomerID: Swift.String
   @_Concurrency.MainActor public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, product: VodQaSDK.ProductItem, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func requestOtp() async
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func submitOtpAndPoll() async
-  #endif
   public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
   @objc deinit
 }
 public class SavedBillsRepository {
   public init(api: any VodQaSDK.SavedBillsAPIProtocol = SavedBillsAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func getSavedBills(mobileNumber: Swift.String, iPayCustomerID: Swift.String) async throws -> [VodQaSDK.SavedBillsItem]
-  #endif
   @objc deinit
 }
 public struct ApiError : Swift.Decodable {
@@ -577,32 +545,24 @@ public struct ApiError : Swift.Decodable {
   public func userMessage() -> Swift.String
 }
 public protocol ProductsAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func fetchProducts(request: VodQaSDK.ProductsRequest) async throws -> VodQaSDK.ProductsResponse
-  #endif
 }
 public class ProductsAPI : VodQaSDK.ProductsAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func fetchProducts(request: VodQaSDK.ProductsRequest) async throws -> VodQaSDK.ProductsResponse
-  #endif
   @objc deinit
 }
 public protocol CheckTransactionAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func check(reference: Swift.String) async throws -> VodQaSDK.CheckTransactionResponse
-  #endif
 }
 public class CheckTransactionAPI : VodQaSDK.CheckTransactionAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func check(reference: Swift.String) async throws -> VodQaSDK.CheckTransactionResponse
-  #endif
   @objc deinit
 }
-@_Concurrency.MainActor(unsafe) public struct ProductsView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, productSku: Swift.String, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String, dismissMode: Swift.String)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct ProductsView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, productSku: Swift.String, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String, dismissMode: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK12ProductsViewV4bodyQrvp", 0) __
@@ -618,27 +578,19 @@ public struct DeleteBillResponse : Swift.Decodable {
   public init(from decoder: any Swift.Decoder) throws
 }
 public protocol IPayOtpAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func requestOtp(_ request: VodQaSDK.IPayOtpRequest) async throws -> VodQaSDK.IPayOtpResponse
-  #endif
 }
 public class IPayOtpAPI : VodQaSDK.IPayOtpAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func requestOtp(_ request: VodQaSDK.IPayOtpRequest) async throws -> VodQaSDK.IPayOtpResponse
-  #endif
   @objc deinit
 }
 public protocol DeleteBillAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func deleteBill(id: Swift.String) async throws -> VodQaSDK.DeleteBillResponse
-  #endif
 }
 public class DeleteBillAPI : VodQaSDK.DeleteBillAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func deleteBill(id: Swift.String) async throws -> VodQaSDK.DeleteBillResponse
-  #endif
   @objc deinit
 }
 public enum NetworkError : Swift.Error {
@@ -685,51 +637,47 @@ public struct ProvidersResponse : Swift.Decodable {
   public let items: [VodQaSDK.ProviderItem]
   public init(from decoder: any Swift.Decoder) throws
 }
-@_Concurrency.MainActor(unsafe) public struct ReviewTopUpView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public let saveRecharge: Swift.String
-  @_Concurrency.MainActor(unsafe) public let receiverMobileNumber: Swift.String
-  @_Concurrency.MainActor(unsafe) public let countryIso: Swift.String
-  @_Concurrency.MainActor(unsafe) public let countryName: Swift.String
-  @_Concurrency.MainActor(unsafe) public let countryFlagUrl: Foundation.URL
-  @_Concurrency.MainActor(unsafe) public let providerCode: Swift.String
-  @_Concurrency.MainActor(unsafe) public let providerName: Swift.String
-  @_Concurrency.MainActor(unsafe) public let providerLogoUrl: Foundation.URL
-  @_Concurrency.MainActor(unsafe) public let mobileNumber: Swift.String
-  @_Concurrency.MainActor(unsafe) public let serviceCode: Swift.String
-  @_Concurrency.MainActor(unsafe) public let iPayCustomerID: Swift.String
-  @_Concurrency.MainActor(unsafe) public let product: VodQaSDK.ProductItem
-  @_Concurrency.MainActor(unsafe) public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, product: VodQaSDK.ProductItem, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct ReviewTopUpView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public let saveRecharge: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let receiverMobileNumber: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let countryIso: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let countryName: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let countryFlagUrl: Foundation.URL
+  @_Concurrency.MainActor @preconcurrency public let providerCode: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let providerName: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let providerLogoUrl: Foundation.URL
+  @_Concurrency.MainActor @preconcurrency public let mobileNumber: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let serviceCode: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let iPayCustomerID: Swift.String
+  @_Concurrency.MainActor @preconcurrency public let product: VodQaSDK.ProductItem
+  @_Concurrency.MainActor @preconcurrency public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, product: VodQaSDK.ProductItem, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK15ReviewTopUpViewV4bodyQrvp", 0) __
 }
 
-@_Concurrency.MainActor(unsafe) public struct DeletionSuccessModalView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct DeletionSuccessModalView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK24DeletionSuccessModalViewV4bodyQrvp", 0) __
 }
 
-@_Concurrency.MainActor(unsafe) public struct CountryPicker : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public var onSelect: ((VodQaSDK.CountryItem) -> Swift.Void)?
-  @_Concurrency.MainActor(unsafe) public init(vm: VodQaSDK.TopUpViewModel, onSelect: ((VodQaSDK.CountryItem) -> Swift.Void)? = nil)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct CountryPicker : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public var onSelect: ((VodQaSDK.CountryItem) -> Swift.Void)?
+  @_Concurrency.MainActor @preconcurrency public init(vm: VodQaSDK.TopUpViewModel, onSelect: ((VodQaSDK.CountryItem) -> Swift.Void)? = nil)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK13CountryPickerV4bodyQrvp", 0) __
 }
 public protocol SavedBillsAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func getSavedBills(mobileNumber: Swift.String, iPayCustomerID: Swift.String) async throws -> VodQaSDK.SavedBillsResponse
-  #endif
 }
 public class SavedBillsAPI : VodQaSDK.SavedBillsAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   public func getSavedBills(mobileNumber: Swift.String, iPayCustomerID: Swift.String) async throws -> VodQaSDK.SavedBillsResponse
-  #endif
   @objc deinit
 }
 public struct IPayOtpRequest : Swift.Codable {
@@ -758,25 +706,19 @@ public struct ReceiptData {
 }
 public class SavedBillRepository {
   public init(api: any VodQaSDK.SavedBillAPIProtocol = SavedBillAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func getSavedBill(mobileNumber: Swift.String, iPayCustomerID: Swift.String, id: Swift.String) async throws -> VodQaSDK.SavedBillItem
-  #endif
   @objc deinit
 }
 public protocol CountriesAPIProtocol {
-  #if compiler(>=5.3) && $AsyncAwait
   func fetchCountries(request: VodQaSDK.CountriesRequest) async throws -> VodQaSDK.CountriesResponse
-  #endif
 }
 final public class CountriesAPI : VodQaSDK.CountriesAPIProtocol {
   public init(client: VodQaSDK.HTTPClient = .shared)
-  #if compiler(>=5.3) && $AsyncAwait
   final public func fetchCountries(request: VodQaSDK.CountriesRequest) async throws -> VodQaSDK.CountriesResponse
-  #endif
   @objc deinit
 }
 @_Concurrency.MainActor public class OpenSavedTopupViewModel : Foundation.ObservableObject {
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($item) public var item: VodQaSDK.SavedBillItem? {
+  @Combine.Published @_projectedValueProperty($item) @_Concurrency.MainActor public var item: VodQaSDK.SavedBillItem? {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -800,7 +742,7 @@ final public class CountriesAPI : VodQaSDK.CountriesAPIProtocol {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($error) public var error: Swift.String? {
+  @Combine.Published @_projectedValueProperty($error) @_Concurrency.MainActor public var error: Swift.String? {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -813,9 +755,7 @@ final public class CountriesAPI : VodQaSDK.CountriesAPIProtocol {
     set
   }
   @_Concurrency.MainActor public init(serviceCode: Swift.String, mobileNumber: Swift.String, iPayCustomerID: Swift.String, savedBillID: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func load() async
-  #endif
   public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
   @objc deinit
 }
@@ -845,16 +785,12 @@ public struct CountriesResponse : Swift.Codable {
 }
 public class DeleteBillRepository {
   public init(api: any VodQaSDK.DeleteBillAPIProtocol = DeleteBillAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   public func deleteBill(id: Swift.String) async throws -> VodQaSDK.DeleteBillResponse
-  #endif
   @objc deinit
 }
 final public class ProductsRepository {
   public init(api: any VodQaSDK.ProductsAPIProtocol = ProductsAPI())
-  #if compiler(>=5.3) && $AsyncAwait
   final public func getProducts(mobileNumber: Swift.String, serviceCode: Swift.String, countryCode: Swift.String, providerCode: Swift.String) async throws -> [VodQaSDK.ProductItem]
-  #endif
   @objc deinit
 }
 @_Concurrency.MainActor public class TopUpViewModel : Foundation.ObservableObject {
@@ -930,7 +866,7 @@ final public class ProductsRepository {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($providers) public var providers: [VodQaSDK.ProviderItem] {
+  @Combine.Published @_projectedValueProperty($providers) @_Concurrency.MainActor public var providers: [VodQaSDK.ProviderItem] {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -966,7 +902,7 @@ final public class ProductsRepository {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($savedBills) public var savedBills: [VodQaSDK.SavedBillsItem] {
+  @Combine.Published @_projectedValueProperty($savedBills) @_Concurrency.MainActor public var savedBills: [VodQaSDK.SavedBillsItem] {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -1038,7 +974,7 @@ final public class ProductsRepository {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($serviceCode) public var serviceCode: Swift.String {
+  @Combine.Published @_projectedValueProperty($serviceCode) @_Concurrency.MainActor public var serviceCode: Swift.String {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -1050,7 +986,7 @@ final public class ProductsRepository {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($mobileNumber) public var mobileNumber: Swift.String {
+  @Combine.Published @_projectedValueProperty($mobileNumber) @_Concurrency.MainActor public var mobileNumber: Swift.String {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -1062,7 +998,7 @@ final public class ProductsRepository {
     @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
     set
   }
-  @Combine.Published @_Concurrency.MainActor @_projectedValueProperty($iPayCustomerID) public var iPayCustomerID: Swift.String {
+  @Combine.Published @_projectedValueProperty($iPayCustomerID) @_Concurrency.MainActor public var iPayCustomerID: Swift.String {
     get
     @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
     set
@@ -1075,25 +1011,17 @@ final public class ProductsRepository {
     set
   }
   @_Concurrency.MainActor public init(serviceCode: Swift.String, mobileNumber: Swift.String, iPayCustomerID: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func loadCountries() async
-  #endif
   @_Concurrency.MainActor public func filterCountries(by text: Swift.String)
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func loadProviders(for countryIso: Swift.String) async
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func loadSavedBills() async
-  #endif
-  #if compiler(>=5.3) && $AsyncAwait
   @_Concurrency.MainActor public func deleteSavedBill(_ bill: VodQaSDK.SavedBillsItem) async
-  #endif
   public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
   @objc deinit
 }
-@_Concurrency.MainActor(unsafe) public struct OtpView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, product: VodQaSDK.ProductItem, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct OtpView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public init(saveRecharge: Swift.String, receiverMobileNumber: Swift.String, countryIso: Swift.String, countryFlagUrl: Foundation.URL, countryName: Swift.String, providerCode: Swift.String, providerLogoUrl: Foundation.URL, providerName: Swift.String, product: VodQaSDK.ProductItem, mobileNumber: Swift.String, serviceCode: Swift.String, iPayCustomerID: Swift.String)
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK7OtpViewV4bodyQrvp", 0) __
@@ -1111,8 +1039,8 @@ public struct IPayOrderResponse : Swift.Decodable {
   public let message: Swift.String?
   public init(from decoder: any Swift.Decoder) throws
 }
-@_Concurrency.MainActor(unsafe) public struct ReceiptModalView : SwiftUI.View {
-  @_Concurrency.MainActor(unsafe) public var body: some SwiftUI.View {
+@_Concurrency.MainActor @preconcurrency public struct ReceiptModalView : SwiftUICore.View {
+  @_Concurrency.MainActor @preconcurrency public var body: some SwiftUICore.View {
     get
   }
   public typealias Body = @_opaqueReturnTypeOf("$s8VodQaSDK16ReceiptModalViewV4bodyQrvp", 0) __
@@ -1153,12 +1081,21 @@ public struct SavedBillsItem : Swift.Identifiable, Swift.Decodable {
   public typealias ID = Swift.String
   public init(from decoder: any Swift.Decoder) throws
 }
+extension VodQaSDK.TopUpView : Swift.Sendable {}
 extension VodQaSDK.ProductsViewModel : Swift.Sendable {}
+extension VodQaSDK.OpenSavedTopupView : Swift.Sendable {}
+extension VodQaSDK.SegmentTabView : Swift.Sendable {}
 extension VodQaSDK.SegmentTabView.Tab : Swift.Equatable {}
 extension VodQaSDK.SegmentTabView.Tab : Swift.Hashable {}
 extension VodQaSDK.OtpViewModel : Swift.Sendable {}
+extension VodQaSDK.ProductsView : Swift.Sendable {}
 extension VodQaSDK.HTTPMethod : Swift.Equatable {}
 extension VodQaSDK.HTTPMethod : Swift.Hashable {}
 extension VodQaSDK.HTTPMethod : Swift.RawRepresentable {}
+extension VodQaSDK.ReviewTopUpView : Swift.Sendable {}
+extension VodQaSDK.DeletionSuccessModalView : Swift.Sendable {}
+extension VodQaSDK.CountryPicker : Swift.Sendable {}
 extension VodQaSDK.OpenSavedTopupViewModel : Swift.Sendable {}
 extension VodQaSDK.TopUpViewModel : Swift.Sendable {}
+extension VodQaSDK.OtpView : Swift.Sendable {}
+extension VodQaSDK.ReceiptModalView : Swift.Sendable {}
