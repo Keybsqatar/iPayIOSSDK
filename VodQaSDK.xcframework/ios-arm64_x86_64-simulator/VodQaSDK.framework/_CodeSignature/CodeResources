@@ -6,11 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		kusThUMlf4/3S3U8yxi4tNiHsNw=
+		aVxXWbzEZpm7jaucYpsMMZauPNo=
 		</data>
 		<key>Headers/VodQaSDK-Swift.h</key>
 		<data>
-		MXLj+vH83CpYvtAX5UxSDmurcro=
+		AqxNBRB0hBFkwGIgul69SCWNBX4=
 		</data>
 		<key>Headers/VodQaSDK.h</key>
 		<data>
@@ -18,47 +18,47 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		SLl1VBWUoo7uGpdG4SJhDjbcXvo=
+		VGMeb0a8NE24shbnWSf6/hisd9E=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		BttO8aUmNimUdcEavCCCEdzCWmI=
+		EY6vtvqBJWzu/CGMZqxA9tx6BXc=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		hL42MsSsJkeLwu9aw2pi6pa/ehY=
+		wWxp5dAbTY6PsnGjlt/aE3rnEH8=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		jsygdMgFB5O0ynxntK71tFK0+WQ=
+		NZ1tANFAaaZAFtVV6ptl+fgP8t4=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		hL42MsSsJkeLwu9aw2pi6pa/ehY=
+		wWxp5dAbTY6PsnGjlt/aE3rnEH8=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		8YTeotPKBleSxidOX8OwMTqHexc=
+		s1bZLM7G6rjWRsYAjBR7aAsK/Gs=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		BttO8aUmNimUdcEavCCCEdzCWmI=
+		EY6vtvqBJWzu/CGMZqxA9tx6BXc=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		vcmr/yr82aWptKTuHhdM1wmw4j4=
+		60UOalAZpphOf+ne7xxHKdtig9Y=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		gygGnKOnQ5KlGKYKhp2InUhO7zk=
+		l975T2ky1gDD0FWEux0ToBREUTE=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		vcmr/yr82aWptKTuHhdM1wmw4j4=
+		60UOalAZpphOf+ne7xxHKdtig9Y=
 		</data>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		d6MVgDyCTN3hJOPQpfWaQ5fBsQw=
+		BK+69FK9xrFhc5gZCoi1ZMnnGuA=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -103,14 +103,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8LbJF+BNWcxtH3AVs0HsNAG1+NwHJra5qpCzMJ+7AOo=
+			mswt3+ijjxKQiV9D+lZanBJ60WEIl+Ja2TWoFlGPFjw=
 			</data>
 		</dict>
 		<key>Headers/VodQaSDK-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xptZOHkdLKd9o/PYLacAuY/MhFqqjaPf0xwnR1/3Wac=
+			sC/w7ixPGnQAlhnlatG6kkx/I1k8cbRgDvrly0ekxQc=
 			</data>
 		</dict>
 		<key>Headers/VodQaSDK.h</key>
@@ -124,70 +124,70 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			PhtnIz+HF1BMu/FqY3dQX9azxwY2jMw2i0IBPODvMAo=
+			ardw4QNbEoEsojZ4Vz4eYBON9oz5krrCWpzLY+YVsbI=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			N9dGAFbXv2REKfe78z5kgzgZjsMGwauvU5SHD0A0gPw=
+			htXU1Z+hmm1860r/crbG6h8PsVrDE0LXrcam1c63uVw=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			b6y4/lk5dL7mAfWO7sXWAtvL6N4LnmvMPdHC88DW3qw=
+			sJwOPUuRW/aHUmDIMNS4xf7JKZNTvqqTRTnGGq9yCBU=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			N9dGAFbXv2REKfe78z5kgzgZjsMGwauvU5SHD0A0gPw=
+			htXU1Z+hmm1860r/crbG6h8PsVrDE0LXrcam1c63uVw=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JBeUdYRoIwPyDUIIA2k/aftZneD+iwmmwzYbAn1rN5c=
+			UaLTMTyK/lyV0M+SONvIqi+cJ7QQKufhBUHZ1vKwJZg=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			PhtnIz+HF1BMu/FqY3dQX9azxwY2jMw2i0IBPODvMAo=
+			ardw4QNbEoEsojZ4Vz4eYBON9oz5krrCWpzLY+YVsbI=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8nSHu3gLuq3nd5BTLOG5Z1ex08cpHwycol0GidI2MTU=
+			fwU/mG57iXdi/ztybOy0p/aGFGyAjaP063GW1Y9/o4k=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8r4dw7K55UmpKdR+iyDgC0C+ZYMzW8qngjw6sgzcu3o=
+			ghFCu0oj9yc314sr0PTbUJnW/H9C53L0mfFQssjJt0o=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8nSHu3gLuq3nd5BTLOG5Z1ex08cpHwycol0GidI2MTU=
+			fwU/mG57iXdi/ztybOy0p/aGFGyAjaP063GW1Y9/o4k=
 			</data>
 		</dict>
 		<key>Modules/VodQaSDK.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ME+HrUuEe3h7x7yW8QCgViLtnx+Cl9KNRW3CSJiVQx8=
+			w5rsxWeeIW5wfRdQGS0GKIhIscqP3Qmc0lf1hE8+0XU=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
