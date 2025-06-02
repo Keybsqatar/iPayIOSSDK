@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 6.1.2 effective-5.10 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)
-// swift-module-flags: -target x86_64-apple-ios17.2-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name VodQaSDK
+// swift-compiler-version: Apple Swift version 6.1.2 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)
+// swift-module-flags: -target x86_64-apple-ios17.2-simulator -enable-objc-interop -enable-library-evolution -swift-version 6 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -module-name VodQaSDK
 // swift-module-flags-ignorable: -no-verify-emitted-module-interface -interface-compiler-version 6.1.2
 import Combine
 import ContactsUI
@@ -36,7 +36,7 @@ final public class CountriesRepository {
 }
 
 public struct VodQaSDK {
-  public static func makeTopUpController(secretKey: Swift.String, serviceCode: Swift.String, mobileNumber: Swift.String, iPayCustomerID: Swift.String) -> UIKit.UIViewController
+  @_Concurrency.MainActor public static func makeTopUpController(secretKey: Swift.String, serviceCode: Swift.String, mobileNumber: Swift.String, iPayCustomerID: Swift.String) -> UIKit.UIViewController
   @_Concurrency.MainActor public static func makeOpenSavedController(secretKey: Swift.String, serviceCode: Swift.String, mobileNumber: Swift.String, iPayCustomerID: Swift.String, savedBillID: Swift.String) -> UIKit.UIViewController
 }
 public enum FontLoader {
@@ -271,7 +271,7 @@ public struct SavedBillResponse : Swift.Decodable {
   public let items: [VodQaSDK.SavedBillItem]
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct SavedBillItem : Swift.Identifiable, Swift.Decodable {
+public struct SavedBillItem : Swift.Identifiable, Swift.Decodable, Swift.Sendable {
   public let id: Swift.String
   public let mobileNumber: Swift.String
   public let iPayCustomerID: Swift.String
@@ -321,12 +321,12 @@ public struct CheckTransactionRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct CheckTransactionResponse : Swift.Decodable {
+public struct CheckTransactionResponse : Swift.Decodable, Swift.Sendable {
   public let status: Swift.String
   public let transaction: VodQaSDK.CheckTransaction
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct CheckTransaction : Swift.Decodable {
+public struct CheckTransaction : Swift.Decodable, Swift.Sendable {
   public let id: Swift.String
   public let mobileNumber: Swift.String
   public let iPayCustomerID: Swift.String
@@ -358,7 +358,7 @@ public struct ProductsRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct ProductItem : Swift.Identifiable, Swift.Codable {
+public struct ProductItem : Swift.Identifiable, Swift.Codable, Swift.Sendable {
   public var id: Foundation.UUID
   public let skuCode: Swift.String
   public let providerCode: Swift.String
@@ -406,7 +406,7 @@ public class SavedBillAPI : VodQaSDK.SavedBillAPIProtocol {
   @objc deinit
 }
 @_hasMissingDesignatedInitializers final public class HTTPClient {
-  public static let shared: VodQaSDK.HTTPClient
+  nonisolated(unsafe) public static let shared: VodQaSDK.HTTPClient
   final public func initialize(secretKey: Swift.String)
   final public func request<T>(_ endpoint: any VodQaSDK.Endpoint) async throws -> T where T : Swift.Decodable
   @objc deinit
@@ -531,12 +531,12 @@ public class SavedBillsRepository {
   public func getSavedBills(mobileNumber: Swift.String, iPayCustomerID: Swift.String) async throws -> [VodQaSDK.SavedBillsItem]
   @objc deinit
 }
-public struct ApiError : Swift.Decodable {
+public struct ApiError : Swift.Decodable, Swift.Sendable {
   public let status: Swift.Int?
   public let error: Swift.String?
   public let message: Swift.String?
   public let messages: VodQaSDK.ApiError.Messages?
-  public struct Messages : Swift.Decodable {
+  public struct Messages : Swift.Decodable, Swift.Sendable {
     public let error: Swift.String?
     public init(from decoder: any Swift.Decoder) throws
   }
@@ -572,7 +572,7 @@ public struct DeleteBillRequest : Swift.Encodable {
   public let id: Swift.String
   public func encode(to encoder: any Swift.Encoder) throws
 }
-public struct DeleteBillResponse : Swift.Decodable {
+public struct DeleteBillResponse : Swift.Decodable, Swift.Sendable {
   public let status: Swift.String
   public let message: Swift.String
   public init(from decoder: any Swift.Decoder) throws
@@ -593,7 +593,7 @@ public class DeleteBillAPI : VodQaSDK.DeleteBillAPIProtocol {
   public func deleteBill(id: Swift.String) async throws -> VodQaSDK.DeleteBillResponse
   @objc deinit
 }
-public enum NetworkError : Swift.Error {
+public enum NetworkError : Swift.Error, Swift.Sendable {
   case invalidURL
   case invalidResponse
   case apiError(code: Swift.Int, error: VodQaSDK.ApiError)
@@ -622,7 +622,7 @@ public struct ProvidersRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct ProviderItem : Swift.Identifiable, Swift.Decodable {
+public struct ProviderItem : Swift.Identifiable, Swift.Decodable, Swift.Sendable {
   public var id: Foundation.UUID
   public let providerCode: Swift.String
   public let countryIso: Swift.String
@@ -690,7 +690,7 @@ public struct IPayOtpRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct IPayOtpResponse : Swift.Decodable {
+public struct IPayOtpResponse : Swift.Decodable, Swift.Sendable {
   public let status: Swift.String
   public let transactionId: Swift.Int?
   public let message: Swift.String?
@@ -765,7 +765,7 @@ public struct CountriesRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct CountryItem : Swift.Identifiable, Swift.Codable {
+public struct CountryItem : Swift.Identifiable, Swift.Codable, Swift.Sendable {
   public var id: Foundation.UUID
   public let countryIso: Swift.String
   public let name: Swift.String
@@ -1033,7 +1033,7 @@ public struct IPayOrderRequest : Swift.Codable {
   public func encode(to encoder: any Swift.Encoder) throws
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct IPayOrderResponse : Swift.Decodable {
+public struct IPayOrderResponse : Swift.Decodable, Swift.Sendable {
   public let status: Swift.String
   public let transactionReference: Swift.String?
   public let message: Swift.String?
@@ -1047,7 +1047,7 @@ public struct IPayOrderResponse : Swift.Decodable {
 }
 
 public class SDKCoordinator : Foundation.ObservableObject {
-  public init(closeSDK: @escaping () -> Swift.Void)
+  public init(closeSDK: @escaping @_Concurrency.MainActor @Sendable () -> Swift.Void)
   public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
   @objc deinit
 }
@@ -1061,7 +1061,7 @@ public struct SavedBillsResponse : Swift.Decodable {
   public let items: [VodQaSDK.SavedBillsItem]
   public init(from decoder: any Swift.Decoder) throws
 }
-public struct SavedBillsItem : Swift.Identifiable, Swift.Decodable {
+public struct SavedBillsItem : Swift.Identifiable, Swift.Decodable, Swift.Sendable {
   public let id: Swift.String
   public let mobileNumber: Swift.String
   public let iPayCustomerID: Swift.String

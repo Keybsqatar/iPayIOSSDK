@@ -476,6 +476,7 @@
             "static": true,
             "declAttributes": [
               "AccessControl",
+              "Custom",
               "RawDocComment"
             ],
             "funcSelfKind": "NonMutating"
@@ -793,6 +794,13 @@
         "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "VodQaSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Combine",
+        "printedName": "Combine",
         "declKind": "Import",
         "moduleName": "VodQaSDK"
       },
@@ -4574,7 +4582,8 @@
         "moduleName": "VodQaSDK",
         "declAttributes": [
           "AccessControl",
-          "Custom"
+          "Custom",
+          "RawDocComment"
         ],
         "conformances": [
           {
@@ -5776,6 +5785,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -6634,6 +6650,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -7621,6 +7644,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -8432,6 +8462,13 @@
             "printedName": "Encodable",
             "usr": "s:SE",
             "mangledName": "$sSE"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -9359,7 +9396,8 @@
               "HasInitialValue",
               "Final",
               "HasStorage",
-              "AccessControl"
+              "AccessControl",
+              "Nonisolated"
             ],
             "isLet": true,
             "hasStorage": true,
@@ -9478,6 +9516,13 @@
         "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "VodQaSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Combine",
+        "printedName": "Combine",
         "declKind": "Import",
         "moduleName": "VodQaSDK"
       },
@@ -11997,7 +12042,8 @@
         "moduleName": "VodQaSDK",
         "declAttributes": [
           "AccessControl",
-          "Custom"
+          "Custom",
+          "RawDocComment"
         ],
         "conformances": [
           {
@@ -12525,6 +12571,13 @@
                 "printedName": "Decodable",
                 "usr": "s:Se",
                 "mangledName": "$sSe"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Sendable",
+                "printedName": "Sendable",
+                "usr": "s:s8SendableP",
+                "mangledName": "$ss8SendableP"
               }
             ]
           },
@@ -12684,6 +12737,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -13505,6 +13565,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -15384,6 +15451,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -17581,6 +17655,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -18163,6 +18244,13 @@
         "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "VodQaSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Combine",
+        "printedName": "Combine",
         "declKind": "Import",
         "moduleName": "VodQaSDK"
       },
@@ -18923,7 +19011,8 @@
         "moduleName": "VodQaSDK",
         "declAttributes": [
           "AccessControl",
-          "Custom"
+          "Custom",
+          "RawDocComment"
         ],
         "conformances": [
           {
@@ -19625,6 +19714,13 @@
             "printedName": "Encodable",
             "usr": "s:SE",
             "mangledName": "$sSE"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -20046,6 +20142,13 @@
         "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "VodQaSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Combine",
+        "printedName": "Combine",
         "declKind": "Import",
         "moduleName": "VodQaSDK"
       },
@@ -24229,7 +24332,8 @@
         "moduleName": "VodQaSDK",
         "declAttributes": [
           "AccessControl",
-          "Custom"
+          "Custom",
+          "RawDocComment"
         ],
         "conformances": [
           {
@@ -24924,6 +25028,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -25094,6 +25205,13 @@
         "moduleName": "VodQaSDK"
       },
       {
+        "kind": "Import",
+        "name": "Combine",
+        "printedName": "Combine",
+        "declKind": "Import",
+        "moduleName": "VodQaSDK"
+      },
+      {
         "kind": "TypeDecl",
         "name": "SDKCoordinator",
         "printedName": "SDKCoordinator",
@@ -25128,8 +25246,8 @@
               }
             ],
             "declKind": "Constructor",
-            "usr": "s:8VodQaSDK14SDKCoordinatorC05closeC0ACyyc_tcfc",
-            "mangledName": "$s8VodQaSDK14SDKCoordinatorC05closeC0ACyyc_tcfc",
+            "usr": "s:8VodQaSDK14SDKCoordinatorC05closeC0ACyyYbScMYcc_tcfc",
+            "mangledName": "$s8VodQaSDK14SDKCoordinatorC05closeC0ACyyYbScMYcc_tcfc",
             "moduleName": "VodQaSDK",
             "declAttributes": [
               "AccessControl"
@@ -26304,6 +26422,13 @@
             "printedName": "Decodable",
             "usr": "s:Se",
             "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
           }
         ]
       },
@@ -26433,35 +26558,35 @@
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/SwiftUI\/TopUpView.swift",
       "kind": "StringLiteral",
-      "offset": 38555,
+      "offset": 38556,
       "length": 10,
       "value": "\"88776630\""
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/SwiftUI\/TopUpView.swift",
       "kind": "StringLiteral",
-      "offset": 38589,
+      "offset": 38590,
       "length": 12,
       "value": "\"INT_TOP_UP\""
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/SwiftUI\/TopUpView.swift",
       "kind": "StringLiteral",
-      "offset": 38627,
+      "offset": 38628,
       "length": 4,
       "value": "\"13\""
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/ProductsViewModel.swift",
       "kind": "Array",
-      "offset": 306,
+      "offset": 341,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/ProductsViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 355,
+      "offset": 390,
       "length": 5,
       "value": "false"
     },
@@ -26482,35 +26607,35 @@
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/Core\/HTTPClient.swift",
       "kind": "StringLiteral",
-      "offset": 174,
+      "offset": 194,
       "length": 18,
       "value": "\"http:\/\/keybs.ai\/\""
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/OtpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 352,
+      "offset": 387,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/OtpViewModel.swift",
       "kind": "StringLiteral",
-      "offset": 466,
+      "offset": 501,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/OtpViewModel.swift",
       "kind": "IntegerLiteral",
-      "offset": 519,
+      "offset": 554,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/OtpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 749,
+      "offset": 784,
       "length": 5,
       "value": "false"
     },
@@ -26965,77 +27090,77 @@
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/OpenSavedTopupViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 173,
+      "offset": 208,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "Array",
-      "offset": 307,
+      "offset": 343,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "Array",
-      "offset": 371,
+      "offset": 407,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 428,
+      "offset": 464,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "IntegerLiteral",
-      "offset": 542,
+      "offset": 578,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "IntegerLiteral",
-      "offset": 593,
+      "offset": 629,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "Array",
-      "offset": 816,
+      "offset": 852,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 873,
+      "offset": 909,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "Array",
-      "offset": 1161,
+      "offset": 1197,
       "length": 2,
       "value": "[]"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 1218,
+      "offset": 1254,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/loayabdullah\/Sites\/IOSRunSDK\/VodQaSDK\/VodQaSDK\/Sources\/UI\/ViewModel\/TopUpViewModel.swift",
       "kind": "BooleanLiteral",
-      "offset": 1486,
+      "offset": 1522,
       "length": 5,
       "value": "false"
     },
