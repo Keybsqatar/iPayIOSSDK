@@ -1,8 +1,8 @@
 # iPayIOSSDK Integration Guide
 
-This document explains how to integrate and use the VodQaSDK in your iOS application. It covers:
+This document explains how to integrate and use the iPaySDK in your iOS application. It covers:
 
-* Embedding the XCFramework
+* Embedding the iPaySDK package
 
 * Info.plist updates (permissions & App Transport Security)
 
@@ -12,16 +12,11 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
 
 * Parameter reference
 
-## 1. Embed the XCFramework
-   * In Xcode, select your App Target → General → Frameworks, Libraries, and Embedded Content.
-
-   * Click + → Add Other… → Add Files…, choose VodQaSDK.xcframework, click Open.
-
-   * Ensure Embed is set to Embed & Sign.
+## 1. Embed the iPaySDK package
+   * In Xcode, File -> Add Package Dependencies -> Add Local -> Navigate to iPaySDK path then add package
 
 ## 2. Update Info.plist
 #### In your app target’s Info tab (or raw Info.plist), add:
-
 
 ```
 	<key>NSAppTransportSecurity</key>
@@ -46,10 +41,10 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
 ## 3. SDK Entry Points
 ### 3.1 International Top-Up
 ```
-    import VodQaSDK
+    import iPaySDK
 
     @objc private func openTopUp() {
-        let topUpVC = VodQaSDK.makeTopUpController(
+        let topUpVC = iPaySDK.makeTopUpController(
             secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
             mobileNumber: "xxxxxxxx",
@@ -62,10 +57,10 @@ This document explains how to integrate and use the VodQaSDK in your iOS applica
 
 ###  3.2 Saved Top-Up
 ```
-    import VodQaSDK
+    import iPaySDK
 
     @objc private func openSaved() {
-        let savedVC = VodQaSDK.makeOpenSavedController(
+        let savedVC = iPaySDK.makeOpenSavedController(
             secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
             mobileNumber: "xxxxxxxx",

@@ -1,0 +1,21 @@
+import Foundation
+
+enum SavedBillsEndpoint: Endpoint {
+    case getSavedBills(mobileNumber: String, iPayCustomerID: String)
+    
+    var path: String { "api/getSavedBills" }
+    var method: HTTPMethod { .post }
+    var queryItems: [URLQueryItem]? { nil }
+    var headers: [String:String]? { ["Content-Type":"application/json"] }
+    
+    var body: Data? {
+        switch self {
+        case let .getSavedBills(mobile, customer):
+            let req = SavedBillsRequest(
+                mobileNumber: mobile,
+                iPayCustomerID: customer
+            )
+            return try? JSONEncoder().encode(req)
+        }
+    }
+}
