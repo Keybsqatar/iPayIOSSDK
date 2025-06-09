@@ -149,18 +149,48 @@ public struct ProductsView: View {
                             .padding(.vertical, 16)
                             .padding(.horizontal, 24)
                             .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color(vm.selectedProduct?.skuCode == p.skuCode
-                                                ? "keyBs_bg_pink_1" : "keyBs_white", bundle: .module))
+                                Color(
+                                    vm.selectedProduct?.skuCode == p.skuCode
+                                        ? "keyBs_bg_pink_1"
+                                        : "keyBs_white",
+                                    bundle: .module
+                                )
+                            )
+                            // 2) rounded corners
+                            .cornerRadius(8)
+                            // 3) border overlay
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
                                     .stroke(
-                                        Color(vm.selectedProduct?.skuCode == p.skuCode
-                                              ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
-                                        ,
+                                        Color(
+                                            vm.selectedProduct?.skuCode == p.skuCode
+                                                ? "keyBs_bg_red_1"
+                                                : "keyBs_bg_gray_1",
+                                            bundle: .module
+                                        ),
                                         lineWidth: 1
                                     )
-                                    .shadow(color: Color.black.opacity(0.1),
-                                            radius: 4, x: 0, y: 2)
                             )
+                            // 4) drop shadow
+                            .shadow(
+                                color: Color.black.opacity(0.1),
+                                radius: 4,
+                                x: 0,
+                                y: 2
+                            )
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 8)
+//                                    .fill(Color(vm.selectedProduct?.skuCode == p.skuCode
+//                                                ? "keyBs_bg_pink_1" : "keyBs_white", bundle: .module))
+//                                    .stroke(
+//                                        Color(vm.selectedProduct?.skuCode == p.skuCode
+//                                              ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
+//                                        ,
+//                                        lineWidth: 1
+//                                    )
+//                                    .shadow(color: Color.black.opacity(0.1),
+//                                            radius: 4, x: 0, y: 2)
+//                            )
                         }
                         .buttonStyle(.plain)
                     }

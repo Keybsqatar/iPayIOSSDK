@@ -153,13 +153,26 @@ public struct ReviewTopUpView: View {
                     }
                     .padding(.all, 16)
                     .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color( "keyBs_white_2", bundle: .module))
+                        Color("keyBs_white_2", bundle: .module)
+                    )
+                    // 2) rounded corners
+                    .cornerRadius(8)
+                    // 3) border
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
                             .stroke(
-                                Color( "keyBs_bg_gray_1", bundle: .module),
+                                Color("keyBs_bg_gray_1", bundle: .module),
                                 lineWidth: 1
                             )
                     )
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .fill(Color( "keyBs_white_2", bundle: .module))
+//                            .stroke(
+//                                Color( "keyBs_bg_gray_1", bundle: .module),
+//                                lineWidth: 1
+//                            )
+//                    )
                 }
                 .padding(.horizontal, 16)
                 

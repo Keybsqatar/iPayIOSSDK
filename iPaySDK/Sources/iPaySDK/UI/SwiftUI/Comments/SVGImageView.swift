@@ -17,7 +17,7 @@ struct SVGImageView: View {
             }
         }
         .onAppear(perform: loadSVG)
-        .onChange(of: url) { _,_ in
+        .onChange(of: url) { _ in
             loadSVG()
         }
     }

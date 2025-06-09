@@ -45,7 +45,7 @@ public struct CountryPicker: View {
             }
             //            .listStyle(PlainListStyle()) // Use plain style
             .searchable(text: $search)
-            .onChange(of: search) { _, newValue in
+            .onChange(of: search) { newValue in
                 vm.filterCountries(by: newValue)
             }
             .onAppear {
@@ -59,7 +59,8 @@ public struct CountryPicker: View {
                 }
             }
             .background(Color.white)
-            .scrollContentBackground(.hidden)
+//            .scrollContentBackground(.hidden)
+            .listStyle(.plain)
         }
         .background(Color.white)
         .preferredColorScheme(.light)

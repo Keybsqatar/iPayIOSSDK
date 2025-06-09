@@ -122,12 +122,25 @@ public struct ReceiptModalView: View {
                                     .multilineTextAlignment(.leading)
                             }
                             .frame(maxWidth: .infinity, minHeight: 56)
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 60)
+//                                    .fill(Color("keyBs_white", bundle: .module))
+//                                    .stroke(
+//                                        Color("keyBs_font_gray_2", bundle: .module)
+//                                        ,
+//                                        lineWidth: 1
+//                                    )
+//                            )
                             .background(
-                                RoundedRectangle(cornerRadius: 60)
-                                    .fill(Color("keyBs_white", bundle: .module))
+                                Color("keyBs_white", bundle: .module)
+                            )
+                            // 2) rounded corners
+                            .cornerRadius(60)
+                            // 3) border overlay
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 60, style: .continuous)
                                     .stroke(
-                                        Color("keyBs_font_gray_2", bundle: .module)
-                                        ,
+                                        Color("keyBs_font_gray_2", bundle: .module),
                                         lineWidth: 1
                                     )
                             )

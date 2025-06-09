@@ -183,7 +183,7 @@ public struct OtpView: View {
             }
             isTextFieldFocused = true
         }
-        .onChange(of: vm.code) { _, newValue in
+        .onChange(of: vm.code) {  newValue in
             let count = newValue.count
             guard count > 0 else { return }
             
@@ -210,7 +210,7 @@ public struct OtpView: View {
                 }
             }
         }
-        .onChange(of: vm.completedTransaction?.id) { _, tx in
+        .onChange(of: vm.completedTransaction?.id) { tx in
             guard let tx = vm.completedTransaction else { return }
             receiptData = ReceiptData(
                 amount: "\(tx.currency) \(tx.amount)",
@@ -266,7 +266,7 @@ public struct OtpView: View {
                 .focused($isTextFieldFocused)
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
-                .onChange(of: vm.code) { _, v in
+                .onChange(of: vm.code) { v in
                     // cap at 4
                     vm.code = String(v.prefix(4))
                 }

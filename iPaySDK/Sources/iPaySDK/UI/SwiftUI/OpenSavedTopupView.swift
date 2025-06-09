@@ -50,7 +50,7 @@ public struct OpenSavedTopupView: View {
             //                }
             //            }
             .task { await vm.load() }
-            .onChange(of: vm.item?.id) { _, id in
+            .onChange(of: vm.item?.id) { id in
                 if id != nil {
                     navigate = true
                 }

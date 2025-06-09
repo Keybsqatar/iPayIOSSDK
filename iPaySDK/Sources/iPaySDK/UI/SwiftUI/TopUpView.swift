@@ -257,7 +257,7 @@ public struct TopUpView: View {
                                 }
                                 .keyboardType(.numberPad)
                                 .frame(maxWidth: .infinity)
-                                .onChange(of: phone) { _, newValue in
+                                .onChange(of: phone) { newValue in
                                     if(!showProviders){
                                         if(country != nil && !newValue.isEmpty) {
                                             disabledProceed = false
