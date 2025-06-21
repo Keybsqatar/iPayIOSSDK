@@ -1,5 +1,6 @@
 import SwiftUI
 import SVGKit
+import Combine
 
 /// SwiftUI view that loads & renders an SVG from a URL
 struct SVGImageView: View {
@@ -17,7 +18,10 @@ struct SVGImageView: View {
             }
         }
         .onAppear(perform: loadSVG)
-        .onChange(of: url) { _ in
+        // .onChange(of: url) { _ in
+        //     loadSVG()
+        // }
+        .onReceive(Just(url)) { _ in
             loadSVG()
         }
     }
@@ -32,4 +36,48 @@ struct SVGImageView: View {
             }
         }.resume()
     }
+    
+    //      private func loadSVG() {
+    //          URLSession.shared.dataTask(with: url) { data, _, error in
+    //              guard let data = data, error == nil else {
+    //                  print("Error loading SVG: \(error?.localizedDescription ?? "Unknown error")")
+    //                  return
+    //              }
+    //
+    //              do {
+    //                  guard let svgImage = SVGKImage(data: data) else {
+    //                      print("Failed to parse SVG data. Ensure the SVG file is valid and doesn't contain unsupported elements.")
+    //                      return
+    //                  }
+    //
+    //                  DispatchQueue.main.async {
+    //                      uiImage = svgImage.uiImage
+    //                  }
+    //              } catch {
+    //                  print("Exception during SVG parsing: \(error.localizedDescription)")
+    //              }
+    //          }.resume()
+    //      }
 }
+//
+//import SwiftUI
+//import SDWebImageSwiftUI
+//import SDWebImageSVGCoder
+//
+//struct SVGImageView: View {
+//    let url: URL
+//
+//    init(url: URL) {
+//        self.url = url
+//        SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
+//    }
+//
+//    var body: some View {
+//        WebImage(url: url)
+//            .placeholder {
+//                Color.gray.opacity(0.3)
+//            }
+//            .resizable()
+//            .scaledToFit()
+//    }
+//}

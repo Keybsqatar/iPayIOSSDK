@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "iPaySDK",
     platforms: [
-        .iOS(.v16), // Minimum iOS version supported
+        .iOS(.v13), // Minimum iOS version supported
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -21,7 +21,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-            from: "3.1.3"
+            from: "2.2.7"
+        ),
+        .package(
+            url: "https://github.com/SDWebImage/SDWebImageSVGCoder.git",
+            from: "1.8.0"
         )
     ],
     targets: [
@@ -32,7 +36,9 @@ let package = Package(
             dependencies: [
                 // Reference the products exported by the above packages:
                 .product(name: "SVGKit", package: "SVGKit"),
-                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
+                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI"),
+                .product(name: "SDWebImageSVGCoder", package: "SDWebImageSVGCoder")
+
             ],
             path: "Sources/iPaySDK",
             resources: [

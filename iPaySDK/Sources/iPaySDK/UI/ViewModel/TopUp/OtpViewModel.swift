@@ -145,7 +145,8 @@ public class OtpViewModel: ObservableObject {
             
             for _ in 1...3 {
                 print("Polling at: \(Date())")
-                try await Task.sleep(for: .seconds(5))
+                // try await Task.sleep(for: .seconds(5))
+                try await Task.sleep(nanoseconds: 5_000_000_000)
                 
                 let checkRepo = CheckTransactionRepository()
 

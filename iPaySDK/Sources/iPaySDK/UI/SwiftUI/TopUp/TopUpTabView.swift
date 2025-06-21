@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct SegmentTabView: View {
+public struct TopUpTabView: View {
     public enum Tab { case new, saved }
     @Binding var selection: Tab
 //    private let bundle = Bundle.mySwiftUIPackage
@@ -58,11 +58,11 @@ public struct SegmentTabView: View {
     }
 }
 
-struct SegmentTabView_Previews: PreviewProvider {
+struct TopUpTabView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
-        @State private var selection: SegmentTabView.Tab = .new
+        @State private var selection: TopUpTabView.Tab = .new
         var body: some View {
-            SegmentTabView(selection: $selection)
+            TopUpTabView(selection: $selection)
         }
     }
     static var previews: some View {
@@ -73,7 +73,7 @@ struct SegmentTabView_Previews: PreviewProvider {
 
 
 // #Preview {
-//     SegmentTabView(
+//     TopUpTabView(
 //         selection: .constant(.new)
 //     )
 // }

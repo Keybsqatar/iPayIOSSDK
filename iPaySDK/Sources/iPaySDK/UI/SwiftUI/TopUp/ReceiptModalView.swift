@@ -53,7 +53,8 @@ public struct ReceiptModalView: View {
         ZStack {
             // Dimmed backdrop
             Color("keyBs_bg_gray_4", bundle: .module).opacity(0.9)
-                .ignoresSafeArea()
+                // .ignoresSafeArea()
+                .edgesIgnoringSafeArea(.all)
             
             
             VStack(spacing: 32) {
@@ -184,7 +185,8 @@ public struct ReceiptModalView: View {
                 .url(forResource: "summary", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .indicator(.activity)
-                    .resizable()
+//                    .resizable()
+                    .frame(height: 120) // or whatever height you want
                     .scaledToFit()
             }
             
@@ -232,13 +234,20 @@ public struct ReceiptModalView: View {
         guard let img = snapshotImage else { return }
         
         PHPhotoLibrary.requestAuthorization { status in
-            guard status == .authorized || status == .limited else {
-                DispatchQueue.main.async {
-                    savedError     = "Photo Library access denied."
-                    showSavedAlert = true
-                }
-                return
-            }
+            // guard status == .authorized || status == .limited else {
+            //     DispatchQueue.main.async {
+            //         savedError     = "Photo Library access denied."
+            //         showSavedAlert = true
+            //     }
+            //     return
+            // }
+                guard status == .authorized else {
+        DispatchQueue.main.async {
+            savedError     = "Photo Library access denied."
+            showSavedAlert = true
+        }
+        return
+    }
             PHPhotoLibrary.shared().performChanges {
                 PHAssetChangeRequest.creationRequestForAsset(from: img)
             } completionHandler: { success, error in

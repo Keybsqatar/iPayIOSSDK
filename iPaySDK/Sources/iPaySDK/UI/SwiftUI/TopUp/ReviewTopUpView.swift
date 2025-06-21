@@ -1,7 +1,8 @@
 import SwiftUI
 
 public struct ReviewTopUpView: View {
-    @Environment(\.dismiss) private var pop
+    // @Environment(\.dismiss) private var pop
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
     // MARK: – Inputs
@@ -58,7 +59,8 @@ public struct ReviewTopUpView: View {
                 // Top Bar
                 HStack {
                     Image("ic_back", bundle: .module)
-                        .onTapGesture { pop() }
+                    // .onTapGesture { pop() }
+                        .onTapGesture { presentationMode.wrappedValue.dismiss() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                     
@@ -165,18 +167,42 @@ public struct ReviewTopUpView: View {
                                 lineWidth: 1
                             )
                     )
-//                    .background(
-//                        RoundedRectangle(cornerRadius: 8)
-//                            .fill(Color( "keyBs_white_2", bundle: .module))
-//                            .stroke(
-//                                Color( "keyBs_bg_gray_1", bundle: .module),
-//                                lineWidth: 1
-//                            )
-//                    )
+                    //                    .background(
+                    //                        RoundedRectangle(cornerRadius: 8)
+                    //                            .fill(Color( "keyBs_white_2", bundle: .module))
+                    //                            .stroke(
+                    //                                Color( "keyBs_bg_gray_1", bundle: .module),
+                    //                                lineWidth: 1
+                    //                            )
+                    //                    )
                 }
                 .padding(.horizontal, 16)
                 
                 Spacer()
+                
+                NavigationLink(
+                    destination: Group {
+                        OtpView(
+                            saveRecharge: saveRecharge,
+                            receiverMobileNumber: receiverMobileNumber,
+                            countryIso: countryIso,
+                            countryFlagUrl: countryFlagUrl,
+                            countryName: countryName,
+                            providerCode: providerCode,
+                            providerLogoUrl: providerLogoUrl,
+                            providerName: providerName,
+                            product: product,
+                            mobileNumber: mobileNumber,
+                            serviceCode: serviceCode,
+                            iPayCustomerID: iPayCustomerID
+                        )
+                        .navigationBarHidden(true) // Use this for iOS 13+,
+                    },
+                    isActive: $showOtp
+                ) {
+                    EmptyView()
+                }
+                .hidden()
                 
                 Button(action: { showOtp = true }) {
                     Text("Proceed for Payment")
@@ -191,23 +217,23 @@ public struct ReviewTopUpView: View {
                         .cornerRadius(60)
                         .padding(.horizontal, 16)
                 }
-                .navigationDestination(isPresented: $showOtp) {
-                    OtpView(
-                        saveRecharge: saveRecharge,
-                        receiverMobileNumber: receiverMobileNumber,
-                        countryIso: countryIso,
-                        countryFlagUrl: countryFlagUrl,
-                        countryName: countryName,
-                        providerCode: providerCode,
-                        providerLogoUrl: providerLogoUrl,
-                        providerName: providerName,
-                        product: product,
-                        mobileNumber: mobileNumber,
-                        serviceCode: serviceCode,
-                        iPayCustomerID: iPayCustomerID
-                    )
-                    .toolbar(.hidden, for: .navigationBar)
-                }
+                // .navigationDestination(isPresented: $showOtp) {
+                //     OtpView(
+                //         saveRecharge: saveRecharge,
+                //         receiverMobileNumber: receiverMobileNumber,
+                //         countryIso: countryIso,
+                //         countryFlagUrl: countryFlagUrl,
+                //         countryName: countryName,
+                //         providerCode: providerCode,
+                //         providerLogoUrl: providerLogoUrl,
+                //         providerName: providerName,
+                //         product: product,
+                //         mobileNumber: mobileNumber,
+                //         serviceCode: serviceCode,
+                //         iPayCustomerID: iPayCustomerID
+                //     )
+                //     .toolbar(.hidden, for: .navigationBar)
+                // }
                 
                 // // Proceed Button
                 // Button("Proceed for Payment") {
@@ -246,10 +272,13 @@ public struct ReviewTopUpView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
-                    .ignoresSafeArea()
+                // .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
-            .ignoresSafeArea(edges: .bottom)
+            // .ignoresSafeArea(edges: .bottom)
+            .edgesIgnoringSafeArea(.bottom)
+            
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -280,13 +309,18 @@ public struct ReviewTopUpView: View {
                         .scaledToFit()
                         .cornerRadius(16)
                 } else if let url = logoIconURL {
-                    AsyncImage(url: url) { phase in
-                        if case .success(let img) = phase {
-                            img.resizable().scaledToFit()
-                        } else {
-                            Color.gray.opacity(0.3)
-                        }
-                    }
+                    //                    AsyncImage(url: url) { phase in
+                    //                        if case .success(let img) = phase {
+                    //                            img.resizable().scaledToFit()
+                    //                        } else {
+                    //                            Color.gray.opacity(0.3)
+                    //                        }
+                    //                    }
+                    //                    .frame(width: 16, height: 16)
+                    RemoteImage(
+                        url: url,
+                        placeholder: AnyView(Color.gray.opacity(0.3))
+                    )
                     .frame(width: 16, height: 16)
                 }
                 

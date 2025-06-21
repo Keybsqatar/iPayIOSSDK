@@ -12,8 +12,10 @@ public struct DeletionSuccessModalView: View {
     
     public var body: some View {
         ZStack {
+            // Color.black.opacity(0.4)
+            //     .ignoresSafeArea()
             Color.black.opacity(0.4)
-                .ignoresSafeArea()
+                .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 32) {
                 // Close button
@@ -34,12 +36,13 @@ public struct DeletionSuccessModalView: View {
                 }
                 
                 VStack(spacing: 24) {
-                   // GIF banner
+                    // GIF banner
                     if let url = Bundle(for: BundleToken.self)
                         .url(forResource: "summary", withExtension: "gif") {
                         AnimatedImage(url: url)
                             .indicator(.activity)
-                            .resizable()
+                        // .resizable()
+                            .frame(height: 120) // or whatever height you want
                             .scaledToFit()
                     }
                     

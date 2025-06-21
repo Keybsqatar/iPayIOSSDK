@@ -4,10 +4,12 @@ import ContactsUI
 import UIKit
 
 public struct TopUpView: View {
-    @Environment(\.dismiss) private var pop
+    // @Environment(\.dismiss) private var pop
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
-    @StateObject private var vm: TopUpViewModel
+    // @StateObject private var vm: TopUpViewModel
+    @ObservedObject private var vm: TopUpViewModel
     
     @State private var showDeletionModal = false
     @State private var deletionMessage = ""
@@ -15,7 +17,7 @@ public struct TopUpView: View {
     @State private var showToast = false
     @State private var toastMessage = ""
     
-    @State private var tab: SegmentTabView.Tab = .new
+    @State private var tab: TopUpTabView.Tab = .new
     
     @State private var phone = ""
     //    @State private var showContactPicker = false
@@ -46,17 +48,23 @@ public struct TopUpView: View {
         serviceCode:  String,
         iPayCustomerID: String
     ) {
-        _vm = StateObject(
-            wrappedValue: TopUpViewModel(
-                serviceCode: serviceCode,
-                mobileNumber: mobileNumber,
-                iPayCustomerID: iPayCustomerID
-            )
+        // _vm = StateObject(
+        //     wrappedValue: TopUpViewModel(
+        //         serviceCode: serviceCode,
+        //         mobileNumber: mobileNumber,
+        //         iPayCustomerID: iPayCustomerID
+        //     )
+        // )
+        self.vm = TopUpViewModel(
+            serviceCode: serviceCode,
+            mobileNumber: mobileNumber,
+            iPayCustomerID: iPayCustomerID
         )
     }
     
     public var body: some View {
-        NavigationStack {
+        // NavigationStack {
+        NavigationView {
             ZStack(alignment: .bottom) {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 32)
@@ -64,7 +72,8 @@ public struct TopUpView: View {
                     // Top Bar
                     HStack {
                         Image("ic_back", bundle: .module)
-                            .onTapGesture { pop() }
+                        // .onTapGesture { pop() }
+                            .onTapGesture { presentationMode.wrappedValue.dismiss() }
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                         
@@ -98,7 +107,7 @@ public struct TopUpView: View {
                     Spacer().frame(height: 75)
                     
                     // Tabs
-                    SegmentTabView(selection: $tab)
+                    TopUpTabView(selection: $tab)
                     
                     // Content
                     if tab == .new {
@@ -257,7 +266,16 @@ public struct TopUpView: View {
                                 }
                                 .keyboardType(.numberPad)
                                 .frame(maxWidth: .infinity)
-                                .onChange(of: phone) { newValue in
+                            // .onChange(of: phone) { newValue in
+                            //     if(!showProviders){
+                            //         if(country != nil && !newValue.isEmpty) {
+                            //             disabledProceed = false
+                            //         } else {
+                            //             disabledProceed = true
+                            //         }
+                            //     }
+                            // }
+                                .onReceive(Just(phone)) { newValue in
                                     if(!showProviders){
                                         if(country != nil && !newValue.isEmpty) {
                                             disabledProceed = false
@@ -312,13 +330,17 @@ public struct TopUpView: View {
                                     HStack(spacing: 16) {
                                         if let p = selectedProvider {
                                             // loaded logo
-                                            AsyncImage(url: p.logoUrl) { phase in
-                                                if case .success(let img) = phase {
-                                                    img.resizable().scaledToFit()
-                                                } else {
-                                                    Color.gray.opacity(0.3)
-                                                }
-                                            }
+                                            // AsyncImage(url: p.logoUrl) { phase in
+                                            //     if case .success(let img) = phase {
+                                            //         img.resizable().scaledToFit()
+                                            //     } else {
+                                            //         Color.gray.opacity(0.3)
+                                            //     }
+                                            // }
+                                            RemoteImage(
+                                                url: p.logoUrl,
+                                                placeholder: AnyView(Color.gray.opacity(0.3))
+                                            )
                                             .frame(width: 16, height: 16)
                                             
                                             Text(p.name)
@@ -354,57 +376,49 @@ public struct TopUpView: View {
                             
                             // The dropdown list
                             if showProvidersList {
-                                // VStack(spacing: 0) {
-                                List {
-                                    ForEach(vm.providers) { p in
-                                        Button {
-                                            selectedProvider = p
-                                            showProvidersList = false
-                                            disabledProceed = false
-                                        } label: {
-                                            VStack(spacing: 0) {
-                                                HStack(spacing: 16) {
-                                                    AsyncImage(url: p.logoUrl) { phase in
-                                                        if case .success(let img) = phase {
-                                                            img.resizable().scaledToFit()
-                                                        } else {
-                                                            Color.gray.opacity(0.3)
-                                                        }
+                                ScrollView {
+                                    VStack(spacing: 0) {
+                                        ForEach(vm.providers) { p in
+                                            Button {
+                                                selectedProvider = p
+                                                showProvidersList = false
+                                                disabledProceed = false
+                                            } label: {
+                                                VStack(spacing: 0) {
+                                                    HStack(spacing: 16) {
+                                                        RemoteImage(
+                                                            url: p.logoUrl,
+                                                            placeholder: AnyView(Color.gray.opacity(0.3))
+                                                        )
+                                                        .frame(width: 16, height: 16)
+                                                        
+                                                        Text(p.name)
+                                                            .font(.custom("VodafoneRg-Regular", size: 16))
+                                                            .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
+                                                            .multilineTextAlignment(.leading)
                                                     }
-                                                    .frame(width: 16, height: 16)
+                                                    .padding(.all, 16)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                    .background(
+                                                        selectedProvider?.providerCode == p.providerCode
+                                                        ? Color("keyBs_bg_pink_1", bundle: .module)
+                                                        : Color.white
+                                                    )
                                                     
-                                                    Text(p.name)
-                                                        .font(.custom("VodafoneRg-Regular", size: 16))
-                                                        .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                                                        .multilineTextAlignment(.leading)
-                                                }
-                                                .padding(.all, 16)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .background(
-                                                    selectedProvider?.providerCode == p.providerCode
-                                                    ? Color("keyBs_bg_pink_1", bundle: .module)
-                                                    : Color.white
-                                                )
-                                                
-                                                if p.providerCode != vm.providers.last?.providerCode {
-                                                    Divider()
-                                                        .overlay(Color("keyBs_bg_gray_1", bundle: .module))
-                                                        .padding(.horizontal, 16)
+                                                    if p.providerCode != vm.providers.last?.providerCode {
+                                                        Divider()
+                                                            .overlay(Color("keyBs_bg_gray_1", bundle: .module))
+                                                            .padding(.horizontal, 16)
+                                                    }
                                                 }
                                             }
+                                            .buttonStyle(.plain)
                                         }
-                                        .listRowInsets(EdgeInsets())
-                                        .listRowSeparator(.hidden)
-                                        .buttonStyle(.plain)
                                     }
                                 }
-                                .listStyle(.plain)
                                 .frame(
                                     maxHeight: min(CGFloat(vm.providers.count) * 56, 300)
-                                ) // 56 is estimated row height, 300 is max height for scroll
-                                //                                .listRowInsets(EdgeInsets())
-                                //                                .listRowSeparator(.hidden)
-                                // }
+                                )
                                 .cornerRadius(8, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
@@ -412,9 +426,82 @@ public struct TopUpView: View {
                                         .shadow(color: Color.black.opacity(0.3),
                                                 radius: 4, x: 0, y: 2)
                                 )
-                                .offset(y: 0) // <-- Adjust this value to position the dropdown
+                                .offset(y: 0)
                                 .zIndex(1)
                             }
+                            // if showProvidersList {
+                            //     // VStack(spacing: 0) {
+                            //     List {
+                            //         ForEach(vm.providers) { p in
+                            //             Button {
+                            //                 selectedProvider = p
+                            //                 showProvidersList = false
+                            //                 disabledProceed = false
+                            //             } label: {
+                            //                 VStack(spacing: 0) {
+                            //                     HStack(spacing: 16) {
+                            //                         // AsyncImage(url: p.logoUrl) { phase in
+                            //                         //     if case .success(let img) = phase {
+                            //                         //         img.resizable().scaledToFit()
+                            //                         //     } else {
+                            //                         //         Color.gray.opacity(0.3)
+                            //                         //     }
+                            //                         // }
+                            //                         RemoteImage(
+                            //                             url: p.logoUrl,
+                            //                             placeholder: AnyView(Color.gray.opacity(0.3))
+                            //                         )
+                            //                         .frame(width: 16, height: 16)
+                            
+                            //                         Text(p.name)
+                            //                             .font(.custom("VodafoneRg-Regular", size: 16))
+                            //                             .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
+                            //                             .multilineTextAlignment(.leading)
+                            //                     }
+                            //                     .padding(.all, 16)
+                            //                     .frame(maxWidth: .infinity, alignment: .leading)
+                            //                     .background(
+                            //                         selectedProvider?.providerCode == p.providerCode
+                            //                         ? Color("keyBs_bg_pink_1", bundle: .module)
+                            //                         : Color.white
+                            //                     )
+                            
+                            //                     if p.providerCode != vm.providers.last?.providerCode {
+                            //                         Divider()
+                            //                             .overlay(Color("keyBs_bg_gray_1", bundle: .module))
+                            //                             .padding(.horizontal, 16)
+                            //                     }
+                            //                 }
+                            //             }
+                            //             .listRowInsets(EdgeInsets())
+                            //             // .listRowInsets(EdgeInsets())
+                            //             //                                        if #available(iOS 14.0, *) {
+                            //             //                                            listRowInsets(EdgeInsets())
+                            //             //                                        }
+                            //             //                                        // .listRowSeparator(.hidden)
+                            //             //                                        if #available(iOS 15.0, *) {
+                            //             //                                            listRowSeparator(.hidden)
+                            //             //                                        }
+                            //             .buttonStyle(.plain)
+                            //         }
+                            //     }
+                            //     .listStyle(.plain)
+                            //     .frame(
+                            //         maxHeight: min(CGFloat(vm.providers.count) * 56, 300)
+                            //     ) // 56 is estimated row height, 300 is max height for scroll
+                            //     //                                .listRowInsets(EdgeInsets())
+                            //     //                                .listRowSeparator(.hidden)
+                            //     // }
+                            //     .cornerRadius(8, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
+                            //     .background(
+                            //         RoundedRectangle(cornerRadius: 8)
+                            //             .fill(Color.white)
+                            //             .shadow(color: Color.black.opacity(0.3),
+                            //                     radius: 4, x: 0, y: 2)
+                            //     )
+                            //     .offset(y: 0) // <-- Adjust this value to position the dropdown
+                            //     .zIndex(1)
+                            // }
                         }
                         .padding(.horizontal, 16)
                         
@@ -494,31 +581,59 @@ public struct TopUpView: View {
                         .cornerRadius(60)
                         .padding(.horizontal, 16)
                 }
-                .navigationDestination(isPresented: $showProducts) {
-                    if let c = country,
-                       let p = selectedProvider
-                    {
-                        ProductsView(
-                            saveRecharge: saveRecharge ? "1" : "0",
-                            receiverMobileNumber: phone,
-                            countryIso: c.countryIso,
-                            countryFlagUrl: c.flagUrl,
-                            countryName: c.name,
-                            providerCode: p.providerCode,
-                            providerLogoUrl: p.logoUrl,
-                            providerName: p.name,
-                            productSku: "",
-                            
-                            mobileNumber: vm.mobileNumber,
-                            serviceCode:  vm.serviceCode,
-                            iPayCustomerID: vm.iPayCustomerID,
-                            
-                            dismissMode: "pop"
-                        )
-                        //                  .navigationBarBackButtonHidden(true)    // ← hides the “< Back” button
-                        .toolbar(.hidden, for: .navigationBar)  // ← hides the whole bar
-                    }
-                }
+                NavigationLink(
+                    destination: Group {
+                        if let c = country,
+                           let p = selectedProvider
+                        {
+                            ProductsView(
+                                saveRecharge: saveRecharge ? "1" : "0",
+                                receiverMobileNumber: phone,
+                                countryIso: c.countryIso,
+                                countryFlagUrl: c.flagUrl,
+                                countryName: c.name,
+                                providerCode: p.providerCode,
+                                providerLogoUrl: p.logoUrl,
+                                providerName: p.name,
+                                productSku: "",
+                                mobileNumber: vm.mobileNumber,
+                                serviceCode:  vm.serviceCode,
+                                iPayCustomerID: vm.iPayCustomerID,
+                                dismissMode: "pop"
+                            )
+                            // .toolbar(.hidden, for: .navigationBar)
+                            .navigationBarHidden(true)
+                        }
+                    },
+                    isActive: $showProducts,
+                    label: { EmptyView() }
+                )
+                .hidden()
+                // .navigationDestination(isPresented: $showProducts) {
+                //     if let c = country,
+                //        let p = selectedProvider
+                //     {
+                //         ProductsView(
+                //             saveRecharge: saveRecharge ? "1" : "0",
+                //             receiverMobileNumber: phone,
+                //             countryIso: c.countryIso,
+                //             countryFlagUrl: c.flagUrl,
+                //             countryName: c.name,
+                //             providerCode: p.providerCode,
+                //             providerLogoUrl: p.logoUrl,
+                //             providerName: p.name,
+                //             productSku: "",
+                
+                //             mobileNumber: vm.mobileNumber,
+                //             serviceCode:  vm.serviceCode,
+                //             iPayCustomerID: vm.iPayCustomerID,
+                
+                //             dismissMode: "pop"
+                //         )
+                //         //                  .navigationBarBackButtonHidden(true)    // ← hides the “< Back” button
+                //         .toolbar(.hidden, for: .navigationBar)  // ← hides the whole bar
+                //     }
+                // }
                 
                 // Proceed Button
                 // Button("Proceed") {
@@ -596,18 +711,20 @@ public struct TopUpView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
-                    .ignoresSafeArea()
+                // .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
             .cornerRadius(50, corners: [.topLeft])
-            .ignoresSafeArea()
+            // .ignoresSafeArea()
+            .edgesIgnoringSafeArea(.all)
         }
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
     }
     
     // MARK: – Saved Top-Up Tab
     private var savedTabView: some View {
-        ZStack {
+        return ZStack {
             VStack(spacing: 0) {
                 if vm.savedBills.isEmpty {
                     Spacer().frame(height: 96)
@@ -639,23 +756,29 @@ public struct TopUpView: View {
                                 selectedSavedBill = bill
                                 showProducts = true
                             }
-                            .listRowInsets(EdgeInsets())
-                            .listRowSeparator(.hidden)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    Task {
-                                        await vm.deleteSavedBill(bill)
-                                        //                                        vm.deleteSuccessMessage = "Bill deleted successfullyyy."
-                                    }
-                                } label: {
-                                    
-                                    Image("ic_delete", bundle: .module)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 24, height: 24)
-                                }
-                                .tint(Color("keyBs_bg_gray_4", bundle: .module))
-                            }
+                            // .listRowInsets(EdgeInsets())
+                            //                            if #available(iOS 14.0, *) {
+                            //                                listRowInsets(EdgeInsets())
+                            //                            }
+                            //                            // .listRowSeparator(.hidden)
+                            //                            if #available(iOS 15.0, *) {
+                            //                                listRowSeparator(.hidden)
+                            //                            }
+                            // .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            //     Button(role: .destructive) {
+                            //         Task {
+                            //             await vm.deleteSavedBill(bill)
+                            //             //                                        vm.deleteSuccessMessage = "Bill deleted successfullyyy."
+                            //         }
+                            //     } label: {
+                            
+                            //         Image("ic_delete", bundle: .module)
+                            //             .resizable()
+                            //             .scaledToFit()
+                            //             .frame(width: 24, height: 24)
+                            //     }
+                            //     .tint(Color("keyBs_bg_gray_4", bundle: .module))
+                            // }
                             .overlay(
                                 bill.id != vm.savedBills.last?.id ?
                                 AnyView(
@@ -669,38 +792,68 @@ public struct TopUpView: View {
                         .background(Color.blue)
                     }
                     .listStyle(.plain)
-                    .listRowSeparator(.hidden)
+                    // .listRowSeparator(.hidden)
+                    if #available(iOS 15.0, *) {
+                        listRowSeparator(.hidden)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.white)
             .cornerRadius(50, corners: [.topRight])
-            .ignoresSafeArea()
+            // .ignoresSafeArea()
+            .edgesIgnoringSafeArea(.all)
         }
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
-        .navigationDestination(isPresented: $showProducts) {
-            if let c = selectedSavedBill
-            {
-                ProductsView(
-                    saveRecharge: "0",
-                    receiverMobileNumber: c.targetIdentifier,
-                    countryIso: c.countryIso2,
-                    countryFlagUrl: c.countryFlagUrl,
-                    countryName: c.countryName,
-                    providerCode: c.providerCode,
-                    providerLogoUrl: c.providerImgUrl,
-                    providerName: c.providerName,
-                    productSku: c.productSku,
-                    
-                    mobileNumber: vm.mobileNumber,
-                    serviceCode:  vm.serviceCode,
-                    iPayCustomerID: vm.iPayCustomerID,
-                    
-                    dismissMode: "pop"
-                )
-                .toolbar(.hidden, for: .navigationBar)  // ← hides the whole bar
-            }
-        }
+        NavigationLink(
+            destination: Group {
+                if let c = selectedSavedBill {
+                    ProductsView(
+                        saveRecharge: "0",
+                        receiverMobileNumber: c.targetIdentifier,
+                        countryIso: c.countryIso2,
+                        countryFlagUrl: c.countryFlagUrl,
+                        countryName: c.countryName,
+                        providerCode: c.providerCode,
+                        providerLogoUrl: c.providerImgUrl,
+                        providerName: c.providerName,
+                        productSku: c.productSku,
+                        mobileNumber: vm.mobileNumber,
+                        serviceCode:  vm.serviceCode,
+                        iPayCustomerID: vm.iPayCustomerID,
+                        dismissMode: "pop"
+                    )
+                    // .toolbar(.hidden, for: .navigationBar)
+                    .navigationBarHidden(true)
+                }
+            },
+            isActive: $showProducts,
+            label: { EmptyView() }
+        )
+        .hidden()
+        // .navigationDestination(isPresented: $showProducts) {
+        //     if let c = selectedSavedBill
+        //     {
+        //         ProductsView(
+        //             saveRecharge: "0",
+        //             receiverMobileNumber: c.targetIdentifier,
+        //             countryIso: c.countryIso2,
+        //             countryFlagUrl: c.countryFlagUrl,
+        //             countryName: c.countryName,
+        //             providerCode: c.providerCode,
+        //             providerLogoUrl: c.providerImgUrl,
+        //             providerName: c.providerName,
+        //             productSku: c.productSku,
+        
+        //             mobileNumber: vm.mobileNumber,
+        //             serviceCode:  vm.serviceCode,
+        //             iPayCustomerID: vm.iPayCustomerID,
+        
+        //             dismissMode: "pop"
+        //         )
+        //         .toolbar(.hidden, for: .navigationBar)  // ← hides the whole bar
+        //     }
+        // }
         .onReceive(vm.$deleteSuccessMessage) { msg in
             if let msg {
                 deletionMessage   = msg

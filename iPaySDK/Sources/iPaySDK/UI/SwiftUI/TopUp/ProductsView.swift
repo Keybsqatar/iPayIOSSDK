@@ -1,10 +1,12 @@
 import SwiftUI
 
 public struct ProductsView: View {
-    @Environment(\.dismiss) private var pop
+    // @Environment(\.dismiss) private var pop
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
-    @StateObject private var vm: ProductsViewModel
+    // @StateObject private var vm: ProductsViewModel
+    @ObservedObject private var vm: ProductsViewModel
     
     @State private var showToast = false
     @State private var toastMessage = ""
@@ -29,29 +31,47 @@ public struct ProductsView: View {
         
         dismissMode: String
     ) {
-        _vm = StateObject(
-            wrappedValue: ProductsViewModel(
-                saveRecharge:saveRecharge,
-                receiverMobileNumber:receiverMobileNumber,
-                countryIso:countryIso,
-                countryFlagUrl:countryFlagUrl,
-                countryName:countryName,
-                providerCode:providerCode,
-                providerLogoUrl:providerLogoUrl,
-                providerName:providerName,
-                productSku:productSku,
-                
-                mobileNumber:mobileNumber,
-                serviceCode:serviceCode,
-                iPayCustomerID:iPayCustomerID,
-                
-                dismissMode:dismissMode
-            )
+        // _vm = StateObject(
+        //     wrappedValue: ProductsViewModel(
+        //         saveRecharge:saveRecharge,
+        //         receiverMobileNumber:receiverMobileNumber,
+        //         countryIso:countryIso,
+        //         countryFlagUrl:countryFlagUrl,
+        //         countryName:countryName,
+        //         providerCode:providerCode,
+        //         providerLogoUrl:providerLogoUrl,
+        //         providerName:providerName,
+        //         productSku:productSku,
+        
+        //         mobileNumber:mobileNumber,
+        //         serviceCode:serviceCode,
+        //         iPayCustomerID:iPayCustomerID,
+        
+        //         dismissMode:dismissMode
+        //     )
+        // )
+        self.vm = ProductsViewModel(
+            saveRecharge:saveRecharge,
+            receiverMobileNumber:receiverMobileNumber,
+            countryIso:countryIso,
+            countryFlagUrl:countryFlagUrl,
+            countryName:countryName,
+            providerCode:providerCode,
+            providerLogoUrl:providerLogoUrl,
+            providerName:providerName,
+            productSku:productSku,
+            
+            mobileNumber:mobileNumber,
+            serviceCode:serviceCode,
+            iPayCustomerID:iPayCustomerID,
+            
+            dismissMode:dismissMode
         )
     }
     
     internal init(vm: ProductsViewModel) {
-        _vm = StateObject(wrappedValue: vm)
+        // _vm = StateObject(wrappedValue: vm)
+        self.vm = vm
     }
     
     public var body: some View {
@@ -66,11 +86,13 @@ public struct ProductsView: View {
                         .onTapGesture {
                             switch vm.dismissMode {
                             case "pop":
-                                pop()
+                                // pop()
+                                presentationMode.wrappedValue.dismiss()
                             case "closeSDK":
                                 coord.closeSDK()
                             default:
-                                pop()
+                                // pop()
+                                presentationMode.wrappedValue.dismiss()
                             }
                         }
                         .frame(width: 24, height: 24)
@@ -151,8 +173,8 @@ public struct ProductsView: View {
                             .background(
                                 Color(
                                     vm.selectedProduct?.skuCode == p.skuCode
-                                        ? "keyBs_bg_pink_1"
-                                        : "keyBs_white",
+                                    ? "keyBs_bg_pink_1"
+                                    : "keyBs_white",
                                     bundle: .module
                                 )
                             )
@@ -164,8 +186,8 @@ public struct ProductsView: View {
                                     .stroke(
                                         Color(
                                             vm.selectedProduct?.skuCode == p.skuCode
-                                                ? "keyBs_bg_red_1"
-                                                : "keyBs_bg_gray_1",
+                                            ? "keyBs_bg_red_1"
+                                            : "keyBs_bg_gray_1",
                                             bundle: .module
                                         ),
                                         lineWidth: 1
@@ -178,19 +200,19 @@ public struct ProductsView: View {
                                 x: 0,
                                 y: 2
                             )
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 8)
-//                                    .fill(Color(vm.selectedProduct?.skuCode == p.skuCode
-//                                                ? "keyBs_bg_pink_1" : "keyBs_white", bundle: .module))
-//                                    .stroke(
-//                                        Color(vm.selectedProduct?.skuCode == p.skuCode
-//                                              ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
-//                                        ,
-//                                        lineWidth: 1
-//                                    )
-//                                    .shadow(color: Color.black.opacity(0.1),
-//                                            radius: 4, x: 0, y: 2)
-//                            )
+                            //                            .background(
+                            //                                RoundedRectangle(cornerRadius: 8)
+                            //                                    .fill(Color(vm.selectedProduct?.skuCode == p.skuCode
+                            //                                                ? "keyBs_bg_pink_1" : "keyBs_white", bundle: .module))
+                            //                                    .stroke(
+                            //                                        Color(vm.selectedProduct?.skuCode == p.skuCode
+                            //                                              ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
+                            //                                        ,
+                            //                                        lineWidth: 1
+                            //                                    )
+                            //                                    .shadow(color: Color.black.opacity(0.1),
+                            //                                            radius: 4, x: 0, y: 2)
+                            //                            )
                         }
                         .buttonStyle(.plain)
                     }
@@ -214,26 +236,53 @@ public struct ProductsView: View {
                         .cornerRadius(60)
                         .padding(.horizontal, 16)
                 }
-                .navigationDestination(isPresented: $showReview) {
-                    if let p = vm.selectedProduct {
-                        ReviewTopUpView(
-                            saveRecharge:         vm.saveRecharge,
-                            receiverMobileNumber:  vm.receiverMobileNumber,
-                            countryIso:            vm.countryIso,
-                            countryFlagUrl:        vm.countryFlagUrl,
-                            countryName:           vm.countryName,
-                            providerCode:          vm.providerCode,
-                            providerLogoUrl:       vm.providerLogoUrl,
-                            providerName:          vm.providerName,
-                            product:               p,
-                            
-                            mobileNumber:          vm.mobileNumber,
-                            serviceCode:           vm.serviceCode,
-                            iPayCustomerID:        vm.iPayCustomerID
-                        )
-                        .toolbar(.hidden, for: .navigationBar)
-                    }
+                // .navigationDestination(isPresented: $showReview) {
+                //     if let p = vm.selectedProduct {
+                //         ReviewTopUpView(
+                //             saveRecharge:         vm.saveRecharge,
+                //             receiverMobileNumber:  vm.receiverMobileNumber,
+                //             countryIso:            vm.countryIso,
+                //             countryFlagUrl:        vm.countryFlagUrl,
+                //             countryName:           vm.countryName,
+                //             providerCode:          vm.providerCode,
+                //             providerLogoUrl:       vm.providerLogoUrl,
+                //             providerName:          vm.providerName,
+                //             product:               p,
+                
+                //             mobileNumber:          vm.mobileNumber,
+                //             serviceCode:           vm.serviceCode,
+                //             iPayCustomerID:        vm.iPayCustomerID
+                //         )
+                //         .toolbar(.hidden, for: .navigationBar)
+                //     }
+                // }
+                NavigationLink(
+                    destination: Group {
+                        if let p = vm.selectedProduct {
+                            ReviewTopUpView(
+                                saveRecharge:         vm.saveRecharge,
+                                receiverMobileNumber:  vm.receiverMobileNumber,
+                                countryIso:            vm.countryIso,
+                                countryFlagUrl:        vm.countryFlagUrl,
+                                countryName:           vm.countryName,
+                                providerCode:          vm.providerCode,
+                                providerLogoUrl:       vm.providerLogoUrl,
+                                providerName:          vm.providerName,
+                                product:               p,
+                                mobileNumber:          vm.mobileNumber,
+                                serviceCode:           vm.serviceCode,
+                                iPayCustomerID:        vm.iPayCustomerID
+                            )
+                            .navigationBarHidden(true) // Use this for iOS 13+
+                        } else {
+                            EmptyView()
+                        }
+                    },
+                    isActive: $showReview
+                ) {
+                    EmptyView()
                 }
+                .hidden()
                 
                 // // Proceed Button
                 // Button("Proceed") {
@@ -275,7 +324,8 @@ public struct ProductsView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
-                    .ignoresSafeArea()
+                // .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
             .edgesIgnoringSafeArea(.bottom)
