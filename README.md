@@ -8,7 +8,7 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 
 * Initializing and presenting the SDK
 
-* SDK entry points: International Top-Up & Saved Top-Up
+* SDK entry points: International Top-Up & Saved Top-Up & Digital Vouchers
 
 * Parameter reference
 
@@ -72,9 +72,25 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
     }
 ```
 
+### 3.3 Digital Vouchers
+```
+    import iPaySDK
+
+    @objc private func openDigitalVouchers() {
+        let topUpVC = iPaySDK.makeDigitalVouchersController(
+            secretKey: "your_secret_key",
+            serviceCode: "INT_TOP_UP",
+            mobileNumber: "xxxxxxxx",
+            iPayCustomerID: "x"
+        )
+        topUpVC.modalPresentationStyle = .fullScreen
+        present(topUpVC, animated: true)
+    }
+```
+
 ## 4. Parameters Reference
 * secretKey	String: Your API secret key
-* serviceCode String: E.g. "INT_TOP_UP".
+* serviceCode String: E.g. "INT_TOP_UP", "INT_VOUCHER".
 * mobileNumber String: Sender’s phone number.
 * iPayCustomerID String: Your iPay customer identifier.
 * savedBillID String: (only for Saved Top‑up): ID of the transaction to display.

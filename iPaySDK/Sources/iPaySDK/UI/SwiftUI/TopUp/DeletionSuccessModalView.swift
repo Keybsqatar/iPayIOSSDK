@@ -9,11 +9,10 @@ public struct DeletionSuccessModalView: View {
     /// bind to show/hide
     @Binding var isPresented: Bool
     let message: String
+    var onHomepage: (() -> Void)? = nil
     
     public var body: some View {
         ZStack {
-            // Color.black.opacity(0.4)
-            //     .ignoresSafeArea()
             Color.black.opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
             
@@ -37,13 +36,11 @@ public struct DeletionSuccessModalView: View {
                 
                 VStack(spacing: 24) {
                     // GIF banner
-                    if let url = Bundle(for: BundleToken.self)
-                        .url(forResource: "summary", withExtension: "gif") {
+                    if let url = Bundle.module.url(forResource: "summary", withExtension: "gif") {
                         AnimatedImage(url: url)
-                            .indicator(.activity)
-                        // .resizable()
-                            .frame(height: 120) // or whatever height you want
+                            .resizable()
                             .scaledToFit()
+                            .frame(height: 56)
                     }
                     
                     Text(message)
@@ -51,7 +48,10 @@ public struct DeletionSuccessModalView: View {
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
-                    Button(action: { isPresented = false }) {
+                    Button(action: { 
+                        isPresented = false 
+                        onHomepage?()
+                    }) {
                         Text("Homepage")
                             .font(.custom("VodafoneRg-Bold", size: 16))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))

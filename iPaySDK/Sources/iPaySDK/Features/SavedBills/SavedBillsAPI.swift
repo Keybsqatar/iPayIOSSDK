@@ -3,7 +3,8 @@ import Foundation
 public protocol SavedBillsAPIProtocol {
     func getSavedBills(
         mobileNumber: String,
-        iPayCustomerID: String
+        iPayCustomerID: String,
+        serviceCode: String
     ) async throws -> SavedBillsResponse
 }
 
@@ -16,12 +17,14 @@ public class SavedBillsAPI: SavedBillsAPIProtocol {
     
     public func getSavedBills(
         mobileNumber: String,
-        iPayCustomerID: String
+        iPayCustomerID: String,
+        serviceCode: String
     ) async throws -> SavedBillsResponse {
         try await client.request(
             SavedBillsEndpoint.getSavedBills(
                 mobileNumber: mobileNumber,
-                iPayCustomerID: iPayCustomerID
+                iPayCustomerID: iPayCustomerID,
+                serviceCode: serviceCode
             )
         )
     }

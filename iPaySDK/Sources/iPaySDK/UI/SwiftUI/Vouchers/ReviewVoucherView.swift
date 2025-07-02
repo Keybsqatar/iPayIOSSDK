@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct ReviewTopUpView: View {
+public struct ReviewVoucherView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
@@ -84,7 +84,7 @@ public struct ReviewTopUpView: View {
                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
-                    Text("Review Topup Details")
+                    Text("Review Voucher Details")
                         .font(.custom("VodafoneRg-Bold", size: 20))
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -96,63 +96,30 @@ public struct ReviewTopUpView: View {
                 
                 VStack(spacing: 32) {
                     // Summary card
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("You’ll Pay")
-                                .font(.custom("VodafoneRg-Regular", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            HStack(spacing: 4) {
-                                Image("flag_qa", bundle: .module)
-                                    .resizable()
-                                    .frame(width: 16, height: 16)
-                                    .cornerRadius(16)
-                                
-                                Text("\(product.sendCurrencyIso) \(product.sendValue)")
-                                    .font(.custom("VodafoneRg-Bold", size: 24))
-                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                    .multilineTextAlignment(.leading)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        
-                        Text("=")
-                            .font(.custom("VodafoneRg-Bold", size: 24))
+                    HStack(spacing: 0) {
+                        Text("You’ll Pay")
+                            .font(.custom("VodafoneRg-Bold", size: 16))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                             .multilineTextAlignment(.leading)
                         
-                        VStack(alignment: .trailing, spacing: 4) {
-                            Text("You’ll Get")
-                                .font(.custom("VodafoneRg-Regular", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                            
-                            HStack {
-                                SVGImageView(url: countryFlagUrl)
-                                    .frame(width: 16, height: 16)
-                                    .scaledToFit()
-                                    .cornerRadius(16)
-                                
-                                Text("\(product.displayText)")
-                                    .font(.custom("VodafoneRg-Bold", size: 24))
-                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                    .multilineTextAlignment(.leading)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
+                        Spacer()
+                        
+                        Text("\(product.sendCurrencyIso) \(product.sendValue)")
+                            .font(.custom("VodafoneRg-Bold", size: 24))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .multilineTextAlignment(.leading)
                     }
                     .padding(.all, 16)
                     .background(Color("keyBs_bg_pink_1", bundle: .module))
                     .cornerRadius(8)
                     
                     // Details card
-                    VStack(spacing: 12) {
-                        detailRow(label: "Country",      value: countryName,        svgIconURL: countryFlagUrl)
-                        detailRow(label: "Mobile Number",value: receiverMobileNumber)
-                        detailRow(label: "Operator Name",value: providerName,       logoIconURL: providerLogoUrl)
+                    VStack(spacing: 24) {
+                        detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
+                        detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
+                        DashedDivider()
+                        detailRow(label: "Voucher Name",value: product.displayText)
+                        detailRow(label: "Voucher Amount",value: "$ \(product.displayText.filter { $0.isNumber })")
                     }
                     .padding(.all, 16)
                     .background(
@@ -190,7 +157,7 @@ public struct ReviewTopUpView: View {
                     }
                     showOtp = true
                 }) {
-                    Text("Proceed for Payment")
+                    Text("Pay")
                         .font(.custom("VodafoneRg-Bold", size: 16))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.leading)
@@ -203,23 +170,6 @@ public struct ReviewTopUpView: View {
                 }
                 .disabled(disabledProceed)
                 NavigationLink(
-                    // destination: Group {
-                    //     OtpView(
-                    //         saveRecharge: saveRecharge,
-                    //         receiverMobileNumber: receiverMobileNumber,
-                    //         countryIso: countryIso,
-                    //         countryFlagUrl: countryFlagUrl,
-                    //         countryName: countryName,
-                    //         providerCode: providerCode,
-                    //         providerLogoUrl: providerLogoUrl,
-                    //         providerName: providerName,
-                    //         product: product,
-                    //         mobileNumber: mobileNumber,
-                    //         serviceCode: serviceCode,
-                    //         iPayCustomerID: iPayCustomerID
-                    //     )
-                    //     .navigationBarHidden(true)
-                    // },
                     destination: Group {
                         if let otpVM = otpVM {
                             OtpView(vm: otpVM)
@@ -287,53 +237,70 @@ public struct ReviewTopUpView: View {
     }
 }
 
-// #Preview {
-//     ReviewTopUpView(
-//         saveRecharge: "1",
-//         receiverMobileNumber: "45456456",
-//         countryIso: "AE",
-//         countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//         countryName: "United Arab Emirates",
-//         providerCode: "E6AE",
-//         providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//         providerName: "DU UAE",
-//         product: ProductItem(
-//             skuCode: "E6AEAE12938",
-//             providerCode: "E6AE",
-//             countryIso: "AE",
-//             displayText: "AED 20.00",
-//             sendValue: "28",
-//             sendCurrencyIso: "QR"
-//         ),
-//         mobileNumber: "88776630",
-//         serviceCode: "INT_TOP_UP",
-//         iPayCustomerID: "13"
-//     )
-// }
+private struct DashedDivider: View {
+    var body: some View {
+        GeometryReader { geo in
+            Path { p in
+                p.move(to: .zero)
+                p.addLine(to: CGPoint(x: geo.size.width, y: 0))
+            }
+            .stroke(style: StrokeStyle(
+                lineWidth: 1,
+                dash: [6, 4]
+            ))
+            .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module))
+        }
+        .frame(height: 1)
+    }
+}
 
-// struct ReviewTopUpView_Previews: PreviewProvider {
-//     static var previews: some View {
-//         ReviewTopUpView(
-//             saveRecharge: "1",
-//             receiverMobileNumber: "45456456",
-//             countryIso: "AE",
-//             countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//             countryName: "United Arab Emirates",
-//             providerCode: "E6AE",
-//             providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//             providerName: "DU UAE",
-//             product: ProductItem(
-//                 skuCode: "E6AEAE12938",
-//                 providerCode: "E6AE",
-//                 countryIso: "AE",
-//                 displayText: "AED 20.00",
-//                 sendValue: "28",
-//                 sendCurrencyIso: "QR"
-//             ),
-//             mobileNumber: "88776630",
-//             serviceCode: "INT_TOP_UP",
-//             iPayCustomerID: "13"
-//         )
-//         .previewLayout(.sizeThatFits)
-//     }
-// }
+//#Preview {
+//    ReviewVoucherView(
+//        saveRecharge: "1",
+//        receiverMobileNumber: "45456456",
+//        countryIso: "AE",
+//        countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
+//        countryName: "United Arab Emirates",
+//        providerCode: "E6AE",
+//        providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
+//        providerName: "DU UAE",
+//        product: ProductItem(
+//            skuCode: "E6AEAE12938",
+//            providerCode: "E6AE",
+//            countryIso: "AE",
+//            displayText: "AED 20.00",
+//            sendValue: "28",
+//            sendCurrencyIso: "QR"
+//        ),
+//        mobileNumber: "88776630",
+//        serviceCode: "INT_TOP_UP",
+//        iPayCustomerID: "13"
+//    )
+//}
+//
+//struct ReviewVoucherView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ReviewVoucherView(
+//            saveRecharge: "1",
+//            receiverMobileNumber: "45456456",
+//            countryIso: "AE",
+//            countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
+//            countryName: "United Arab Emirates",
+//            providerCode: "E6AE",
+//            providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
+//            providerName: "DU UAE",
+//            product: ProductItem(
+//                skuCode: "E6AEAE12938",
+//                providerCode: "E6AE",
+//                countryIso: "AE",
+//                displayText: "AED 20.00",
+//                sendValue: "28",
+//                sendCurrencyIso: "QR"
+//            ),
+//            mobileNumber: "88776630",
+//            serviceCode: "INT_TOP_UP",
+//            iPayCustomerID: "13"
+//        )
+//        .previewLayout(.sizeThatFits)
+//    }
+//}

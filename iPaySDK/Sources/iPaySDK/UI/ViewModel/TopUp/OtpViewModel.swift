@@ -15,11 +15,13 @@ public class OtpViewModel: ObservableObject {
     
     
     @Published public var completedTransaction: CheckTransaction?
+    @Published public var textPin: String = ""
+    @Published public var valuePin: String = ""
+    
     @Published public var otpError: String?
     @Published public var isSubmitting: Bool = false
     
-    
-    
+    @Published public var otpDisabled: Bool = true
     
     // ── Input state (injection) ─────────────────────────────────
     public let saveRecharge: String
@@ -68,6 +70,8 @@ public class OtpViewModel: ObservableObject {
         isLoadingIPayOtp  = true
         iPayOtpError  = nil
         defer { isLoadingIPayOtp = false }
+                
+        otpDisabled = true
         
         do {
             let resp = try await IPayOtpRepository()
@@ -79,17 +83,19 @@ public class OtpViewModel: ObservableObject {
                     productSku:     product.skuCode,
                     saveRecharge:   saveRecharge
                 )
+            
             if(resp.status == "SUCCESS") {
                 transactionId = resp.transactionId
                 showMsgImageType = 0
                 iPayOtpError = "OTP sent"
                 
-                print("Received OTP: 1234")
+                otpDisabled = false
             }else{
                 showMsgImageType = 2
                 iPayOtpError = resp.message ?? "Unknown error occurred"
             }
         } catch let netErr as NetworkError {
+            otpDisabled = false
             showMsgImageType = 2
             // unwrap your NetworkError enum
             switch netErr {
@@ -111,13 +117,14 @@ public class OtpViewModel: ObservableObject {
                 iPayOtpError = err.localizedDescription
             }
         } catch {
+            otpDisabled = false
             showMsgImageType = 2
             iPayOtpError = error.localizedDescription
         }
     }
     
-    public func submitOtpAndPoll() async {
-        guard code.count == 4,
+    public func submitOtpAndPoll(for otbCode: String) async {
+        guard otbCode.count == 4,
               let txId = transactionId  // from your earlier iPayOtp call
         else { return }
         
@@ -125,26 +132,29 @@ public class OtpViewModel: ObservableObject {
         otpError     = nil
         defer { isSubmitting = false }
         
+        otpDisabled = true
+        
         do {
             showMsgImageType = 1
             
             let orderRepo = IPayOrderRepository()
             
             let orderResp = try await orderRepo.placeOrder(
-                otp: code,
+                otp: otbCode,
                 transactionId: String(txId)
             )
             
             if orderResp.status != "SUCCESS" {
                 otpError = orderResp.message ?? "Unknown error occurred"
                 showMsgImageType = 2
+                otpDisabled = false
                 return
             }
             
             let reference = orderResp.transactionReference!
             
             for _ in 1...3 {
-                print("Polling at: \(Date())")
+//                print("Polling at: \(Date())")
                 // try await Task.sleep(for: .seconds(5))
                 try await Task.sleep(nanoseconds: 5_000_000_000)
                 
@@ -153,12 +163,22 @@ public class OtpViewModel: ObservableObject {
                 let checkResp = try await checkRepo.checkTransaction(reference: reference)
                 if checkResp.status == "SUCCESS" {
                     if checkResp.transaction.status == "SUCCESS" {
+                        let receiptParamsString = checkResp.transaction.reciptParams
+                        if let data = receiptParamsString.data(using: .utf8),
+                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                           let (key, value) = json.first {
+                            textPin = key
+                            valuePin = "\(value)"
+                        }
+                        
                         completedTransaction = checkResp.transaction
+
                         showMsgImageType = 0
                         return
                     } else if checkResp.transaction.status == "FAILED" {
                         showMsgImageType = 2
                         otpError = checkResp.transaction.statusMessage
+                        otpDisabled = false
                         return
                     }
                 }
@@ -167,9 +187,12 @@ public class OtpViewModel: ObservableObject {
             // 3) if we get here, no SUCCESS after 3 tries
             showMsgImageType = 2
             otpError = "Transaction failed"
+            otpDisabled = false
             
         } catch let netErr as NetworkError {
+            
             showMsgImageType = 2
+            otpDisabled = false
             // unwrap your NetworkError enum
             switch netErr {
             case .apiError(_, let apiErr):
@@ -186,6 +209,7 @@ public class OtpViewModel: ObservableObject {
                 otpError = err.localizedDescription
             }
         } catch {
+            otpDisabled = false
             showMsgImageType = 2
             otpError = error.localizedDescription
         }

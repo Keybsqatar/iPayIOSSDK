@@ -1,202 +1,202 @@
-// import Foundation
-// import Combine     // ← add this
+import Foundation
+import Combine     // ← add this
 
 
-// @MainActor
-// public class VouchersViewModel: ObservableObject {
+@MainActor
+public class VouchersViewModel: ObservableObject {
     
-//     // ── Countries ────────────────────────────────────────────────
-//     @Published public var countries: [CountryItem]   = []
-//     @Published public var filteredCountries: [CountryItem] = []
-//     @Published public var isLoadingCountries: Bool  = false
-//     @Published public var countriesError: String?    = nil
-//     @Published public var mobileMaxLength: Int = 0
-//     @Published public var mobileMinLength: Int = 0
+    // ── Countries ────────────────────────────────────────────────
+    @Published public var countries: [CountryItem]   = []
+    @Published public var filteredCountries: [CountryItem] = []
+    @Published public var isLoadingCountries: Bool  = false
+    @Published public var countriesError: String?    = nil
+    @Published public var mobileMaxLength: Int = 0
+    @Published public var mobileMinLength: Int = 0
 
-//     // ── Providers ───────────────────────────────────────────────
-//     @Published public var providers: [ProviderItem] = []
-//     @Published public var isLoadingProviders: Bool  = false
-//     @Published public var providersError: String?   = nil
+    // ── Providers ───────────────────────────────────────────────
+    @Published public var providers: [ProviderItem] = []
+    @Published public var isLoadingProviders: Bool  = false
+    @Published public var providersError: String?   = nil
     
-//     // ── Saved Bills ──────────────────────────────────────────
-//     @Published public var savedBills:          [SavedBillsItem] = []
-//     @Published public var isLoadingSavedBills: Bool = false
-//     @Published public var savedBillsError:     String?
+    // ── Saved Bills ──────────────────────────────────────────
+    @Published public var savedBills:          [SavedBillsItem] = []
+    @Published public var isLoadingSavedBills: Bool = false
+    @Published public var savedBillsError:     String?
     
-//     // ── Delete Bill ──────────────────────────────────────────
-//     @Published public var isDeletingBill: Bool = false
-//     @Published public var deleteBillError: String?
-//     private let deleteRepo = DeleteBillRepository()
-//     @Published public var deleteSuccessMessage: String? = nil
+    // ── Delete Bill ──────────────────────────────────────────
+    @Published public var isDeletingBill: Bool = false
+    @Published public var deleteBillError: String?
+    private let deleteRepo = DeleteBillRepository()
+    @Published public var deleteSuccessMessage: String? = nil
     
     
-//     // ── Input state (injection) ─────────────────────────────────
-//     @Published public var serviceCode:  String
-//     @Published public var mobileNumber: String
-//     @Published public var iPayCustomerID: String
+    // ── Input state (injection) ─────────────────────────────────
+    @Published public var serviceCode:  String
+    @Published public var mobileNumber: String
+    @Published public var iPayCustomerID: String
     
-//     public init(serviceCode: String, mobileNumber: String, iPayCustomerID: String) {
-//         self.serviceCode  = serviceCode
-//         self.mobileNumber = mobileNumber
-//         self.iPayCustomerID = iPayCustomerID
-//     }
+    public init(serviceCode: String, mobileNumber: String, iPayCustomerID: String) {
+        self.serviceCode  = serviceCode
+        self.mobileNumber = mobileNumber
+        self.iPayCustomerID = iPayCustomerID
+    }
     
-//     // MARK: – Countries
-//     public func loadCountries() async {
-//         isLoadingCountries = true
-//         countriesError     = nil
-//         defer { isLoadingCountries = false }
+    // MARK: – Countries
+    public func loadCountries() async {
+        isLoadingCountries = true
+        countriesError     = nil
+        defer { isLoadingCountries = false }
         
-//         do {
-//             let repo  = CountriesRepository()
-//             let items = try await repo.getCountries(
-//                 mobileNumber: mobileNumber,
-//                 serviceCode:  serviceCode
-//             )
-//             countries          = items
-//             filteredCountries  = items
+        do {
+            let repo  = CountriesRepository()
+            let items = try await repo.getCountries(
+                mobileNumber: mobileNumber,
+                serviceCode:  serviceCode
+            )
+            countries          = items
+            filteredCountries  = items
 
-//         } catch let netErr as NetworkError {
-//             // unwrap your NetworkError enum
-//             switch netErr {
-//             case .apiError(_, let apiErr):
-//                 // server-side error → show its human message
-//                 countriesError = apiErr.userMessage()
+        } catch let netErr as NetworkError {
+            // unwrap your NetworkError enum
+            switch netErr {
+            case .apiError(_, let apiErr):
+                // server-side error → show its human message
+                countriesError = apiErr.userMessage()
                 
-//             case .decodingError(let decodeErr):
-//                 countriesError = "Decoding error: \(decodeErr.localizedDescription)"
+            case .decodingError(let decodeErr):
+                countriesError = "Decoding error: \(decodeErr.localizedDescription)"
                 
-//             case .invalidURL, .invalidResponse:
-//                 countriesError = "Bad network configuration"
+            case .invalidURL, .invalidResponse:
+                countriesError = "Bad network configuration"
                 
-//             case .underlying(let err):
-//                 countriesError = err.localizedDescription
-//             }
-//         } catch {
-//             countriesError = error.localizedDescription
-//         }
-//     }
-//     public func filterCountries(by text: String) {
-//         guard !text.isEmpty else {
-//             filteredCountries = countries
-//             return
-//         }
-//         filteredCountries = countries.filter {
-//             $0.name.localizedCaseInsensitiveContains(text)
-//         }
-//     }
+            case .underlying(let err):
+                countriesError = err.localizedDescription
+            }
+        } catch {
+            countriesError = error.localizedDescription
+        }
+    }
+    public func filterCountries(by text: String) {
+        guard !text.isEmpty else {
+            filteredCountries = countries
+            return
+        }
+        filteredCountries = countries.filter {
+            $0.name.localizedCaseInsensitiveContains(text)
+        }
+    }
     
-//     // MARK: – Providers
-//     public func loadProviders(for countryIso: String) async {
-//         isLoadingProviders = true
-//         providersError     = nil
-//         defer { isLoadingProviders = false }
+    // MARK: – Providers
+    public func loadProviders(for countryIso: String) async {
+        isLoadingProviders = true
+        providersError     = nil
+        defer { isLoadingProviders = false }
         
-//         do {
-//             let repo  = ProvidersRepository()
-//             let items = try await repo.getProviders(
-//                 mobileNumber:  mobileNumber,
-//                 serviceCode:   serviceCode,
-//                 countryCode:   countryIso
-//             )
-//             providers = items
-//         } catch let netErr as NetworkError {
-//             // unwrap your NetworkError enum
-//             switch netErr {
-//             case .apiError(_, let apiErr):
-//                 // server-side error → show its human message
-//                 providersError = apiErr.userMessage()
+        do {
+            let repo  = ProvidersRepository()
+            let items = try await repo.getProviders(
+                mobileNumber:  mobileNumber,
+                serviceCode:   serviceCode,
+                countryCode:   countryIso
+            )
+            providers = items
+        } catch let netErr as NetworkError {
+            // unwrap your NetworkError enum
+            switch netErr {
+            case .apiError(_, let apiErr):
+                // server-side error → show its human message
+                providersError = apiErr.userMessage()
                 
-//             case .decodingError(let decodeErr):
-//                 providersError = "Decoding error: \(decodeErr.localizedDescription)"
+            case .decodingError(let decodeErr):
+                providersError = "Decoding error: \(decodeErr.localizedDescription)"
                 
-//             case .invalidURL, .invalidResponse:
-//                 providersError = "Bad network configuration"
+            case .invalidURL, .invalidResponse:
+                providersError = "Bad network configuration"
                 
-//             case .underlying(let err):
-//                 providersError = err.localizedDescription
-//             }
-//         } catch {
-//             providersError = error.localizedDescription
-//         }
-//     }
+            case .underlying(let err):
+                providersError = err.localizedDescription
+            }
+        } catch {
+            providersError = error.localizedDescription
+        }
+    }
     
-//     // MARK: – Saved Bills
-//     public func loadSavedBills() async {
-//         isLoadingSavedBills = true
-//         savedBillsError     = nil
-//         defer { isLoadingSavedBills = false }
+    // MARK: – Saved Bills
+    public func loadSavedBills() async {
+        isLoadingSavedBills = true
+        savedBillsError     = nil
+        defer { isLoadingSavedBills = false }
         
-//         do {
-//             let items = try await SavedBillsRepository()
-//                 .getSavedBills(
-//                     mobileNumber: mobileNumber,
-//                     iPayCustomerID: iPayCustomerID
-//                 )
-//             savedBills = items
+        do {
+            let items = try await SavedBillsRepository()
+                .getSavedBills(
+                    mobileNumber: mobileNumber,
+                    iPayCustomerID: iPayCustomerID,
+                    serviceCode: serviceCode
+                )
             
-//         } catch let netErr as NetworkError {
-//             // unwrap your NetworkError enum
-//             switch netErr {
-//             case .apiError(_, let apiErr):
-//                 // server-side error → show its human message
-//                 savedBillsError = apiErr.userMessage()
+//            print("Fetched saved bills: \(items)")
+            
+            self.savedBills = items
+            
+        } catch let netErr as NetworkError {
+            // unwrap your NetworkError enum
+            switch netErr {
+            case .apiError(_, let apiErr):
+                // server-side error → show its human message
+                savedBillsError = apiErr.userMessage()
                 
-//             case .decodingError(let decodeErr):
-//                 savedBillsError = "Decoding error: \(decodeErr.localizedDescription)"
+            case .decodingError(let decodeErr):
+                savedBillsError = "Decoding error: \(decodeErr.localizedDescription)"
                 
-//             case .invalidURL, .invalidResponse:
-//                 savedBillsError = "Bad network configuration"
+            case .invalidURL, .invalidResponse:
+                savedBillsError = "Bad network configuration"
                 
-//             case .underlying(let err):
-//                 savedBillsError = err.localizedDescription
-//             }
-//         } catch {
-//             savedBillsError = error.localizedDescription
-//         }
-//     }
+            case .underlying(let err):
+                savedBillsError = err.localizedDescription
+            }
+        } catch {
+            savedBillsError = error.localizedDescription
+        }
+    }
     
-//     // MARK: – Delete Bill
-//     public func deleteSavedBill(_ bill: SavedBillsItem) async {
-//         isDeletingBill   = true
-//         deleteBillError  = nil
-//         deleteSuccessMessage = nil
-//         defer { isDeletingBill = false }
+    // MARK: – Delete Bill
+    public func deleteSavedBill(_ bill: SavedBillsItem) async {
+        isDeletingBill   = true
+        deleteBillError  = nil
+        deleteSuccessMessage = nil
+        defer { isDeletingBill = false }
         
-//         do {
-//             //            let _ = try await deleteRepo.deleteBill(id: bill.id)
-//             //            // on success, remove locally
-//             //            savedBills.removeAll { $0.id == bill.id }
+        do {
+            let resp = try await DeleteBillRepository()
+                .deleteBill(id: bill.id)
             
-//             let resp = try await DeleteBillRepository()
-//                 .deleteBill(id: bill.id)
-            
-//             if resp.status == "SUCCESS" {
-//                 // remove locally
-//                 savedBills.removeAll { $0.id == bill.id }
+            if resp.status == "SUCCESS" {
+                // remove locally
+                savedBills.removeAll { $0.id == bill.id }
                 
-//                 deleteSuccessMessage = resp.message
-//             }else {
-//                 deleteBillError = resp.message
-//             }
-//         } catch let netErr as NetworkError {
-//             // unwrap your NetworkError enum
-//             switch netErr {
-//             case .apiError(_, let apiErr):
-//                 // server-side error → show its human message
-//                 deleteBillError = apiErr.userMessage()
+                deleteSuccessMessage = resp.message
+            }else {
+                deleteBillError = resp.message
+            }
+        } catch let netErr as NetworkError {
+            // unwrap your NetworkError enum
+            switch netErr {
+            case .apiError(_, let apiErr):
+                // server-side error → show its human message
+                deleteBillError = apiErr.userMessage()
                 
-//             case .decodingError(let decodeErr):
-//                 deleteBillError = "Decoding error: \(decodeErr.localizedDescription)"
+            case .decodingError(let decodeErr):
+                deleteBillError = "Decoding error: \(decodeErr.localizedDescription)"
                 
-//             case .invalidURL, .invalidResponse:
-//                 deleteBillError = "Bad network configuration"
+            case .invalidURL, .invalidResponse:
+                deleteBillError = "Bad network configuration"
                 
-//             case .underlying(let err):
-//                 deleteBillError = err.localizedDescription
-//             }
-//         }catch {
-//             deleteBillError = error.localizedDescription
-//         }
-//     }
-// }
+            case .underlying(let err):
+                deleteBillError = err.localizedDescription
+            }
+        }catch {
+            deleteBillError = error.localizedDescription
+        }
+    }
+}

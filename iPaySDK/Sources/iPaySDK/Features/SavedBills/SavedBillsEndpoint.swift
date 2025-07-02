@@ -1,7 +1,7 @@
 import Foundation
 
 enum SavedBillsEndpoint: Endpoint {
-    case getSavedBills(mobileNumber: String, iPayCustomerID: String)
+    case getSavedBills(mobileNumber: String, iPayCustomerID: String, serviceCode: String)
     
     var path: String { "api/getSavedBills" }
     var method: HTTPMethod { .post }
@@ -10,10 +10,11 @@ enum SavedBillsEndpoint: Endpoint {
     
     var body: Data? {
         switch self {
-        case let .getSavedBills(mobile, customer):
+        case let .getSavedBills(mobile, customer, serviceCode):
             let req = SavedBillsRequest(
                 mobileNumber: mobile,
-                iPayCustomerID: customer
+                iPayCustomerID: customer,
+                serviceCode: serviceCode
             )
             return try? JSONEncoder().encode(req)
         }

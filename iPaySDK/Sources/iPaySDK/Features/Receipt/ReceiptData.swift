@@ -8,6 +8,13 @@ public struct ReceiptData {
   public let number: String
   public let operatorName: String
   public let refId: String
-//  public let textPin: String?
-//  public let valuePin: String?
+
+  public let countryName: String
+  public let countryFlagUrl: URL
+  public let providerName: String
+  public let providerLogoUrl: URL
+  public let product: ProductItem
+    
+  public let textPin: String
+  public let valuePin: String
 }

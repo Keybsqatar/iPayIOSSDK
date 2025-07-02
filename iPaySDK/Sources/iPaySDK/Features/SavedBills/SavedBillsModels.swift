@@ -4,6 +4,7 @@ import Foundation
 public struct SavedBillsRequest: Encodable {
     public let mobileNumber:    String
     public let iPayCustomerID:  String
+    public let serviceCode:     String
 }
 
 // Top-level response
@@ -30,4 +31,7 @@ public struct SavedBillsItem: Identifiable, Decodable, Sendable {
     public let serviceCode:      String
     public let amount:           String
     public let currency:         String
+    public let dateTime:         String
+    public let billingRef:       String?
+    public let reciptParams:     String?
 }

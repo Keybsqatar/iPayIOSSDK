@@ -72,35 +72,35 @@ public struct iPaySDK {
         return hosting!
     }
     
-    //  @MainActor
-    //  public static func makeDigitalVouchersController(
-    //      secretKey: String,
-    //      serviceCode: String,
-    //      mobileNumber: String,
-    //      iPayCustomerID: String
-    //  ) -> UIViewController {
-    //      // 1) Fonts & networking
-    //      FontLoader.registerFonts()
-    //      HTTPClient.shared.initialize(secretKey: secretKey)
+      @MainActor
+      public static func makeDigitalVouchersController(
+          secretKey: String,
+          serviceCode: String,
+          mobileNumber: String,
+          iPayCustomerID: String
+      ) -> UIViewController {
+          // 1) Fonts & networking
+          FontLoader.registerFonts()
+          HTTPClient.shared.initialize(secretKey: secretKey)
         
-    //      // 2) Coordinator for dismissal
-    //      var hosting: UIHostingController<AnyView>? = nil
-    //      let coordinator = SDKCoordinator {
-    //          hosting?.dismiss(animated: true)
-    //      }
+          // 2) Coordinator for dismissal
+          var hosting: UIHostingController<AnyView>? = nil
+          let coordinator = SDKCoordinator {
+              hosting?.dismiss(animated: true)
+          }
         
-    //      // 3) Build the SwiftUI view
-    //      let content = AnyView(
-    //         VouchersView(
-    //              mobileNumber: mobileNumber,
-    //              serviceCode:  serviceCode,
-    //              iPayCustomerID: iPayCustomerID
-    //          )
-    //          .environmentObject(coordinator)
-    //      )
+          // 3) Build the SwiftUI view
+          let content = AnyView(
+             VouchersView(
+                  mobileNumber: mobileNumber,
+                  serviceCode:  serviceCode,
+                  iPayCustomerID: iPayCustomerID
+              )
+              .environmentObject(coordinator)
+          )
         
-    //      // 4) Wrap and return
-    //      hosting = UIHostingController(rootView: content)
-    //      return hosting!
-    //  }
+          // 4) Wrap and return
+          hosting = UIHostingController(rootView: content)
+          return hosting!
+      }
 }

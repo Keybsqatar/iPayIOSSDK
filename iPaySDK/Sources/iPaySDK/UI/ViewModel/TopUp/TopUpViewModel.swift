@@ -131,9 +131,11 @@ public class TopUpViewModel: ObservableObject {
             let items = try await SavedBillsRepository()
                 .getSavedBills(
                     mobileNumber: mobileNumber,
-                    iPayCustomerID: iPayCustomerID
+                    iPayCustomerID: iPayCustomerID,
+                    serviceCode: serviceCode
                 )
-            savedBills = items
+            
+            self.savedBills = items
             
         } catch let netErr as NetworkError {
             // unwrap your NetworkError enum
@@ -164,10 +166,6 @@ public class TopUpViewModel: ObservableObject {
         defer { isDeletingBill = false }
         
         do {
-            //            let _ = try await deleteRepo.deleteBill(id: bill.id)
-            //            // on success, remove locally
-            //            savedBills.removeAll { $0.id == bill.id }
-            
             let resp = try await DeleteBillRepository()
                 .deleteBill(id: bill.id)
             
