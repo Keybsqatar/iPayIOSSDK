@@ -79,7 +79,7 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
     @objc private func openDigitalVouchers() {
         let vouchersVC = iPaySDK.makeDigitalVouchersController(
             secretKey: "your_secret_key",
-            serviceCode: "INT_TOP_UP",
+            serviceCode: "INT_VOUCHER",
             mobileNumber: "xxxxxxxx",
             iPayCustomerID: "x"
         )
