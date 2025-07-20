@@ -30,5 +30,7 @@ public struct CheckTransaction: Decodable, Sendable {
     public let status:           String
     public let statusMessage:    String
     public let reciptParams:     String
+    public let descriptionMarkdown:     String
+    public let readMoreMarkdown:     String
     public let dateTime:         String
 }

@@ -16,7 +16,7 @@ private struct ShareSheet: UIViewControllerRepresentable {
 
 private class BundleToken {}
 
-public struct ReceiptModalView: View {
+public struct UtilityReceiptModalView: View {
     @EnvironmentObject private var coord: SDKCoordinator
     
     @Binding var isPresented: Bool
@@ -43,10 +43,10 @@ public struct ReceiptModalView: View {
         Amount: \(data.amount)
         Date:   \(data.dateTime)
         Type:   \(data.type)
-        Number: \(data.number)
-        Operator: \(data.operatorName)
+        Company: \(data.operatorName)
         Ref ID: \(data.refId)
         """
+        //        Number: \(data.number)
         
         if !data.textPin.isEmpty, !data.valuePin.isEmpty {
             details += "\n\(data.textPin): \(data.valuePin)"
@@ -201,17 +201,6 @@ public struct ReceiptModalView: View {
         snapshotImage = renderer.image { _ in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         }
-        
-        // let hostVC = UIHostingController(rootView: cardContent)
-        // let view = hostVC.view!
-        // let targetSize = view.intrinsicContentSize
-        // view.bounds = CGRect(origin: .zero, size: targetSize)
-        // view.backgroundColor = .clear
-        
-        // let renderer = UIGraphicsImageRenderer(size: targetSize)
-        // snapshotImage = renderer.image { _ in
-        //     view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-        // }
     }
     
     /// The card content without dim background
@@ -243,8 +232,8 @@ public struct ReceiptModalView: View {
             // Details card
             VStack(spacing: 24) {
                 detailRow(label: "Type",     value: data.type)
-                detailRow(label: "Number",   value: data.number)
-                detailRow(label: "Operator", value: data.operatorName)
+                //                detailRow(label: "Number",   value: data.number)
+                detailRow(label: "Company", value: data.operatorName)
                 
                 Divider()
                     .overlay(Color("keyBs_bg_gray_3", bundle: .module))
@@ -329,36 +318,3 @@ public struct ReceiptModalView: View {
     }
 }
 
-
-//#Preview {
-//    ReceiptModalView(
-//        isPresented: .constant(true),
-//        data: ReceiptData(
-//            amount: "QR 300",
-//            dateTime: "15 Jul 2024 7:24 AM",
-//            type: "Top up - IMT",
-//            number: "92 303 4334334",
-//            operatorName: "Jazz",
-//            refId: "1698760015123970"
-//        )
-//    )
-//}
-//
-//struct ReceiptModalView_Previews: PreviewProvider {
-//    @State static var isPresented = true
-//
-//    static var previews: some View {
-//        ReceiptModalView(
-//            isPresented: $isPresented,
-//            data: ReceiptData(
-//                amount: "QR 300",
-//                dateTime: "15 Jul 2024 7:24 AM",
-//                type: "Top up - IMT",
-//                number: "92 303 4334334",
-//                operatorName: "Jazz",
-//                refId: "1698760015123970"
-//            )
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

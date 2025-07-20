@@ -8,7 +8,7 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 
 * Initializing and presenting the SDK
 
-* SDK entry points: International Top-Up & Saved Top-Up & Digital Vouchers
+* SDK entry points: International Top-Up & Saved Top-Up & Digital Vouchers & Utility Payment.
 
 * Parameter reference
 
@@ -39,19 +39,19 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 ```
 
 ## 3. SDK Entry Points
-### 3.1 International Top-Up
+### 3.1 Start Service Type
 ```
     import iPaySDK
 
-    @objc private func openTopUp() {
-        let topUpVC = iPaySDK.makeTopUpController(
+    @objc private func startServiceType() {
+        let serviceTypeVC = iPaySDK.startServiceTypeController(
             secretKey: "your_secret_key",
-            serviceCode: "INT_TOP_UP",
+            serviceCode: "xxx", // "INT_TOP_UP", "INT_VOUCHER", "INT_UTIL_PAYMENT"
             mobileNumber: "xxxxxxxx",
             iPayCustomerID: "x"
         )
-        topUpVC.modalPresentationStyle = .fullScreen
-        present(topUpVC, animated: true)
+        serviceTypeVC.modalPresentationStyle = .fullScreen
+        present(serviceTypeVC, animated: true)
     }
 ```
 
@@ -60,7 +60,7 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
     import iPaySDK
 
     @objc private func openSaved() {
-        let savedVC = iPaySDK.makeOpenSavedController(
+        let savedVC = iPaySDK.openSavedTopUpController(
             secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
             mobileNumber: "xxxxxxxx",
@@ -72,25 +72,9 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
     }
 ```
 
-### 3.3 Digital Vouchers
-```
-    import iPaySDK
-
-    @objc private func openDigitalVouchers() {
-        let vouchersVC = iPaySDK.makeDigitalVouchersController(
-            secretKey: "your_secret_key",
-            serviceCode: "INT_VOUCHER",
-            mobileNumber: "xxxxxxxx",
-            iPayCustomerID: "x"
-        )
-        vouchersVC.modalPresentationStyle = .fullScreen
-        present(vouchersVC, animated: true)
-    }
-```
-
 ## 4. Parameters Reference
 * secretKey	String: Your API secret key
-* serviceCode String: E.g. "INT_TOP_UP", "INT_VOUCHER".
+* serviceCode: like "INT_TOP_UP", "INT_VOUCHER", "INT_UTIL_PAYMENT".
 * mobileNumber String: Sender’s phone number.
 * iPayCustomerID String: Your iPay customer identifier.
 * savedBillID String: (only for Saved Top‑up): ID of the transaction to display.

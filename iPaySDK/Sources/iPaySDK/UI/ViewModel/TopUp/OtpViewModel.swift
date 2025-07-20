@@ -25,41 +25,62 @@ public class OtpViewModel: ObservableObject {
     
     // ── Input state (injection) ─────────────────────────────────
     public let saveRecharge: String
-    public let receiverMobileNumber: String
+    
     public let countryIso: String
     public let countryFlagUrl: URL
     public let countryName: String
+    
     public let providerCode: String
     public let providerLogoUrl: URL
     public let providerName: String
+    
     public let product: ProductItem
+    public let billAmount: String
+    
+    public let receiverMobileNumber: String
+    public let settingsData: String
+    
     public let mobileNumber: String
     public let serviceCode: String
     public let iPayCustomerID: String
     
     public init(
         saveRecharge: String,
-        receiverMobileNumber: String,
+        
         countryIso: String,
         countryFlagUrl: URL,
         countryName: String,
+        
         providerCode: String,
         providerLogoUrl: URL,
         providerName: String,
+        
         product: ProductItem,
+        billAmount: String,
+        
+        receiverMobileNumber: String,
+        settingsData: String,
+        
         mobileNumber: String,
         serviceCode: String,
         iPayCustomerID: String
     ) {
         self.saveRecharge = saveRecharge
-        self.receiverMobileNumber = receiverMobileNumber
+
         self.countryIso = countryIso
         self.countryFlagUrl = countryFlagUrl
         self.countryName = countryName
+        
         self.providerCode = providerCode
         self.providerLogoUrl = providerLogoUrl
         self.providerName = providerName
+        
         self.product = product
+        self.billAmount = billAmount
+        
+        self.receiverMobileNumber = receiverMobileNumber
+        self.settingsData = settingsData
+        
         self.mobileNumber = mobileNumber
         self.serviceCode = serviceCode
         self.iPayCustomerID = iPayCustomerID
@@ -81,7 +102,9 @@ public class OtpViewModel: ObservableObject {
                     targetNumber:   receiverMobileNumber,
                     serviceCode:    serviceCode,
                     productSku:     product.skuCode,
-                    saveRecharge:   saveRecharge
+                    saveRecharge:   saveRecharge,
+                    billAmount: billAmount,
+                    settingsData:   settingsData
                 )
             
             if(resp.status == "SUCCESS") {
@@ -161,6 +184,7 @@ public class OtpViewModel: ObservableObject {
                 let checkRepo = CheckTransactionRepository()
 
                 let checkResp = try await checkRepo.checkTransaction(reference: reference)
+//                 print("checkResp: \(checkResp)")
                 if checkResp.status == "SUCCESS" {
                     if checkResp.transaction.status == "SUCCESS" {
                         let receiptParamsString = checkResp.transaction.reciptParams

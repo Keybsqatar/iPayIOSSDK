@@ -7,6 +7,12 @@ public struct ProductsRequest: Codable {
     public let providerCode: String
 }
 
+public struct SettingDefinition: Codable, Sendable {
+    public let Name: String
+    public let Description: String
+    public let IsMandatory: Bool
+}
+
 public struct ProductItem: Identifiable, Codable, Sendable {
     public var id: UUID = .init()
     
@@ -16,9 +22,11 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let displayText: String
     public let sendValue: String
     public let sendCurrencyIso: String
+    public let sendValueMax: String
+    public let settingDefinitions: [SettingDefinition]
     
     enum CodingKeys: String, CodingKey {
-        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso
+        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, sendValueMax, settingDefinitions
     }
 
     public init(
@@ -28,7 +36,9 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         countryIso: String,
         displayText: String,
         sendValue: String,
-        sendCurrencyIso: String
+        sendCurrencyIso: String,
+        sendValueMax: String,
+        settingDefinitions: [SettingDefinition]
     ) {
         self.id = id
         self.skuCode = skuCode
@@ -37,6 +47,8 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         self.displayText = displayText
         self.sendValue = sendValue
         self.sendCurrencyIso = sendCurrencyIso
+        self.sendValueMax = sendValueMax
+        self.settingDefinitions = settingDefinitions
     }
     
     public init(from decoder: Decoder) throws {
@@ -46,6 +58,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         countryIso = try container.decode(String.self, forKey: .countryIso)
         displayText = try container.decode(String.self, forKey: .displayText)
         sendCurrencyIso = try container.decode(String.self, forKey: .sendCurrencyIso)
+        settingDefinitions = try container.decodeIfPresent([SettingDefinition].self, forKey: .settingDefinitions) ?? []
         
         // Try to decode as Float, Int, or String, then convert to String
         if let floatValue = try? container.decode(Float.self, forKey: .sendValue) {
@@ -58,6 +71,19 @@ public struct ProductItem: Identifiable, Codable, Sendable {
             sendValue = String(intValue)
         } else {
             sendValue = try container.decode(String.self, forKey: .sendValue)
+        }
+        
+        // Try to decode as Float, Int, or String, then convert to String
+        if let floatValueMax = try? container.decode(Float.self, forKey: .sendValueMax) {
+            if floatValueMax.truncatingRemainder(dividingBy: 1) == 0 {
+                sendValueMax = String(format: "%.0f", floatValueMax)
+            } else {
+                sendValueMax = String(floatValueMax)
+            }
+        } else if let intValue = try? container.decode(Int.self, forKey: .sendValueMax) {
+            sendValueMax = String(intValue)
+        } else {
+            sendValueMax = try container.decode(String.self, forKey: .sendValueMax)
         }
     }
 }

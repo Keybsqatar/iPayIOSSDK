@@ -61,28 +61,42 @@ public struct OtpView: View {
     // Existing initializer (with all parameters)
     public init(
         saveRecharge: String,
-        receiverMobileNumber: String,
+
         countryIso: String,
         countryFlagUrl: URL,
         countryName: String,
+        
         providerCode: String,
         providerLogoUrl: URL,
         providerName: String,
+        
         product: ProductItem,
+        billAmount: String,
+        
+        receiverMobileNumber: String,
+        settingsData: String,
+        
         mobileNumber: String,
         serviceCode: String,
         iPayCustomerID: String
     ) {
         self.vm = OtpViewModel(
             saveRecharge: saveRecharge,
-            receiverMobileNumber: receiverMobileNumber,
+
             countryIso: countryIso,
             countryFlagUrl: countryFlagUrl,
             countryName: countryName,
+            
             providerCode: providerCode,
             providerLogoUrl: providerLogoUrl,
             providerName: providerName,
+            
             product: product,
+            billAmount: billAmount,
+            
+            receiverMobileNumber: receiverMobileNumber,
+            settingsData: settingsData,
+            
             mobileNumber: mobileNumber,
             serviceCode: serviceCode,
             iPayCustomerID: iPayCustomerID
@@ -141,14 +155,22 @@ public struct OtpView: View {
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                     
-                    Text(vm.serviceCode != "INT_VOUCHER" ? "Intl Top up" : "Intl Voucher")
+                    Text(
+                        vm.serviceCode == "INT_TOP_UP" ? "Intl Top up" :
+                        vm.serviceCode == "INT_VOUCHER" ? "Intl Voucher" :
+                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Intl Utility" : ""
+                    )
                         .font(.custom("VodafoneRg-Bold", size: 16))
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
                     Spacer()
                     
-                    Text("\(vm.product.sendCurrencyIso) \(vm.product.sendValue)")
+                    Text(
+                        (vm.billAmount.isEmpty || vm.billAmount == "0")
+                        ? "\(vm.product.sendCurrencyIso) \(vm.product.sendValue)"
+                        : "\(vm.product.sendCurrencyIso) \(vm.billAmount)"
+                    )
                         .font(.custom("VodafoneRg-Bold", size: 24))
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -269,7 +291,10 @@ public struct OtpView: View {
             receiptData = ReceiptData(
                 amount: "\(tx.currency) \(tx.amount)",
                 dateTime: tx.dateTime,
-                type: vm.serviceCode != "INT_VOUCHER" ? "Top up – IMT" : "Voucher",
+//                type: vm.serviceCode != "INT_VOUCHER" ? "Top up – IMT" : "Voucher",
+                type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
+                    vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
+                    vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
                 number: tx.targetIdentifier,
                 operatorName: tx.providerName,
                 refId: tx.billingRef,
@@ -279,6 +304,9 @@ public struct OtpView: View {
                 providerName: vm.providerName,
                 providerLogoUrl: vm.providerLogoUrl,
                 product: vm.product,
+                
+                readMoreMarkdown: tx.readMoreMarkdown,
+                descriptionMarkdown: tx.descriptionMarkdown,
                 
                 textPin: vm.textPin,
                 valuePin: vm.valuePin
@@ -316,10 +344,12 @@ public struct OtpView: View {
     @ViewBuilder
     private var receiptOverlay: some View {
         if showReceipt, let data = receiptData {
-            if(vm.serviceCode != "INT_VOUCHER"){
+            if(vm.serviceCode == "INT_TOP_UP"){
                 ReceiptModalView(isPresented: $showReceipt, data: data)
-            }else{
+            }else if(vm.serviceCode == "INT_VOUCHER"){
                 VoucherReceiptModalView(isPresented: $showReceipt, data: data)
+            }else if(vm.serviceCode == "INT_UTIL_PAYMENT"){
+                UtilityReceiptModalView(isPresented: $showReceipt, data: data)
             }
         }
     }

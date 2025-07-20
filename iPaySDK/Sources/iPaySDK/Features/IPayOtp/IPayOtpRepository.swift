@@ -10,7 +10,9 @@ public class IPayOtpRepository {
         targetNumber:   String,
         serviceCode:    String,
         productSku:     String,
-        saveRecharge:   String
+        saveRecharge:   String,
+        billAmount: String,
+        settingsData: String
     ) async throws -> IPayOtpResponse {
         // print("IPayOtpRepository sendOtp")
         let req = IPayOtpRequest(
@@ -19,7 +21,9 @@ public class IPayOtpRepository {
             targetNumber:   targetNumber,
             serviceCode:    serviceCode,
             productSku:     productSku,
-            saveRecharge:   saveRecharge
+            saveRecharge:   saveRecharge,
+            billAmount:     billAmount,
+            settingsData:   settingsData
         )
         let resp = try await api.requestOtp(req)
         // print("IPayOtp: \(resp)")

@@ -175,14 +175,21 @@ public struct ReviewTopUpView: View {
                     if otpVM == nil {
                         otpVM = OtpViewModel(
                             saveRecharge: saveRecharge,
-                            receiverMobileNumber: receiverMobileNumber,
+                            
                             countryIso: countryIso,
                             countryFlagUrl: countryFlagUrl,
                             countryName: countryName,
+                            
                             providerCode: providerCode,
                             providerLogoUrl: providerLogoUrl,
                             providerName: providerName,
+                            
                             product: product,
+                            billAmount: "0",
+                            
+                            receiverMobileNumber: receiverMobileNumber,
+                            settingsData: "",
+                            
                             mobileNumber: mobileNumber,
                             serviceCode: serviceCode,
                             iPayCustomerID: iPayCustomerID

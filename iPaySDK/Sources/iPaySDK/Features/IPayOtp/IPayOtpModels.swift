@@ -7,6 +7,8 @@ public struct IPayOtpRequest: Codable {
     public let serviceCode:    String
     public let productSku:     String
     public let saveRecharge:   String
+    public let billAmount:   String
+    public let settingsData:   String
 }
 
 public struct IPayOtpResponse: Decodable, Sendable {

@@ -3,29 +3,28 @@ import Combine
 import ContactsUI
 import UIKit
 
-public struct VouchersView: View {
+public struct UtilityView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
-    @ObservedObject private var vm: VouchersViewModel
+    @ObservedObject private var vm: UtilityViewModel
     
-    @State private var showDeletionModal = false
-    @State private var deletionMessage = ""
+    @State private var tab: UtilityTabView.Tab = .new
     
     @State private var showToast = false
     @State private var toastMessage = ""
     
-    @State private var tab: VouchersTabView.Tab = .new
-    
-    @State private var search = ""
-    
-    @State private var saveRecharge = true
-    
+    @State private var showDeletionModal = false
+    @State private var deletionMessage = ""
+        
     @State private var country: CountryItem?
     @State private var showPicker = false
     
+    @State private var showProviders = true
+    @State private var showProvidersList = false
     @State private var selectedProvider: ProviderItem?
     
+    @State private var disabledProceed = true
     @State private var showProducts = false
     
     @State private var selectedSavedBill: SavedBillsItem?
@@ -41,33 +40,11 @@ public struct VouchersView: View {
         serviceCode:  String,
         iPayCustomerID: String
     ) {
-        self.vm = VouchersViewModel(
+        self.vm = UtilityViewModel(
             serviceCode: serviceCode,
             mobileNumber: mobileNumber,
             iPayCustomerID: iPayCustomerID
         )
-    }
-    
-    private struct HideSeparatorAndBackground: ViewModifier {
-        func body(content: Content) -> some View {
-            if #available(iOS 15.0, *) {
-                content
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.white)
-            } else {
-                content
-            }
-        }
-    }
-    
-    private var filteredProviders: [ProviderItem] {
-        if search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return vm.providers
-        } else {
-            return vm.providers.filter {
-                $0.name.localizedCaseInsensitiveContains(search)
-            }
-        }
     }
     
     public var body: some View {
@@ -97,12 +74,12 @@ public struct VouchersView: View {
                     
                     // Title
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Step 1 of 4")
+                        Text("Step 1 of 5")
                             .font(.custom("VodafoneRg-Regular", size: 16))
                             .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                             .multilineTextAlignment(.leading)
                         
-                        Text("Select Gift Voucher")
+                        Text("Pay International Utility Bill")
                             .font(.custom("VodafoneRg-Bold", size: 20))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                             .multilineTextAlignment(.leading)
@@ -113,13 +90,13 @@ public struct VouchersView: View {
                     Spacer().frame(height: 75)
                     
                     // Tabs
-                    VouchersTabView(selection: $tab)
+                    UtilityTabView(selection: $tab)
                     
                     // Content
                     if tab == .new {
-                        newTopUpView
+                        newUtilityView
                     } else {
-                        savedTabView
+                        savedUtilityView
                     }
                 }
                 .background(Color.white)
@@ -144,17 +121,22 @@ public struct VouchersView: View {
                     
                     Task {
                         await vm.loadProviders(for: selectedCountry.countryIso)
+                        
+                        if(vm.providers.count == 1){
+                            selectedProvider = vm.providers.first
+                            showProvidersList = false
+                            disabledProceed = false
+                        }else{
+                            selectedProvider = nil
+                            showProvidersList = false
+                            disabledProceed = true
+                        }
+                        
                     }
                 }
             }
             .onAppear {
-                Task {
-                    await vm.loadCountries()
-                    if let qaCountry = vm.countries.first(where: { $0.countryIso == "QA" }) {
-                        country = qaCountry
-                        await vm.loadProviders(for: qaCountry.countryIso)
-                    }
-                }
+                Task { await vm.loadCountries() }
                 Task { await vm.loadSavedBills() }
             }
             .onReceive(errorStream) { msg in
@@ -171,217 +153,251 @@ public struct VouchersView: View {
         }
     }
     
-    // MARK: – New Top-Up Tab
-    private var newTopUpView: some View {
+    // MARK: – New Utility Tab
+    private var newUtilityView: some View {
         ZStack {
             VStack(spacing: 0) {
-                Spacer().frame(height: 40)
+                Spacer().frame(height: 64)
                 
-                HStack(spacing: 16) {
-                    // ─── Search Field ────────────────────────────────────────────
-                    HStack(spacing: 8) {
-                        Image("ic_search", bundle: .module)
-                            .frame(width: 16, height: 16)
-                            .scaledToFit()
-                        
-                        TextField("Search", text: $search, onEditingChanged: { _ in
-                        })
-                        .font(.custom("VodafoneRg-Regular", size: 16.0))
-                        .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                        .foregroundColor(.primary)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
+                // Country Field
+                VStack(spacing: 8) {
+                    if country != nil {
+                        Text("Country")
+                            .font(.custom("VodafoneRg-Regular", size: 16.0))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 12)
-                    .background(Color("keyBs_white", bundle: .module))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 4)
-                            .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // Country Field
                     Button {
                         showPicker = true
                     } label: {
-                        HStack(spacing: 8) {
+                        HStack(spacing: 16) {
                             if let c = country {
                                 SVGImageView(url: c.flagUrl)
-                                    .frame(width: 24, height: 24)
+                                    .frame(width: 16, height: 16)
                                     .scaledToFit()
-                                    .cornerRadius(24)
+                                    .cornerRadius(16)
                                 
                                 Text(c.name)
-                                    .font(.custom("VodafoneRg-Regular", size: 16.0))
+                                    .font(.custom("VodafoneRg-Bold", size: 16.0))
                                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                     .multilineTextAlignment(.leading)
                             } else {
-                                Text("All Countries")
+                                Text("Country")
                                     .font(.custom("VodafoneRg-Regular", size: 16.0))
                                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                     .multilineTextAlignment(.leading)
                             }
                             
-                            // Spacer()
+                            Spacer()
                             
                             Image("ic_chevron_down", bundle: .module)
                                 .frame(width: 20, height: 20)
                                 .scaledToFit()
                         }
-                        .padding(.trailing, 12)
-                        // .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.plain)
+                    .padding(.bottom, 16)
+                    .overlay(
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module)),
+                        alignment: .bottom
+                    )
                 }
                 .padding(.horizontal, 16)
                 
-                Spacer().frame(height: 24)
+                Spacer().frame(height: 32)
                 
-                if !vm.providers.isEmpty {
-                    // ProvidersGridView(providers: vm.providers)
-                    // ProvidersGridView(providers: filteredProviders)
-                    ProvidersGridView(
-                        providers: filteredProviders,
-                        onSelect: { provider in
-                            selectedProvider = provider
-                            showProducts = true
+                ZStack(alignment: .top) {
+                    // Operator Dropdown
+                    VStack(spacing: 8) {
+                        if selectedProvider != nil {
+                            Text("Select Utility")
+                                .font(.custom("VodafoneRg-Regular", size: 16.0))
+                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                    )
-                } else {
-                    Spacer()
-                    Text("No providers found")
-                        .font(.custom("VodafoneRg-Regular", size: 18))
-                        .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                    Spacer()
+                        
+                        // Dropdown header
+                        VStack(spacing: 0) {
+                            Button {
+                                showProvidersList.toggle()
+                            } label: {
+                                HStack(spacing: 16) {
+                                    if let p = selectedProvider {
+                                        // loaded logo
+                                        RemoteImage(
+                                            url: p.logoUrl,
+                                            placeholder: AnyView(Color.gray.opacity(0.3))
+                                        )
+                                        .frame(width: 16, height: 16)
+                                        
+                                        Text(p.name)
+                                            .font(.custom("VodafoneRg-Bold", size: 16.0))
+                                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                            .multilineTextAlignment(.leading)
+                                    } else {
+                                        Text("Select Utility")
+                                            .font(.custom("VodafoneRg-Regular", size: 16.0))
+                                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(showProvidersList ? "ic_chevron_up" : "ic_chevron_down", bundle: .module)
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .frame(width: 20, height: 20)
+                                        .scaledToFit()
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.bottom, 16)
+                            .overlay(
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module)),
+                                alignment: .bottom
+                            )
+                        }
+                        .zIndex(0)
+                        
+                        // The dropdown list
+                        if showProvidersList {
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    ForEach(vm.providers) { p in
+                                        Button {
+                                            selectedProvider = p
+                                            showProvidersList = false
+                                            disabledProceed = false
+                                        } label: {
+                                            VStack(spacing: 0) {
+                                                HStack(spacing: 16) {
+                                                    RemoteImage(
+                                                        url: p.logoUrl,
+                                                        placeholder: AnyView(Color.gray.opacity(0.3))
+                                                    )
+                                                    .frame(width: 16, height: 16)
+                                                    
+                                                    Text(p.name)
+                                                        .font(.custom("VodafoneRg-Regular", size: 16))
+                                                        .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
+                                                        .multilineTextAlignment(.leading)
+                                                }
+                                                .padding(.all, 16)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .background(
+                                                    selectedProvider?.providerCode == p.providerCode
+                                                    ? Color("keyBs_bg_pink_1", bundle: .module)
+                                                    : Color.white
+                                                )
+                                                
+                                                if p.providerCode != vm.providers.last?.providerCode {
+                                                    Divider()
+                                                        .overlay(Color("keyBs_bg_gray_1", bundle: .module))
+                                                        .padding(.horizontal, 16)
+                                                }
+                                            }
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
+                            .frame(
+                                maxHeight: min(CGFloat(vm.providers.count) * 56, 300)
+                            )
+                            .cornerRadius(8, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.white)
+                                    .shadow(color: Color.black.opacity(0.3),
+                                            radius: 4, x: 0, y: 2)
+                            )
+                            .offset(y: 0)
+                            .zIndex(1)
+                        }
+                    }
+                    .padding(.horizontal, 16)
                 }
                 
                 Spacer()
+                
+                Button(action: {
+                    showProducts = true
+                }) {
+                    Text("Proceed")
+                        .font(.custom("VodafoneRg-Bold", size: 16))
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, minHeight: 56)
+                        .background(
+                            Color(!disabledProceed ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
+                        )
+                        .cornerRadius(60)
+                        .padding(.horizontal, 16)
+                }
+                .disabled(disabledProceed)
+                NavigationLink(
+                    destination: Group {
+                        if let c = country,
+                           let p = selectedProvider
+                        {
+                            EnterAmountView(
+                                saveRecharge: "1",
+                                                                
+                                countryIso: c.countryIso,
+                                countryFlagUrl: c.flagUrl,
+                                countryName: c.name,
+                                countryPrefix: c.prefix,
+                                countryMinimumLength: c.minimumLength,
+                                countryMaximumLength: c.maximumLength,
+                                
+                                providerCode: p.providerCode,
+                                providerLogoUrl: p.logoUrl,
+                                providerName: p.name,
+                                providerValidationRegex: p.validationRegex,
+                                
+                                productSku: "",
+                                receiverMobileNumber: "",
+                                settingsData: "",
+                                
+                                mobileNumber: vm.mobileNumber,
+                                serviceCode:  vm.serviceCode,
+                                iPayCustomerID: vm.iPayCustomerID,
+                                
+                                dismissMode: "pop"
+                            )
+                            .navigationBarHidden(true)
+                        }
+                    },
+                    isActive: $showProducts,
+                    label: { EmptyView() }
+                )
+                .hidden()
+                
+                // Bottom pattern
+                Image("bottom_pattern2", bundle: .module)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
             .cornerRadius(50, corners: [.topLeft])
             .edgesIgnoringSafeArea(.all)
-            
-            NavigationLink(
-                destination: Group {
-                    if let provider = selectedProvider, let c = country {
-                        SelectAmountView(
-                            saveRecharge: saveRecharge ? "1" : "0",
-                            receiverMobileNumber: vm.mobileNumber,
-                            countryIso: c.countryIso,
-                            countryFlagUrl: c.flagUrl,
-                            countryName: c.name,
-                            providerCode: provider.providerCode,
-                            providerLogoUrl: provider.logoUrl,
-                            providerName: provider.name,
-                            productSku: "",
-                            mobileNumber: vm.mobileNumber,
-                            serviceCode: vm.serviceCode,
-                            iPayCustomerID: vm.iPayCustomerID,
-                            dismissMode: "pop"
-                        )
-                        .navigationBarHidden(true)
-                    }
-                },
-                isActive: $showProducts,
-                label: { EmptyView() }
-            )
-            .hidden()
         }
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
-    }
-    
-    // MARK: - Providers Grid
-    private struct ProvidersGridView: View {
-        let providers: [ProviderItem]
-        let onSelect: (ProviderItem) -> Void
-        let columns = 2
-        let spacing: CGFloat = 20
-        
-        var rows: [[ProviderItem]] {
-            stride(from: 0, to: providers.count, by: columns).map {
-                Array(providers[$0..<min($0 + columns, providers.count)])
-            }
-        }
-        
-        var body: some View {
-            GeometryReader { geometry in
-                let totalSpacing = CGFloat(columns - 1) * spacing
-                let cardWidth = (geometry.size.width - totalSpacing - 32) / CGFloat(columns)
-                ScrollView {
-                    //                    VStack(alignment: .leading, spacing: spacing) {
-                    VStack(alignment: .leading) {
-                        ForEach(0..<rows.count, id: \.self) { rowIndex in
-                            HStack(spacing: spacing) {
-                                ForEach(rows[rowIndex], id: \.id) { provider in
-                                    ProviderCard(provider: provider, cardWidth: cardWidth)
-                                        .onTapGesture {
-                                            onSelect(provider)
-                                        }
-                                }
-                                // Fill empty columns for last row if needed
-                                if rows[rowIndex].count < columns {
-                                    ForEach(0..<(columns - rows[rowIndex].count), id: \.self) { _ in
-                                        Spacer()
-                                            .frame(width: cardWidth)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                }
-                
-            }
-        }
-    }
-    
-    // MARK: - Provider Card
-    private struct ProviderCard: View {
-        let provider: ProviderItem
-        let cardWidth: CGFloat
-        
-        var body: some View {
-            VStack(spacing: 0) {
-                RemoteImage(
-                    url: provider.logoUrl,
-                    placeholder: AnyView(Color.gray.opacity(0.3))
-                )
-                //                .scaledToFit()
-                .frame(height: cardWidth * 0.6) // 60% of card height for image
-                .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
-                
-                Text(provider.name)
-                    .font(.custom("VodafoneRg-Regular", size: 16))
-                    .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: cardWidth * 0.3)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 16)
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(
-                        Color("keyBs_bg_gray_1", bundle: .module),
-                        lineWidth: 1
-                    )
-            )
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color("keyBs_bg_gray_3", bundle: .module))
-                    .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
-            )
-            .padding(.bottom, 24)
-            //            .frame(width: cardWidth, height: cardWidth * 1.2) // Square card, or change height as needed
-        }
     }
     
     //    ----------------------
     
     // MARK: – Saved Top-Up Tab
-    private var savedTabView: some View {
+    private var savedUtilityView: some View {
         return ZStack {
             VStack(spacing: 0) {
                 if vm.savedBills.isEmpty {
@@ -395,7 +411,7 @@ public struct VouchersView: View {
                     Spacer().frame(height: 26)
                     
                     VStack(spacing: 8) {
-                        Text("No Voucher Yet")
+                        Text("No Top up Yet")
                             .font(.custom("VodafoneRg-Bold", size: 28))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                             .multilineTextAlignment(.leading)
@@ -414,6 +430,7 @@ public struct VouchersView: View {
                                 SavedBillRow(
                                     bill: bill,
                                     onTap: {
+                                        print("Select bill: \(bill)")
                                         selectedSavedBill = bill
                                         showProducts = true
                                     },
@@ -436,22 +453,30 @@ public struct VouchersView: View {
                             NavigationLink(
                                 destination: Group {
                                     if let c = selectedSavedBill {
-                                        
-                                        let (textPin, valuePin) = extractPinParams(from: c.reciptParams)
-
-                                        
-                                        ViewVoucherView(
-                                            close: false,
-                                            displayText: c.productDisplayText,
+                                        EnterAmountView(
+                                            saveRecharge: "1",
+                                                                            
+                                            countryIso: c.countryIso2,
                                             countryFlagUrl: c.countryFlagUrl,
                                             countryName: c.countryName,
-                                            providerName: c.providerName,
-                                            providerLogoUrl: c.providerImgUrl,
-                                            dateTime: c.dateTime,
-                                            refId: c.billingRef ?? "",
+                                            countryPrefix: c.countryPrefix ?? "",
+                                            countryMinimumLength: c.countryMinimumLength ?? "" ,
+                                            countryMaximumLength: c.countryMaximumLength ?? "",
                                             
-                                            textPin: textPin,
-                                            valuePin: valuePin
+                                            providerCode: c.providerCode,
+                                            providerLogoUrl: c.providerImgUrl,
+                                            providerName: c.providerName,
+                                            providerValidationRegex: c.providerValidationRegex ?? "",
+                                            
+                                            productSku: c.productSku,
+                                            receiverMobileNumber: c.targetIdentifier,
+                                            settingsData: c.settingsData ?? "",
+                                            
+                                            mobileNumber: vm.mobileNumber,
+                                            serviceCode:  vm.serviceCode,
+                                            iPayCustomerID: vm.iPayCustomerID,
+                                            
+                                            dismissMode: "pop"
                                         )
                                         .navigationBarHidden(true)
                                     }
@@ -483,18 +508,6 @@ public struct VouchersView: View {
         //  }
     }
     
-    private func extractPinParams(from receiptParams: String?) -> (textPin: String, valuePin: String) {
-        guard
-            let receiptParamsString = receiptParams,
-            let data = receiptParamsString.data(using: .utf8),
-            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let (key, value) = json.first
-        else {
-            return ("", "")
-        }
-        return ("\(key)", "\(value)")
-    }
-
     /// One row in the “Saved Top-Up” list
     private struct SavedBillRow: View {
         let bill: SavedBillsItem
@@ -544,35 +557,28 @@ public struct VouchersView: View {
                 }) {
                     HStack(spacing: 16) {
                         VStack{
-                            RemoteImage(
-                                url: bill.providerImgUrl,
-                                placeholder: AnyView(Color.gray.opacity(0.3))
-                            )
-                            .frame(width: 24, height: 24)
+                            SVGImageView(url: bill.countryFlagUrl)
+                                .frame(width: 30, height: 30)
+                                .scaledToFit()
+                                .cornerRadius(30)
                         }
                         .frame(width: 48, height: 48)
                         .background(Color("keyBs_bg_gray_4", bundle: .module))
                         .cornerRadius(16)
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(bill.productDisplayText)
+                            Text(bill.targetIdentifier)
                                 .font(.custom("VodafoneRg-Bold", size: 16))
                                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                 .multilineTextAlignment(.leading)
                             
-                            Text(bill.dateTime)
+                            Text(bill.providerName)
                                 .font(.custom("VodafoneRg-Regular", size: 14))
                                 .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
                                 .multilineTextAlignment(.leading)
                         }
                         
                         Spacer()
-                        
-                        Text("\(bill.currency) \(bill.amount)")
-                            .font(.custom("VodafoneRg-Bold", size: 18))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                                
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 31)
@@ -627,16 +633,16 @@ private struct DashedDivider: View {
 }
 
 #Preview {
-    VouchersView(
+    UtilityView(
         mobileNumber: "88776630",
         serviceCode:  "INT_TOP_UP",
         iPayCustomerID: "13"
     )
 }
 
-//struct TopUpView_Previews: PreviewProvider {
+//struct UtilityView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        VouchersView(
+//        UtilityView(
 //            mobileNumber: "88776630",
 //            serviceCode: "INT_TOP_UP",
 //            iPayCustomerID: "13"

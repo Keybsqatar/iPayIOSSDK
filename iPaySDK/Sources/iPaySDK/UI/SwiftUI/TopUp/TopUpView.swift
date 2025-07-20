@@ -149,8 +149,7 @@ public struct TopUpView: View {
                         } else {
                             disabledProceed = true
                         }
-                    }
-                    else{
+                    }else{
                         Task {
                             await vm.loadProviders(for: selectedCountry.countryIso)
                         }

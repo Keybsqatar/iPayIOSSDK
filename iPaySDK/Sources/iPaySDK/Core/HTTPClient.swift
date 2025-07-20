@@ -50,9 +50,9 @@ public final class HTTPClient {
         }
         
         let decoder = JSONDecoder()
-    //     print("HTTPClient http.statusCode \(http.statusCode) \(url)")
-    //    print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
-    //    print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
+//         print("HTTPClient http.statusCode \(http.statusCode) \(url)")
+//        print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
+//        print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
         
         if 200..<300 ~= http.statusCode {
             return try decoder.decode(T.self, from: data)

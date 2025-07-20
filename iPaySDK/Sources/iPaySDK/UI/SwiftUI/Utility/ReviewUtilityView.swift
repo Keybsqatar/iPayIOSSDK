@@ -1,57 +1,83 @@
 import SwiftUI
 
-public struct ReviewVoucherView: View {
+public struct ReviewUtilityView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
     
     // MARK: – Inputs
     public let saveRecharge:         String
-    public let receiverMobileNumber: String
+        
     public let countryIso:           String
-    public let countryName:          String
     public let countryFlagUrl:       URL
+    public let countryName:          String
+    public let countryPrefix:        String
+    
     public let providerCode:         String
-    public let providerName:         String
     public let providerLogoUrl:      URL
+    public let providerName:         String
+    
+    public let product:              ProductItem
+    public let billAmount:         String
+    
+    public let receiverMobileNumber:         String
+    public let settingsData:         String
+//    public let settingsData:         [String: String]
+    
     public let mobileNumber:         String
     public let serviceCode:          String
     public let iPayCustomerID:       String
-    public let product:              ProductItem
     
     @State private var disabledProceed = false
     @State private var showOtp = false
     
     public init(
         saveRecharge:         String,
-        receiverMobileNumber:  String,
+        
         countryIso:            String,
         countryFlagUrl:        URL,
         countryName:           String,
+        countryPrefix:        String,
+        
         providerCode:          String,
         providerLogoUrl:       URL,
         providerName:          String,
+        
         product:               ProductItem,
+        billAmount:            String,
+        
+        receiverMobileNumber:  String,
+        settingsData:          String,
+//        settingsData:          [String: String],
         
         mobileNumber:          String,
         serviceCode:           String,
         iPayCustomerID:        String
     ) {
         self.saveRecharge         = saveRecharge
-        self.receiverMobileNumber  = receiverMobileNumber
+        
         self.countryIso            = countryIso
         self.countryFlagUrl        = countryFlagUrl
         self.countryName           = countryName
+        self.countryPrefix         = countryPrefix
+        
         self.providerCode          = providerCode
         self.providerLogoUrl       = providerLogoUrl
         self.providerName          = providerName
+
+        self.product               = product
+        self.billAmount            = billAmount
+        
+        self.receiverMobileNumber  = receiverMobileNumber
+        self.settingsData          = settingsData
+        
         self.mobileNumber          = mobileNumber
         self.serviceCode           = serviceCode
         self.iPayCustomerID        = iPayCustomerID
-        self.product               = product
+        
+        print("settingsData: \(settingsData)")
     }
     
     @State private var otpVM: OtpViewModel? = nil
-    
     
     public var body: some View {
         ZStack(alignment: .bottom){
@@ -79,12 +105,12 @@ public struct ReviewVoucherView: View {
                 
                 // Title
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Step 3 of 4")
+                    Text("Step 4 of 5")
                         .font(.custom("VodafoneRg-Regular", size: 16))
                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
-                    Text("Review Voucher Details")
+                    Text("Utility Bill Details")
                         .font(.custom("VodafoneRg-Bold", size: 20))
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -95,31 +121,23 @@ public struct ReviewVoucherView: View {
                 Spacer().frame(height: 32)
                 
                 VStack(spacing: 32) {
-                    // Summary card
-                    HStack(spacing: 0) {
-                        Text("You’ll Pay")
-                            .font(.custom("VodafoneRg-Bold", size: 16))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                        
-                        Spacer()
-                        
-                        Text("\(product.sendCurrencyIso) \(product.sendValue)")
-                            .font(.custom("VodafoneRg-Bold", size: 24))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                    }
-                    .padding(.all, 16)
-                    .background(Color("keyBs_bg_pink_1", bundle: .module))
-                    .cornerRadius(8)
-                    
                     // Details card
                     VStack(spacing: 24) {
                         detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
                         detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
                         DashedDivider()
-                        detailRow(label: "Voucher Name",value: product.displayText)
-                        detailRow(label: "Voucher Amount",value: "$ \(product.displayText.filter { $0.isNumber })")
+                        detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
+                        if let data = settingsData.data(using: .utf8),
+                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] {
+                            ForEach(product.settingDefinitions, id: \.Name) { setting in
+                                let value = json[setting.Name] ?? ""
+                                detailRow(
+                                    label: setting.Description,
+                                    value: value.removingPercentEncoding ?? value
+                                )
+                            }
+                        }
+                        detailRow(label: "Mobile Number",value: "\(countryPrefix) \(receiverMobileNumber)")
                     }
                     .padding(.all, 16)
                     .background(
@@ -152,10 +170,11 @@ public struct ReviewVoucherView: View {
                             providerName: providerName,
                             
                             product: product,
-                            billAmount: "0",
+                            billAmount: billAmount,
                             
                             receiverMobileNumber: receiverMobileNumber,
-                            settingsData: "",
+                            settingsData: settingsData,
+//                            settingsData: encodeDynamicFields() ?? "",
                             
                             mobileNumber: mobileNumber,
                             serviceCode: serviceCode,
@@ -164,7 +183,7 @@ public struct ReviewVoucherView: View {
                     }
                     showOtp = true
                 }) {
-                    Text("Pay")
+                    Text("Proceed for Payment")
                         .font(.custom("VodafoneRg-Bold", size: 16))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.leading)
@@ -242,6 +261,13 @@ public struct ReviewVoucherView: View {
             .frame(alignment: .trailing)
         }
     }
+    
+//    private func encodeDynamicFields() -> String? {
+//        guard let jsonData = try? JSONSerialization.data(withJSONObject: settingsData, options: []) else {
+//            return nil
+//        }
+//        return String(data: jsonData, encoding: .utf8)
+//    }
 }
 
 private struct DashedDivider: View {
@@ -260,54 +286,3 @@ private struct DashedDivider: View {
         .frame(height: 1)
     }
 }
-
-//#Preview {
-//    ReviewVoucherView(
-//        saveRecharge: "1",
-//        receiverMobileNumber: "45456456",
-//        countryIso: "AE",
-//        countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//        countryName: "United Arab Emirates",
-//        providerCode: "E6AE",
-//        providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//        providerName: "DU UAE",
-//        product: ProductItem(
-//            skuCode: "E6AEAE12938",
-//            providerCode: "E6AE",
-//            countryIso: "AE",
-//            displayText: "AED 20.00",
-//            sendValue: "28",
-//            sendCurrencyIso: "QR"
-//        ),
-//        mobileNumber: "88776630",
-//        serviceCode: "INT_TOP_UP",
-//        iPayCustomerID: "13"
-//    )
-//}
-//
-//struct ReviewVoucherView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ReviewVoucherView(
-//            saveRecharge: "1",
-//            receiverMobileNumber: "45456456",
-//            countryIso: "AE",
-//            countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//            countryName: "United Arab Emirates",
-//            providerCode: "E6AE",
-//            providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//            providerName: "DU UAE",
-//            product: ProductItem(
-//                skuCode: "E6AEAE12938",
-//                providerCode: "E6AE",
-//                countryIso: "AE",
-//                displayText: "AED 20.00",
-//                sendValue: "28",
-//                sendCurrencyIso: "QR"
-//            ),
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13"
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

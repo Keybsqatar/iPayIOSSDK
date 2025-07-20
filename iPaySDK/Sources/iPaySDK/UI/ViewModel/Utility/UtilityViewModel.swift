@@ -3,15 +3,13 @@ import Combine     // ← add this
 
 
 @MainActor
-public class TopUpViewModel: ObservableObject {
+public class UtilityViewModel: ObservableObject {
     
     // ── Countries ────────────────────────────────────────────────
     @Published public var countries: [CountryItem]   = []
     @Published public var filteredCountries: [CountryItem] = []
     @Published public var isLoadingCountries: Bool  = false
     @Published public var countriesError: String?    = nil
-    @Published public var mobileMaxLength: Int = 0
-    @Published public var mobileMinLength: Int = 0
 
     // ── Providers ───────────────────────────────────────────────
     @Published public var providers: [ProviderItem] = []
@@ -134,10 +132,12 @@ public class TopUpViewModel: ObservableObject {
                     iPayCustomerID: iPayCustomerID,
                     serviceCode: serviceCode
                 )
-//            print("TopUpViewModel.loadSavedBills items: \(items)")
+                        
             self.savedBills = items
             
         } catch let netErr as NetworkError {
+            print("Error fetching saved bills: \(netErr)")
+            
             // unwrap your NetworkError enum
             switch netErr {
             case .apiError(_, let apiErr):
@@ -154,6 +154,8 @@ public class TopUpViewModel: ObservableObject {
                 savedBillsError = err.localizedDescription
             }
         } catch {
+            print("Error fetching saved bills: \(error)")
+            
             savedBillsError = error.localizedDescription
         }
     }

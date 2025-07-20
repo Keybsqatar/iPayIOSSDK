@@ -38,16 +38,28 @@ public struct VoucherReceiptModalView: View {
     
     /// Build the plain‐text summary for sharing
     private var receiptText: String {
-        return """
+        var details = """
         Receipt Details
         Amount: \(data.amount)
         Date:   \(data.dateTime)
         Voucher: \(data.operatorName)
         Ref ID: \(data.refId)
         """
+        
+        //        if !data.textPin.isEmpty, !data.valuePin.isEmpty {
+        //            details += "\n\(data.textPin): \(data.valuePin)"
+        //        }
+        
+        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+            if !data.readMoreMarkdown.isEmpty {
+                details += "\n Description: \(data.readMoreMarkdown)"
+            }else {
+                details += "\n Description: \(data.descriptionMarkdown)"
+            }
+        }
+        
+        return details
     }
-    //        Type:   \(data.type)
-    //        Number: \(data.number)
     
     public var body: some View {
         ZStack {
@@ -155,11 +167,23 @@ public struct VoucherReceiptModalView: View {
     }
     
     private func captureSnapshot() {
-        let hostVC = UIHostingController(rootView: cardContent)
+        let cardWidth: CGFloat = 340
+        
+        let hostVC = UIHostingController(rootView:
+                                            cardContent
+            .frame(width: cardWidth)
+            .fixedSize(horizontal: false, vertical: true) // <-- Add this line
+        )
         let view = hostVC.view!
-        let targetSize = view.intrinsicContentSize
-        view.bounds = CGRect(origin: .zero, size: targetSize)
         view.backgroundColor = .clear
+        
+        // Use systemLayoutSizeFitting to get the correct height
+        let targetSize = view.systemLayoutSizeFitting(
+            CGSize(width: cardWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        view.bounds = CGRect(origin: .zero, size: targetSize)
         
         let renderer = UIGraphicsImageRenderer(size: targetSize)
         snapshotImage = renderer.image { _ in
@@ -201,6 +225,17 @@ public struct VoucherReceiptModalView: View {
                 
                 detailRow(label: "iPay Ref ID",   value: data.refId)
                 
+                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+                    Divider()
+                        .overlay(Color("keyBs_bg_gray_3", bundle: .module))
+                    
+                    if !data.readMoreMarkdown.isEmpty {
+                        detailRow(label: data.readMoreMarkdown, value: "")
+                    }else {
+                        detailRow(label: data.descriptionMarkdown, value: "")
+                    }
+                }
+                
                 Spacer().frame(height: 24)
             }
         }
@@ -219,12 +254,15 @@ public struct VoucherReceiptModalView: View {
                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                 .multilineTextAlignment(.leading)
             
-            Spacer()
+            if !value.isEmpty{
+                Spacer()
+                
+                Text(value)
+                    .font(.custom("VodafoneRg-Bold", size: 16))
+                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    .multilineTextAlignment(.leading)
+            }
             
-            Text(value)
-                .font(.custom("VodafoneRg-Bold", size: 16))
-                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                .multilineTextAlignment(.leading)
         }
     }
 }

@@ -7,6 +7,7 @@ public protocol CountryFilterable: ObservableObject {
 
 extension TopUpViewModel: CountryFilterable {}
 extension VouchersViewModel: CountryFilterable {}
+extension UtilityViewModel: CountryFilterable {}
 
 // public struct CountryPicker: View {
 public struct CountryPicker<VM: CountryFilterable>: View {
