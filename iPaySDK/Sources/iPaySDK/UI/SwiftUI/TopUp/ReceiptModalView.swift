@@ -49,14 +49,14 @@ public struct ReceiptModalView: View {
         """
         
         if !data.textPin.isEmpty, !data.valuePin.isEmpty {
-            details += "\n\(data.textPin): \(data.valuePin)"
+            details += "\n\(data.textPin.uppercased()): \(data.valuePin)"
         }
         
         if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
             if !data.readMoreMarkdown.isEmpty {
-                details += "\n Description: \(data.readMoreMarkdown)"
+                details += "\n Key Information: \(data.readMoreMarkdown)"
             }else {
-                details += "\n Description: \(data.descriptionMarkdown)"
+                details += "\n Key Information: \(data.descriptionMarkdown)"
             }
         }
         
@@ -77,7 +77,7 @@ public struct ReceiptModalView: View {
                     Spacer()
                     Button {
                         isPresented = false
-                        coord.closeSDK()
+                        coord.dismissSDK()
                     } label: {
                         Image("ic_close", bundle: .module)
                             .frame(width: 16, height: 16)
@@ -165,7 +165,7 @@ public struct ReceiptModalView: View {
                         }
                     }
                     .padding(.horizontal, 24)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 16)
                     .background(Color.white)
                 }
                 .background(Color.white)
@@ -218,7 +218,7 @@ public struct ReceiptModalView: View {
     private var cardContent: some View {
         VStack(spacing: 0) {
             // GIF banner
-            if let url = Bundle.module.url(forResource: "summary", withExtension: "gif") {
+            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : "oops", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
@@ -241,7 +241,7 @@ public struct ReceiptModalView: View {
             Spacer().frame(height: 24)
             
             // Details card
-            VStack(spacing: 24) {
+            VStack(spacing: 16) {
                 detailRow(label: "Type",     value: data.type)
                 detailRow(label: "Number",   value: data.number)
                 detailRow(label: "Operator", value: data.operatorName)
@@ -252,28 +252,79 @@ public struct ReceiptModalView: View {
                 detailRow(label: "Ref ID",   value: data.refId)
                 
                 if !data.textPin.isEmpty, !data.valuePin.isEmpty {
-                    detailRow(label: data.textPin, value: data.valuePin)
+                    Divider()
+                        .overlay(Color("keyBs_bg_gray_3", bundle: .module))
+                    
+                    detailRow(label: data.textPin.uppercased(), value: data.valuePin)
                 }
                 
                 if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
                     Divider()
                         .overlay(Color("keyBs_bg_gray_3", bundle: .module))
                     
-                    if !data.readMoreMarkdown.isEmpty {
-                        detailRow(label: data.readMoreMarkdown, value: "")
-                    }else {
-                        detailRow(label: data.descriptionMarkdown, value: "")
-                    }
+                    AccordionView(
+                        title: "Key Information",
+                        content: {
+                            ScrollView(.vertical, showsIndicators: true) {
+                                VStack(spacing: 0){
+                                    Text(!data.readMoreMarkdown.isEmpty ? data.readMoreMarkdown : data.descriptionMarkdown)
+                                        .font(.custom("VodafoneRg-Regular", size: 14))
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .multilineTextAlignment(.leading)
+                                }
+                                .padding(.bottom, 8)
+                                .padding(.horizontal, 12)
+                            }
+                        }
+                    )
+                    
+//                    if !data.readMoreMarkdown.isEmpty {
+//                        detailRow(label: data.readMoreMarkdown, value: "")
+//                    }else {
+//                        detailRow(label: data.descriptionMarkdown, value: "")
+//                    }
                 }
                 
-                Spacer().frame(height: 24)
+                Spacer().frame(height: 16)
             }
         }
-        .padding(.top, 32)
+        .padding(.top, 16)
         .padding(.horizontal, 24)
         //        .padding(.bottom, 24)
         .background(Color.white)
         .cornerRadius(24)
+    }
+    
+    struct AccordionView<Content: View>: View {
+        let title: String
+        @ViewBuilder let content: Content
+        @State private var expanded = true
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                Button(action: { withAnimation { expanded.toggle() } }) {
+                    HStack {
+                        Text(title)
+                            .font(.custom("VodafoneRg-Bold", size: 14))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                        
+                        Spacer()
+                        
+                        Image(systemName: expanded ? "chevron.up" : "chevron.down")
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .frame(width: 12, height: 12)
+                    }
+                    .padding(.all, 12)
+                }
+                
+                if expanded {
+                    content
+                }
+            }
+            .background(Color("keyBs_bg_gray_7", bundle: .module))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
     }
     
     /// Saves the rendered snapshot into the Photos library.
@@ -329,36 +380,3 @@ public struct ReceiptModalView: View {
     }
 }
 
-
-//#Preview {
-//    ReceiptModalView(
-//        isPresented: .constant(true),
-//        data: ReceiptData(
-//            amount: "QR 300",
-//            dateTime: "15 Jul 2024 7:24 AM",
-//            type: "Top up - IMT",
-//            number: "92 303 4334334",
-//            operatorName: "Jazz",
-//            refId: "1698760015123970"
-//        )
-//    )
-//}
-//
-//struct ReceiptModalView_Previews: PreviewProvider {
-//    @State static var isPresented = true
-//
-//    static var previews: some View {
-//        ReceiptModalView(
-//            isPresented: $isPresented,
-//            data: ReceiptData(
-//                amount: "QR 300",
-//                dateTime: "15 Jul 2024 7:24 AM",
-//                type: "Top up - IMT",
-//                number: "92 303 4334334",
-//                operatorName: "Jazz",
-//                refId: "1698760015123970"
-//            )
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

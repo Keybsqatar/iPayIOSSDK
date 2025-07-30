@@ -22,8 +22,10 @@ public struct EnterUtilityDetailsView: View {
     public let providerLogoUrl:      URL
     public let providerValidationRegex: String
     
-    public let product:              ProductItem
-    public let billAmount:           String
+    public let settingDefinitions:           [SettingDefinition]
+    
+    //    public let product:              ProductItem
+    //    public let billAmount:           String
     
     public let mobileNumber:         String
     public let serviceCode:          String
@@ -36,10 +38,13 @@ public struct EnterUtilityDetailsView: View {
     @State private var contactDelegate = ContactDelegate()
     
     @State private var disabledProceed = false
-    @State private var showReview = false
+    @State private var showEnterAmount = false
     
     @State private var showToast = false
     @State private var toastMessage = ""
+        
+    @State private var enterAmountVM: EnterAmountViewModel? = nil
+
     
     //    let settingDefinitions = [
     //        SettingDefinition(Name: "MeterId", Description: "Meter Id", IsMandatory: true),
@@ -61,8 +66,9 @@ public struct EnterUtilityDetailsView: View {
         providerName:          String,
         providerValidationRegex: String,
         
-        product:               ProductItem,
-        billAmount:          String,
+        settingDefinitions:          [SettingDefinition],
+        //        product:               ProductItem,
+        //        billAmount:          String,
         
         mobileNumber:          String,
         serviceCode:           String,
@@ -82,8 +88,9 @@ public struct EnterUtilityDetailsView: View {
         self.providerName          = providerName
         self.providerValidationRegex = providerValidationRegex
         
-        self.product               = product
-        self.billAmount            = billAmount
+        self.settingDefinitions    = settingDefinitions
+        //        self.product               = product
+        //        self.billAmount            = billAmount
         
         self.mobileNumber          = mobileNumber
         self.serviceCode           = serviceCode
@@ -107,7 +114,7 @@ public struct EnterUtilityDetailsView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -118,7 +125,7 @@ public struct EnterUtilityDetailsView: View {
                 
                 // Title
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Step 3 of 5")
+                    Text("Step 2 of 5")
                         .font(.custom("VodafoneRg-Regular", size: 16))
                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -136,7 +143,8 @@ public struct EnterUtilityDetailsView: View {
                 VStack(spacing: 30) {
                     
                     // ─── Dynamic Fields ──────────────────────────────────────────────
-                    ForEach(product.settingDefinitions, id: \.Name) { setting in
+                    //                    ForEach(product.settingDefinitions, id: \.Name) { setting in
+                    ForEach(settingDefinitions, id: \.Name) { setting in
                         VStack(spacing: 8) {
                             if let value = dynamicFields[setting.Name], !value.isEmpty {
                                 Text(setting.Description)
@@ -165,7 +173,9 @@ public struct EnterUtilityDetailsView: View {
                                 .keyboardType(.numberPad)
                                 .frame(maxWidth: .infinity)
                                 .onReceive(Just(dynamicFields[setting.Name] ?? "")) { _ in
-                                    let allFieldsFilled = product.settingDefinitions.allSatisfy { setting in
+                                    //                                    let allFieldsFilled = product.settingDefinitions.allSatisfy {
+                                    let allFieldsFilled = settingDefinitions.allSatisfy {
+                                        setting in
                                         !(dynamicFields[setting.Name] ?? "").isEmpty
                                     }
                                     if allFieldsFilled && phone.count >= countryMinimumLength {
@@ -247,7 +257,9 @@ public struct EnterUtilityDetailsView: View {
                                 .keyboardType(.numberPad)
                                 .frame(maxWidth: .infinity)
                                 .onReceive(Just(phone)) { newValue in
-                                    let allFieldsFilled = product.settingDefinitions.allSatisfy { setting in
+                                    //                                    let allFieldsFilled = product.settingDefinitions.allSatisfy {
+                                    let allFieldsFilled = settingDefinitions.allSatisfy {
+                                        setting in
                                         !(dynamicFields[setting.Name] ?? "").isEmpty
                                     }
                                     if allFieldsFilled && newValue.count >= countryMinimumLength {
@@ -299,7 +311,34 @@ public struct EnterUtilityDetailsView: View {
                         }
                     }
                     
-                     showReview = true
+                    if otpVM == nil {
+                        enterAmountVM = EnterAmountViewModel(
+                            saveRecharge: saveRecharge,
+                           
+                            countryIso:            countryIso,
+                            countryFlagUrl:        countryFlagUrl,
+                            countryName:           countryName,
+                            countryPrefix:         countryPrefix,
+                            // countryMinimumLength: c.minimumLength,
+                            // countryMaximumLength: c.maximumLength,
+                           
+                            providerCode:          providerCode,
+                            providerLogoUrl:       providerLogoUrl,
+                            providerName:          providerName,
+                            // providerValidationRegex: p.validationRegex,
+                           
+                            productSku: "",
+                            receiverMobileNumber: phone,
+                            settingsData: encodeDynamicFields() ?? "",
+                           
+                            mobileNumber:          mobileNumber,
+                            serviceCode:           serviceCode,
+                            iPayCustomerID:        iPayCustomerID,
+                           
+                            dismissMode: "pop"
+                        )
+                    }
+                    showEnterAmount = true
                 }) {
                     Text("Retrieve Bill")
                         .font(.custom("VodafoneRg-Bold", size: 16))
@@ -315,38 +354,72 @@ public struct EnterUtilityDetailsView: View {
                 .disabled(disabledProceed)
                 NavigationLink(
                     destination: Group {
-                        ReviewUtilityView(
-                            saveRecharge:         saveRecharge,
-                            
-                            countryIso:            countryIso,
-                            countryFlagUrl:        countryFlagUrl,
-                            countryName:           countryName,
-                            countryPrefix:         countryPrefix,
-                            
-                            providerCode:          providerCode,
-                            providerLogoUrl:       providerLogoUrl,
-                            providerName:          providerName,
-                            
-                            product:               product,
-                            billAmount:          billAmount,
-                            
-                            receiverMobileNumber: phone,
-                            settingsData: encodeDynamicFields() ?? "",
-//                            settingsData: dynamicFields,
-                            
-                            mobileNumber:          mobileNumber,
-                            serviceCode:           serviceCode,
-                            iPayCustomerID:        iPayCustomerID
-                        )
-                        .navigationBarHidden(true)
+                        if let enterAmountVM = enterAmountVM {
+                            EnterAmountView(vm: enterAmountVM)
+                                .environmentObject(coord)
+                                .navigationBarHidden(true)
+                        }
                     },
-                    isActive: $showReview,
+                    // destination: Group {
+                    //     EnterAmountView(
+                    //         saveRecharge: saveRecharge,
+                            
+                    //         countryIso:            countryIso,
+                    //         countryFlagUrl:        countryFlagUrl,
+                    //         countryName:           countryName,
+                    //         countryPrefix:         countryPrefix,
+                    //         // countryMinimumLength: c.minimumLength,
+                    //         // countryMaximumLength: c.maximumLength,
+                            
+                    //         providerCode:          providerCode,
+                    //         providerLogoUrl:       providerLogoUrl,
+                    //         providerName:          providerName,
+                    //         // providerValidationRegex: p.validationRegex,
+                            
+                    //         productSku: "",
+                    //         receiverMobileNumber: phone,
+                    //         settingsData: encodeDynamicFields() ?? "",
+                            
+                    //         mobileNumber:          mobileNumber,
+                    //         serviceCode:           serviceCode,
+                    //         iPayCustomerID:        iPayCustomerID,
+                            
+                    //         dismissMode: "pop"
+                    //     )
+                    //     .environmentObject(coord)
+                    //     .navigationBarHidden(true)
+                    //     //                        ReviewUtilityView(
+                    //     //                            saveRecharge:         saveRecharge,
+                    //     //                            
+                    //     //                            countryIso:            countryIso,
+                    //     //                            countryFlagUrl:        countryFlagUrl,
+                    //     //                            countryName:           countryName,
+                    //     //                            countryPrefix:         countryPrefix,
+                    //     //                            
+                    //     //                            providerCode:          providerCode,
+                    //     //                            providerLogoUrl:       providerLogoUrl,
+                    //     //                            providerName:          providerName,
+                    //     //                            
+                    //     //                                                        product:               product,
+                    //     //                                                        billAmount:          billAmount,
+                    //     //                            
+                    //     //                            receiverMobileNumber: phone,
+                    //     //                            settingsData: encodeDynamicFields() ?? "",
+                    //     //                            //                            settingsData: dynamicFields,
+                    //     //                            
+                    //     //                            mobileNumber:          mobileNumber,
+                    //     //                            serviceCode:           serviceCode,
+                    //     //                            iPayCustomerID:        iPayCustomerID
+                    //     //                        )
+               
+                    // },
+                    isActive: $showEnterAmount,
                     label: { EmptyView() }
                 )
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
@@ -409,7 +482,7 @@ public struct EnterUtilityDetailsView: View {
         phone = cleanedPhone
         
     }
-
+    
     private func encodeDynamicFields() -> String? {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: dynamicFields, options: []) else {
             return nil

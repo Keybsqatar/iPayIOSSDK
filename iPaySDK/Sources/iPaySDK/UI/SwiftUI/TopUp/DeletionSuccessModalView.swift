@@ -21,7 +21,7 @@ public struct DeletionSuccessModalView: View {
                 HStack {
                     Spacer()
                     Button {
-                        coord.closeSDK()
+                        coord.dismissSDK()
                     } label: {
                         Image("ic_close", bundle: .module)
                             .frame(width: 16, height: 16)

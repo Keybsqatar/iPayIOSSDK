@@ -1,7 +1,8 @@
 import SwiftUI
 
 public struct OpenSavedTopupView: View {
-    @EnvironmentObject private var coordinator: SDKCoordinator
+    // @EnvironmentObject private var coordinator: SDKCoordinator
+    @EnvironmentObject private var coord: SDKCoordinator
     @ObservedObject private var vm: OpenSavedTopupViewModel
     @State private var navigate = false
     
@@ -12,7 +13,7 @@ public struct OpenSavedTopupView: View {
     }
     
     public var body: some View {
-        NavigationView {
+        // NavigationView {
             ZStack {
                 Color.white.edgesIgnoringSafeArea(.all)
                 
@@ -24,7 +25,7 @@ public struct OpenSavedTopupView: View {
                                 title: Text("Error"),
                                 message: Text(err),
                                 dismissButton: .default(Text("Close")) {
-                                    coordinator.closeSDK()
+                                    coord.dismissSDK()
                                 }
                             )
                         }
@@ -39,20 +40,25 @@ public struct OpenSavedTopupView: View {
                         ProductsView(
                             saveRecharge:         "0",
                             receiverMobileNumber: vm.item!.targetIdentifier,
+                            
                             countryIso:           vm.item!.countryIso2,
                             countryFlagUrl:       vm.item!.countryFlagUrl,
                             countryName:          vm.item!.countryName,
+                            
                             providerCode:         vm.item!.providerCode,
                             providerLogoUrl:      vm.item!.providerImgUrl,
                             providerName:         vm.item!.providerName,
+                            
                             productSku:           vm.item!.productSku,
+                            
                             mobileNumber:         vm.mobileNumber,
                             serviceCode:          vm.serviceCode,
                             iPayCustomerID:       vm.iPayCustomerID,
+                            
                             dismissMode:          "closeSDK"
                         )
+                        .environmentObject(coord)
                         .navigationBarHidden(true)
-                        .environmentObject(coordinator)
                     )
                     : AnyView(EmptyView()),
                     isActive: $navigate,
@@ -68,6 +74,6 @@ public struct OpenSavedTopupView: View {
             .onReceive(vm.$item.compactMap { $0?.id }) { id in
                 navigate = true
             }
-        }
+        // }
     }
 }

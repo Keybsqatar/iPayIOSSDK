@@ -76,7 +76,7 @@ public class SelectAmountViewModel: ObservableObject {
                 providerCode: providerCode
             )
             
-            // print("Loaded products: \(products.count)")
+//             print("Loaded products: \(products)")
 
             if !productSku.isEmpty {
                 selectedProduct = products.first(where: { $0.skuCode == productSku })

@@ -13,6 +13,11 @@ public struct SettingDefinition: Codable, Sendable {
     public let IsMandatory: Bool
 }
 
+public struct Terms: Codable, Sendable {
+    public let info: [String]
+    public let important: [String]
+}
+
 public struct ProductItem: Identifiable, Codable, Sendable {
     public var id: UUID = .init()
     
@@ -24,11 +29,15 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let sendCurrencyIso: String
     public let sendValueMax: String
     public let settingDefinitions: [SettingDefinition]
+    public let terms: Terms?
+    public let descriptionMarkdown:     String?
+    public let readMoreMarkdown:     String?
+    public let classification: String?
     
     enum CodingKeys: String, CodingKey {
-        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, sendValueMax, settingDefinitions
+        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, sendValueMax, settingDefinitions, terms, descriptionMarkdown, readMoreMarkdown, classification
     }
-
+    
     public init(
         id: UUID = .init(),
         skuCode: String,
@@ -38,7 +47,11 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         sendValue: String,
         sendCurrencyIso: String,
         sendValueMax: String,
-        settingDefinitions: [SettingDefinition]
+        settingDefinitions: [SettingDefinition],
+        terms: Terms? = nil,
+        descriptionMarkdown: String? = nil,
+        readMoreMarkdown: String? = nil,
+        classification: String? = nil
     ) {
         self.id = id
         self.skuCode = skuCode
@@ -49,6 +62,10 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         self.sendCurrencyIso = sendCurrencyIso
         self.sendValueMax = sendValueMax
         self.settingDefinitions = settingDefinitions
+        self.terms = terms
+        self.descriptionMarkdown = descriptionMarkdown
+        self.readMoreMarkdown = readMoreMarkdown
+        self.classification = classification
     }
     
     public init(from decoder: Decoder) throws {
@@ -59,7 +76,20 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         displayText = try container.decode(String.self, forKey: .displayText)
         sendCurrencyIso = try container.decode(String.self, forKey: .sendCurrencyIso)
         settingDefinitions = try container.decodeIfPresent([SettingDefinition].self, forKey: .settingDefinitions) ?? []
+        terms = try container.decodeIfPresent(Terms.self, forKey: .terms)
+        descriptionMarkdown = try container.decodeIfPresent(String.self, forKey: .descriptionMarkdown)
+        readMoreMarkdown = try container.decodeIfPresent(String.self, forKey: .readMoreMarkdown)
+        // classification = try container.decodeIfPresent(String.self, forKey: .classification)
         
+        // Accept classification as String or Int, store as String
+        if let str = try? container.decode(String.self, forKey: .classification) {
+            classification = str
+        } else if let intVal = try? container.decode(Int.self, forKey: .classification) {
+            classification = String(intVal)
+        } else {
+            classification = nil
+        }
+
         // Try to decode as Float, Int, or String, then convert to String
         if let floatValue = try? container.decode(Float.self, forKey: .sendValue) {
             if floatValue.truncatingRemainder(dividingBy: 1) == 0 {

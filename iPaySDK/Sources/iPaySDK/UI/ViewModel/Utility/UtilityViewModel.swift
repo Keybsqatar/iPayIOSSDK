@@ -95,7 +95,8 @@ public class UtilityViewModel: ObservableObject {
             let items = try await repo.getProviders(
                 mobileNumber:  mobileNumber,
                 serviceCode:   serviceCode,
-                countryCode:   countryIso
+                countryCode:   countryIso,
+                targetNumber: ""
             )
             providers = items
         } catch let netErr as NetworkError {
@@ -136,7 +137,7 @@ public class UtilityViewModel: ObservableObject {
             self.savedBills = items
             
         } catch let netErr as NetworkError {
-            print("Error fetching saved bills: \(netErr)")
+            // print("Error fetching saved bills: \(netErr)")
             
             // unwrap your NetworkError enum
             switch netErr {
@@ -154,7 +155,7 @@ public class UtilityViewModel: ObservableObject {
                 savedBillsError = err.localizedDescription
             }
         } catch {
-            print("Error fetching saved bills: \(error)")
+            // print("Error fetching saved bills: \(error)")
             
             savedBillsError = error.localizedDescription
         }

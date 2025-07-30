@@ -2,27 +2,27 @@ import Foundation
 import Combine     // ← add this
 
 @MainActor
-public class OpenSavedTopupViewModel: ObservableObject {
-    @Published public var item:  SavedBillItem?
+public class OpenViewVoucherViewModel: ObservableObject {
+    @Published public var item:  CheckTransaction?
     @Published public var isLoading = false
     @Published public var error: String?
     
     let serviceCode:    String
     let mobileNumber:   String
     let iPayCustomerID: String
-    let savedBillID:    String
+    let billingRef:    String
     
     public init(
         serviceCode: String,
         mobileNumber: String,
         iPayCustomerID: String,
-        savedBillID: String
+        billingRef: String
     ) {
         
         self.serviceCode    = serviceCode
         self.mobileNumber   = mobileNumber
         self.iPayCustomerID = iPayCustomerID
-        self.savedBillID    = savedBillID
+        self.billingRef    = billingRef
     }
     
     public func load() async {
@@ -31,14 +31,12 @@ public class OpenSavedTopupViewModel: ObservableObject {
         defer { isLoading = false }
         
         do {
-            let repo = SavedBillRepository()
-            let fetched = try await repo.getSavedBill(
-                mobileNumber: mobileNumber,
-                iPayCustomerID: iPayCustomerID,
-                id: savedBillID
-            )
-            // print("Fetched saved bill: \(fetched)")
-            self.item = fetched
+            let repo = CheckTransactionRepository()
+            let fetched = try await repo.checkTransaction(reference: billingRef)
+            
+//            print("Fetched transaction: \(fetched)")
+            
+            self.item = fetched.transaction
         } catch let netErr as NetworkError {
             // print("Network error: \(netErr)")
             // unwrap your NetworkError enum

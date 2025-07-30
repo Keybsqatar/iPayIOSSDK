@@ -42,7 +42,9 @@ public struct VoucherReceiptModalView: View {
         Receipt Details
         Amount: \(data.amount)
         Date:   \(data.dateTime)
-        Voucher: \(data.operatorName)
+        Type: \(data.type)
+        Voucher: \(data.product.displayText)
+        Country: \(data.countryName)
         Ref ID: \(data.refId)
         """
         
@@ -50,13 +52,13 @@ public struct VoucherReceiptModalView: View {
         //            details += "\n\(data.textPin): \(data.valuePin)"
         //        }
         
-        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
-            if !data.readMoreMarkdown.isEmpty {
-                details += "\n Description: \(data.readMoreMarkdown)"
-            }else {
-                details += "\n Description: \(data.descriptionMarkdown)"
-            }
-        }
+//        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+//            if !data.readMoreMarkdown.isEmpty {
+//                details += "\n Description: \(data.readMoreMarkdown)"
+//            }else {
+//                details += "\n Description: \(data.descriptionMarkdown)"
+//            }
+//        }
         
         return details
     }
@@ -74,7 +76,7 @@ public struct VoucherReceiptModalView: View {
                     Spacer()
                     Button {
                         isPresented = false
-                        coord.closeSDK()
+                        coord.dismissSDK()
                     } label: {
                         Image("ic_close", bundle: .module)
                             .frame(width: 16, height: 16)
@@ -91,7 +93,7 @@ public struct VoucherReceiptModalView: View {
                 VStack(spacing: 0){
                     cardContent
                     
-                    VStack(spacing: 16){
+                    VStack(spacing: 8){
                         // View Receipt button
                         Button(action: { showView = true }) {
                             Text("View Voucher")
@@ -102,6 +104,7 @@ public struct VoucherReceiptModalView: View {
                                 .background(Color("keyBs_bg_gray_4", bundle: .module))
                                 .cornerRadius(60)
                         }
+                        .disabled(data.status == "SUCCESS" ? false : true)
                         NavigationLink(
                             destination: Group {
                                 ViewVoucherView(
@@ -114,9 +117,13 @@ public struct VoucherReceiptModalView: View {
                                     dateTime: data.dateTime,
                                     refId: data.refId,
                                     
+                                    descriptionMarkdown:  data.descriptionMarkdown,
+                                    readMoreMarkdown: data.readMoreMarkdown,
+                                    
                                     textPin: data.textPin,
                                     valuePin: data.valuePin
                                 )
+                                .environmentObject(coord)
                                 .navigationBarHidden(true)
                                 
                             },
@@ -155,7 +162,7 @@ public struct VoucherReceiptModalView: View {
                         }
                     }
                     .padding(.horizontal, 24)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 16)
                     .background(Color.white)
                 }
                 .background(Color.white)
@@ -194,7 +201,7 @@ public struct VoucherReceiptModalView: View {
     private var cardContent: some View {
         VStack(spacing: 0) {
             // GIF banner
-            if let url = Bundle.module.url(forResource: "summary", withExtension: "gif") {
+            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : "oops", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
@@ -217,29 +224,33 @@ public struct VoucherReceiptModalView: View {
             Spacer().frame(height: 24)
             
             // Details card
-            VStack(spacing: 24) {
-                detailRow(label: "Voucher",     value: data.operatorName)
+            VStack(spacing: 16) {
+                detailRow(label: "Type",     value: data.type)
+                
+                detailRow(label: "Voucher",     value: data.product.displayText)
+                
+                detailRow(label: "Country",     value: data.countryName)
                 
                 Divider()
                     .overlay(Color("keyBs_bg_gray_3", bundle: .module))
                 
                 detailRow(label: "iPay Ref ID",   value: data.refId)
                 
-                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
-                    Divider()
-                        .overlay(Color("keyBs_bg_gray_3", bundle: .module))
-                    
-                    if !data.readMoreMarkdown.isEmpty {
-                        detailRow(label: data.readMoreMarkdown, value: "")
-                    }else {
-                        detailRow(label: data.descriptionMarkdown, value: "")
-                    }
-                }
+//                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+//                    Divider()
+//                        .overlay(Color("keyBs_bg_gray_3", bundle: .module))
+//                    
+//                    if !data.readMoreMarkdown.isEmpty {
+//                        detailRow(label: data.readMoreMarkdown, value: "")
+//                    }else {
+//                        detailRow(label: data.descriptionMarkdown, value: "")
+//                    }
+//                }
                 
-                Spacer().frame(height: 24)
+                Spacer().frame(height: 16)
             }
         }
-        .padding(.top, 32)
+        .padding(.top, 16)
         .padding(.horizontal, 24)
         //        .padding(.bottom, 24)
         .background(Color.white)

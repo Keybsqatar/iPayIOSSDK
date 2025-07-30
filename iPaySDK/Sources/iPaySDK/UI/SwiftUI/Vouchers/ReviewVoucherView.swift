@@ -68,7 +68,7 @@ public struct ReviewVoucherView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -94,7 +94,7 @@ public struct ReviewVoucherView: View {
                 
                 Spacer().frame(height: 32)
                 
-                VStack(spacing: 32) {
+                VStack(spacing: 24) {
                     // Summary card
                     HStack(spacing: 0) {
                         Text("You’ll Pay")
@@ -116,23 +116,33 @@ public struct ReviewVoucherView: View {
                     // Details card
                     VStack(spacing: 24) {
                         detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
-                        detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
-                        DashedDivider()
+//                        detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
+//                        DashedDivider()
                         detailRow(label: "Voucher Name",value: product.displayText)
                         detailRow(label: "Voucher Amount",value: "$ \(product.displayText.filter { $0.isNumber })")
                     }
-                    .padding(.all, 16)
+                    .padding(.top, 24)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 64)
                     .background(
-                        Color("keyBs_white_2", bundle: .module)
+                        ZStack {
+                            Image("keybs_bg_receipt_1", bundle: .module)
+                                .resizable()
+                                .frame(maxWidth: .infinity)
+                        }
                     )
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(
-                                Color("keyBs_bg_gray_1", bundle: .module),
-                                lineWidth: 1
-                            )
-                    )
+//                    .padding(.all, 16)
+//                    .background(
+//                        Color("keyBs_white_2", bundle: .module)
+//                    )
+//                    .cornerRadius(8)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+//                            .stroke(
+//                                Color("keyBs_bg_gray_1", bundle: .module),
+//                                lineWidth: 1
+//                            )
+//                    )
                 }
                 .padding(.horizontal, 16)
                 
@@ -180,6 +190,7 @@ public struct ReviewVoucherView: View {
                     destination: Group {
                         if let otpVM = otpVM {
                             OtpView(vm: otpVM)
+                                .environmentObject(coord)
                                 .navigationBarHidden(true)
                         }
                     },
@@ -189,7 +200,7 @@ public struct ReviewVoucherView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)

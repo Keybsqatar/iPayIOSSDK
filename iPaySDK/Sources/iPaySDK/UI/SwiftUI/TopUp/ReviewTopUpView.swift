@@ -68,7 +68,7 @@ public struct ReviewTopUpView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -94,59 +94,139 @@ public struct ReviewTopUpView: View {
                 
                 Spacer().frame(height: 32)
                 
-                VStack(spacing: 32) {
+                VStack(spacing: 24) {
                     // Summary card
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("You’ll Pay")
-                                .font(.custom("VodafoneRg-Regular", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            HStack(spacing: 4) {
-                                Image("flag_qa", bundle: .module)
-                                    .resizable()
-                                    .frame(width: 16, height: 16)
-                                    .cornerRadius(16)
+                    ZStack {
+                        VStack(spacing: 40) {
+                            // Top Card
+                            VStack(spacing: 4) {
+                                Text("You’ll Pay")
+                                    .font(.custom("VodafoneRg-Regular", size: 16))
+                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                    .frame(maxWidth: .infinity, alignment: .center)
                                 
-                                Text("\(product.sendCurrencyIso) \(product.sendValue)")
+                                HStack(spacing: 8) {
+                                    Image("flag_qa", bundle: .module)
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .clipShape(Circle())
+                                    
+                                    Text("\(product.sendCurrencyIso) \(product.sendValue)")
+                                        .font(.custom("VodafoneRg-Bold", size: 22))
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                            }
+                            .padding(.top, 20)
+                            .padding(.bottom, 28)
+                            .frame(maxWidth: .infinity)
+                            .background(Color("keyBs_bg_pink_1", bundle: .module))
+                            .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight]))
+                            
+                            // Bottom Card
+                            VStack(spacing: 4) {
+                                Text("You’ll Get")
+                                    .font(.custom("VodafoneRg-Regular", size: 16))
+                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                
+                                HStack(spacing: 8) {
+                                    SVGImageView(url: countryFlagUrl)
+                                        .frame(width: 20, height: 20)
+                                        .clipShape(Circle())
+                                    
+                                    Text(product.displayText)
+                                        .font(.custom("VodafoneRg-Bold", size: 22))
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+//                                        .lineLimit(nil)
+//                                        .fixedSize(horizontal: false, vertical: true)
+//                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                
+                                // Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit")
+                                //     .font(.custom("VodafoneRg-Regular", size: 14))
+                                //     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                //     .multilineTextAlignment(.center)
+                                //     .padding(.top, 4)
+                            }
+                            .padding(.top, 28)
+                            .padding(.bottom, 20)
+//                            .padding(.horizontal, 16)
+                            .frame(maxWidth: .infinity)
+                            .background(Color("keyBs_bg_pink_1", bundle: .module))
+                            .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight]))
+                        }
+                        .overlay(
+                            // "=" Circle Overlay
+                            ZStack {
+                                Circle()
+                                    .fill(Color("keyBs_white", bundle: .module))
+                                    .frame(width: 80, height: 80)
+                                Text("=")
                                     .font(.custom("VodafoneRg-Bold", size: 24))
                                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                    .multilineTextAlignment(.leading)
+                                    .frame(width: 60, height: 60)
+                                    .background(Color("keyBs_bg_pink_1", bundle: .module))
+                                    .clipShape(Circle())
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        
-                        Text("=")
-                            .font(.custom("VodafoneRg-Bold", size: 24))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                        
-                        VStack(alignment: .trailing, spacing: 4) {
-                            Text("You’ll Get")
-                                .font(.custom("VodafoneRg-Regular", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                            
-                            HStack {
-                                SVGImageView(url: countryFlagUrl)
-                                    .frame(width: 16, height: 16)
-                                    .scaledToFit()
-                                    .cornerRadius(16)
-                                
-                                Text("\(product.displayText)")
-                                    .font(.custom("VodafoneRg-Bold", size: 24))
-                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                    .multilineTextAlignment(.leading)
-                            }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
+                            .offset(y: 0), // Centered by default
+                            alignment: .center
+                        )
                     }
-                    .padding(.all, 16)
-                    .background(Color("keyBs_bg_pink_1", bundle: .module))
-                    .cornerRadius(8)
+                    // ...existing code...
+                    
+                    // HStack {
+                    //     VStack(alignment: .leading, spacing: 4) {
+                    //         Text("You’ll Pay")
+                    //             .font(.custom("VodafoneRg-Regular", size: 16))
+                    //             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    //             .multilineTextAlignment(.leading)
+                    //             .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    //         HStack(spacing: 4) {
+                    //             Image("flag_qa", bundle: .module)
+                    //                 .resizable()
+                    //                 .frame(width: 16, height: 16)
+                    //                 .cornerRadius(16)
+                    
+                    //             Text("\(product.sendCurrencyIso) \(product.sendValue)")
+                    //                 .font(.custom("VodafoneRg-Bold", size: 24))
+                    //                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    //                 .multilineTextAlignment(.leading)
+                    //         }
+                    //         .frame(maxWidth: .infinity, alignment: .leading)
+                    //     }
+                    
+                    //     Text("=")
+                    //         .font(.custom("VodafoneRg-Bold", size: 24))
+                    //         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    //         .multilineTextAlignment(.leading)
+                    
+                    //     VStack(alignment: .trailing, spacing: 4) {
+                    //         Text("You’ll Get")
+                    //             .font(.custom("VodafoneRg-Regular", size: 16))
+                    //             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    //             .multilineTextAlignment(.leading)
+                    //             .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    //         HStack {
+                    //             SVGImageView(url: countryFlagUrl)
+                    //                 .frame(width: 16, height: 16)
+                    //                 .scaledToFit()
+                    //                 .cornerRadius(16)
+                    
+                    //             Text("\(product.displayText)")
+                    //                 .font(.custom("VodafoneRg-Bold", size: 24))
+                    //                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    //                 .multilineTextAlignment(.leading)
+                    //         }
+                    //         .frame(maxWidth: .infinity, alignment: .trailing)
+                    //     }
+                    // }
+                    // .padding(.all, 16)
+                    // .background(Color("keyBs_bg_pink_1", bundle: .module))
+                    // .cornerRadius(8)
                     
                     // Details card
                     VStack(spacing: 12) {
@@ -230,6 +310,7 @@ public struct ReviewTopUpView: View {
                     destination: Group {
                         if let otpVM = otpVM {
                             OtpView(vm: otpVM)
+                                .environmentObject(coord)
                                 .navigationBarHidden(true)
                         }
                     },
@@ -239,7 +320,7 @@ public struct ReviewTopUpView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
@@ -293,54 +374,3 @@ public struct ReviewTopUpView: View {
         }
     }
 }
-
-// #Preview {
-//     ReviewTopUpView(
-//         saveRecharge: "1",
-//         receiverMobileNumber: "45456456",
-//         countryIso: "AE",
-//         countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//         countryName: "United Arab Emirates",
-//         providerCode: "E6AE",
-//         providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//         providerName: "DU UAE",
-//         product: ProductItem(
-//             skuCode: "E6AEAE12938",
-//             providerCode: "E6AE",
-//             countryIso: "AE",
-//             displayText: "AED 20.00",
-//             sendValue: "28",
-//             sendCurrencyIso: "QR"
-//         ),
-//         mobileNumber: "88776630",
-//         serviceCode: "INT_TOP_UP",
-//         iPayCustomerID: "13"
-//     )
-// }
-
-// struct ReviewTopUpView_Previews: PreviewProvider {
-//     static var previews: some View {
-//         ReviewTopUpView(
-//             saveRecharge: "1",
-//             receiverMobileNumber: "45456456",
-//             countryIso: "AE",
-//             countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//             countryName: "United Arab Emirates",
-//             providerCode: "E6AE",
-//             providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//             providerName: "DU UAE",
-//             product: ProductItem(
-//                 skuCode: "E6AEAE12938",
-//                 providerCode: "E6AE",
-//                 countryIso: "AE",
-//                 displayText: "AED 20.00",
-//                 sendValue: "28",
-//                 sendCurrencyIso: "QR"
-//             ),
-//             mobileNumber: "88776630",
-//             serviceCode: "INT_TOP_UP",
-//             iPayCustomerID: "13"
-//         )
-//         .previewLayout(.sizeThatFits)
-//     }
-// }

@@ -48,7 +48,7 @@ public struct UtilityView: View {
     }
     
     public var body: some View {
-        NavigationView {
+        // NavigationView {
             ZStack(alignment: .bottom) {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 32)
@@ -56,14 +56,15 @@ public struct UtilityView: View {
                     // Top Bar
                     HStack {
                         Image("ic_back", bundle: .module)
-                            .onTapGesture { presentationMode.wrappedValue.dismiss() }
+                            // .onTapGesture { presentationMode.wrappedValue.dismiss() }
+                            .onTapGesture { coord.dismissSDK() }
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                         
                         Spacer()
                         
                         Image("ic_close", bundle: .module)
-                            .onTapGesture { coord.closeSDK() }
+                            .onTapGesture { coord.dismissSDK() }
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                     }
@@ -113,6 +114,7 @@ public struct UtilityView: View {
                     )
                 }
             }
+            .navigationBarHidden(true)
             .sheet(isPresented: $showPicker) {
                 CountryPicker(
                     vm: vm
@@ -150,7 +152,7 @@ public struct UtilityView: View {
             .onTapGesture {
                 UIApplication.shared.endEditing()
             }
-        }
+        // }
     }
     
     // MARK: – New Utility Tab
@@ -347,31 +349,56 @@ public struct UtilityView: View {
                         if let c = country,
                            let p = selectedProvider
                         {
-                            EnterAmountView(
-                                saveRecharge: "1",
-                                                                
-                                countryIso: c.countryIso,
-                                countryFlagUrl: c.flagUrl,
-                                countryName: c.name,
-                                countryPrefix: c.prefix,
-                                countryMinimumLength: c.minimumLength,
-                                countryMaximumLength: c.maximumLength,
+                            EnterUtilityDetailsView(
+                                saveRecharge:         "1",
                                 
-                                providerCode: p.providerCode,
-                                providerLogoUrl: p.logoUrl,
-                                providerName: p.name,
-                                providerValidationRegex: p.validationRegex,
+                               countryIso: c.countryIso,
+                               countryFlagUrl: c.flagUrl,
+                               countryName: c.name,
+                               countryPrefix: c.prefix,
+                               countryMinimumLength: c.minimumLength,
+                               countryMaximumLength: c.maximumLength,
+                               
+                               providerCode: p.providerCode,
+                               providerLogoUrl: p.logoUrl,
+                               providerName: p.name,
+                               providerValidationRegex: p.validationRegex,
                                 
-                                productSku: "",
-                                receiverMobileNumber: "",
-                                settingsData: "",
+                                // product:               p,
+                                // billAmount:          amount,
+
+                                settingDefinitions: p.settingDefinitions,
                                 
-                                mobileNumber: vm.mobileNumber,
-                                serviceCode:  vm.serviceCode,
-                                iPayCustomerID: vm.iPayCustomerID,
-                                
-                                dismissMode: "pop"
+                                mobileNumber:          vm.mobileNumber,
+                                serviceCode:           vm.serviceCode,
+                                iPayCustomerID:        vm.iPayCustomerID
                             )
+//                            EnterAmountView(
+//                                saveRecharge: "1",
+//                                                                
+//                                countryIso: c.countryIso,
+//                                countryFlagUrl: c.flagUrl,
+//                                countryName: c.name,
+//                                countryPrefix: c.prefix,
+//                                countryMinimumLength: c.minimumLength,
+//                                countryMaximumLength: c.maximumLength,
+//                                
+//                                providerCode: p.providerCode,
+//                                providerLogoUrl: p.logoUrl,
+//                                providerName: p.name,
+//                                providerValidationRegex: p.validationRegex,
+//                                
+//                                productSku: "",
+//                                receiverMobileNumber: "",
+//                                settingsData: "",
+//                                
+//                                mobileNumber: vm.mobileNumber,
+//                                serviceCode:  vm.serviceCode,
+//                                iPayCustomerID: vm.iPayCustomerID,
+//                                
+//                                dismissMode: "pop"
+//                            )
+                            .environmentObject(coord)
                             .navigationBarHidden(true)
                         }
                     },
@@ -381,7 +408,7 @@ public struct UtilityView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
@@ -430,7 +457,7 @@ public struct UtilityView: View {
                                 SavedBillRow(
                                     bill: bill,
                                     onTap: {
-                                        print("Select bill: \(bill)")
+                                        // print("Select bill: \(bill)")
                                         selectedSavedBill = bill
                                         showProducts = true
                                     },
@@ -460,13 +487,13 @@ public struct UtilityView: View {
                                             countryFlagUrl: c.countryFlagUrl,
                                             countryName: c.countryName,
                                             countryPrefix: c.countryPrefix ?? "",
-                                            countryMinimumLength: c.countryMinimumLength ?? "" ,
-                                            countryMaximumLength: c.countryMaximumLength ?? "",
+                                            // countryMinimumLength: c.countryMinimumLength ?? "" ,
+                                            // countryMaximumLength: c.countryMaximumLength ?? "",
                                             
                                             providerCode: c.providerCode,
                                             providerLogoUrl: c.providerImgUrl,
                                             providerName: c.providerName,
-                                            providerValidationRegex: c.providerValidationRegex ?? "",
+                                            // providerValidationRegex: c.providerValidationRegex ?? "",
                                             
                                             productSku: c.productSku,
                                             receiverMobileNumber: c.targetIdentifier,
@@ -478,6 +505,7 @@ public struct UtilityView: View {
                                             
                                             dismissMode: "pop"
                                         )
+                                        .environmentObject(coord)
                                         .navigationBarHidden(true)
                                     }
                                 },
@@ -567,7 +595,7 @@ public struct UtilityView: View {
                         .cornerRadius(16)
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(bill.targetIdentifier)
+                            Text(bill.targetIdentifierSetting != nil ? bill.targetIdentifierSetting! : bill.targetIdentifier)
                                 .font(.custom("VodafoneRg-Bold", size: 16))
                                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                 .multilineTextAlignment(.leading)

@@ -6,6 +6,7 @@ public class ProductsViewModel: ObservableObject {
     
     // ── Products ────────────────────────────────────────────────
     @Published public var products: [ProductItem] = []
+    @Published public var filteredProducts: [ProductItem] = []
     @Published public var isLoadingProducts = false
     @Published public var productsError: String? = nil
     @Published public var selectedProduct: ProductItem?
@@ -75,11 +76,10 @@ public class ProductsViewModel: ObservableObject {
                 countryCode:  countryIso,
                 providerCode: providerCode
             )
-
+                        
             if !productSku.isEmpty {
                 selectedProduct = products.first(where: { $0.skuCode == productSku })
             }
-
         } catch let netErr as NetworkError {
             // unwrap your NetworkError enum
             switch netErr {

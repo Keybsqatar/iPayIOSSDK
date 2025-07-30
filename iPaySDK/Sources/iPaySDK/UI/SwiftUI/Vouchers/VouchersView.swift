@@ -71,7 +71,7 @@ public struct VouchersView: View {
     }
     
     public var body: some View {
-        NavigationView {
+        // NavigationView {
             ZStack(alignment: .bottom) {
                 VStack(spacing: 0) {
                     Spacer().frame(height: 32)
@@ -79,14 +79,15 @@ public struct VouchersView: View {
                     // Top Bar
                     HStack {
                         Image("ic_back", bundle: .module)
-                            .onTapGesture { presentationMode.wrappedValue.dismiss() }
+                            // .onTapGesture { presentationMode.wrappedValue.dismiss() }
+                            .onTapGesture { coord.dismissSDK() }
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                         
                         Spacer()
                         
                         Image("ic_close", bundle: .module)
-                            .onTapGesture { coord.closeSDK() }
+                            .onTapGesture { coord.dismissSDK() }
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                     }
@@ -136,6 +137,7 @@ public struct VouchersView: View {
                     )
                 }
             }
+            .navigationBarHidden(true)
             .sheet(isPresented: $showPicker) {
                 CountryPicker(
                     vm: vm
@@ -168,7 +170,7 @@ public struct VouchersView: View {
             .onTapGesture {
                 UIApplication.shared.endEditing()
             }
-        }
+        // }
     }
     
     // MARK: – New Top-Up Tab
@@ -281,6 +283,7 @@ public struct VouchersView: View {
                             iPayCustomerID: vm.iPayCustomerID,
                             dismissMode: "pop"
                         )
+                        .environmentObject(coord)
                         .navigationBarHidden(true)
                     }
                 },
@@ -357,7 +360,8 @@ public struct VouchersView: View {
                     .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: cardWidth * 0.3)
+                    .lineLimit(1)
+//                    .frame(height: cardWidth * 0.3)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 16)
             }
@@ -442,7 +446,9 @@ public struct VouchersView: View {
                                         
                                         ViewVoucherView(
                                             close: false,
+                                            
                                             displayText: c.productDisplayText,
+                                            
                                             countryFlagUrl: c.countryFlagUrl,
                                             countryName: c.countryName,
                                             providerName: c.providerName,
@@ -450,9 +456,13 @@ public struct VouchersView: View {
                                             dateTime: c.dateTime,
                                             refId: c.billingRef ?? "",
                                             
+                                            descriptionMarkdown: c.descriptionMarkdown ?? "",
+                                            readMoreMarkdown: c.readMoreMarkdown ?? "",
+                                            
                                             textPin: textPin,
                                             valuePin: valuePin
                                         )
+                                        .environmentObject(coord)
                                         .navigationBarHidden(true)
                                     }
                                 },

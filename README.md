@@ -8,7 +8,7 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 
 * Initializing and presenting the SDK
 
-* SDK entry points: International Top-Up & Saved Top-Up & Digital Vouchers & Utility Payment.
+* SDK entry points: International Top-Up & Saved Top-Up & Digital Vouchers & View Voucher & Utility Payment.
 
 * Parameter reference
 
@@ -43,15 +43,21 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 ```
     import iPaySDK
 
-    @objc private func startServiceType() {
-        let serviceTypeVC = iPaySDK.startServiceTypeController(
+    @objc private func openTopUp() {
+        guard let topUpVC = iPaySDK.startServiceTypeController(
             secretKey: "your_secret_key",
             serviceCode: "xxx", // "INT_TOP_UP", "INT_VOUCHER", "INT_UTIL_PAYMENT"
             mobileNumber: "xxxxxxxx",
             iPayCustomerID: "x"
         )
-        serviceTypeVC.modalPresentationStyle = .fullScreen
-        present(serviceTypeVC, animated: true)
+        else {
+            print("Failed to initialize Top-Up view controller")
+            return
+        }
+        
+        let nav = UINavigationController(rootViewController: topUpVC)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
 ```
 
@@ -60,15 +66,42 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
     import iPaySDK
 
     @objc private func openSaved() {
-        let savedVC = iPaySDK.openSavedTopUpController(
+        guard let savedVC = iPaySDK.openSavedTopUpController(
             secretKey: "your_secret_key",
             serviceCode: "INT_TOP_UP",
             mobileNumber: "xxxxxxxx",
             iPayCustomerID: "x",
             savedBillID: "x"
-        )
-        savedVC.modalPresentationStyle = .fullScreen
-        present(savedVC, animated: true)
+        )else {
+            print("Failed to initialize Saved Top-Up view controller")
+            return
+        }
+        
+        let nav = UINavigationController(rootViewController: savedVC)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+```
+
+###  3.3 View Voucher
+```
+    import iPaySDK
+
+    @objc private func openViewVoucher() {
+        guard let viewVoucherVC = iPaySDK.openViewVoucherController(
+            secretKey: "your_secret_key",
+            serviceCode: "INT_VOUCHER",
+            mobileNumber: "xxxxxxxx",
+            iPayCustomerID: "x",
+            billingRef: "xxxxxxxx"
+        )else {
+            print("Failed to initialize View Voucher view controller")
+            return
+        }
+        
+        let nav = UINavigationController(rootViewController: viewVoucherVC)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
 ```
 
@@ -78,3 +111,4 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
 * mobileNumber String: Sender’s phone number.
 * iPayCustomerID String: Your iPay customer identifier.
 * savedBillID String: (only for Saved Top‑up): ID of the transaction to display.
+* billingRef String: (only for View Voucher): The Billing Reference for the transaction.

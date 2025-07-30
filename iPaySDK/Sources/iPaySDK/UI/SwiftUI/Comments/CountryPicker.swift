@@ -37,7 +37,7 @@ public struct CountryPicker<VM: CountryFilterable>: View {
     }
     
     public var body: some View {
-        NavigationView {
+        // NavigationView {
             VStack(spacing: 0) {
                 Rectangle()
                     .foregroundColor(.clear)
@@ -109,7 +109,7 @@ public struct CountryPicker<VM: CountryFilterable>: View {
             .onAppear {
                 vm.filterCountries(by: "")
             }
-        }
+        // }
         .background(Color.white)
         .preferredColorScheme(.light)
     }

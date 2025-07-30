@@ -202,7 +202,7 @@
 //                .scaledToFit()
 //            Spacer()
 //            Image("ic_close", bundle: .module)
-//                .onTapGesture { coord.closeSDK() }
+//                .onTapGesture { coord.dismissSDK() }
 //                .frame(width: 24, height: 24)
 //                .scaledToFit()
 //        }
@@ -715,7 +715,7 @@
 ////                     Spacer()
 //
 ////                     Image("ic_close", bundle: .module)
-////                         .onTapGesture { coord.closeSDK() }
+////                         .onTapGesture { coord.dismissSDK() }
 ////                         .frame(width: 24, height: 24)
 ////                         .scaledToFit()
 ////                 }

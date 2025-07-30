@@ -87,7 +87,7 @@ public class TopUpViewModel: ObservableObject {
     }
     
     // MARK: – Providers
-    public func loadProviders(for countryIso: String) async {
+    public func loadProviders(for countryIso: String, phone: String) async {
         isLoadingProviders = true
         providersError     = nil
         defer { isLoadingProviders = false }
@@ -97,7 +97,8 @@ public class TopUpViewModel: ObservableObject {
             let items = try await repo.getProviders(
                 mobileNumber:  mobileNumber,
                 serviceCode:   serviceCode,
-                countryCode:   countryIso
+                countryCode:   countryIso,
+                targetNumber: phone
             )
             providers = items
         } catch let netErr as NetworkError {

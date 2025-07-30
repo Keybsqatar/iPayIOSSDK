@@ -15,6 +15,8 @@ public struct EnterAmountView: View {
     @State private var disabledProceed = true
     @State private var showEnterUtility = false
     
+    @State private var productsCount: Int = 0
+    
     public init(
         saveRecharge: String,
         
@@ -22,13 +24,13 @@ public struct EnterAmountView: View {
         countryFlagUrl: URL,
         countryName: String,
         countryPrefix: String,
-        countryMinimumLength: String,
-        countryMaximumLength: String,
+        // countryMinimumLength: String,
+        // countryMaximumLength: String,
         
         providerCode: String,
         providerLogoUrl: URL,
         providerName: String,
-        providerValidationRegex: String,
+        // providerValidationRegex: String,
         
         productSku: String,
         receiverMobileNumber: String,
@@ -47,13 +49,13 @@ public struct EnterAmountView: View {
             countryFlagUrl:countryFlagUrl,
             countryName:countryName,
             countryPrefix:countryPrefix,
-            countryMinimumLength:countryMinimumLength,
-            countryMaximumLength:countryMaximumLength,
+            // countryMinimumLength:countryMinimumLength,
+            // countryMaximumLength:countryMaximumLength,
             
             providerCode:providerCode,
             providerLogoUrl:providerLogoUrl,
             providerName:providerName,
-            providerValidationRegex:providerValidationRegex,
+            // providerValidationRegex:providerValidationRegex,
             
             productSku:productSku,
             receiverMobileNumber:receiverMobileNumber,
@@ -84,7 +86,7 @@ public struct EnterAmountView: View {
                             case "pop":
                                 presentationMode.wrappedValue.dismiss()
                             case "closeSDK":
-                                coord.closeSDK()
+                                coord.dismissSDK()
                             default:
                                 presentationMode.wrappedValue.dismiss()
                             }
@@ -95,7 +97,7 @@ public struct EnterAmountView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -106,7 +108,7 @@ public struct EnterAmountView: View {
                 
                 // Title
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Step 2 of 5")
+                    Text("Step 3 of 5")
                         .font(.custom("VodafoneRg-Regular", size: 16))
                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -166,56 +168,58 @@ public struct EnterAmountView: View {
                 NavigationLink(
                     destination: Group {
                         if let p = vm.selectedProduct {
-                            if (vm.productSku != ""){
-                                ReviewUtilityView(
-                                    saveRecharge:         vm.saveRecharge,
-                                    
-                                    countryIso:            vm.countryIso,
-                                    countryFlagUrl:        vm.countryFlagUrl,
-                                    countryName:           vm.countryName,
-                                    countryPrefix:         vm.countryPrefix,
-                                    
-                                    providerCode:          vm.providerCode,
-                                    providerLogoUrl:       vm.providerLogoUrl,
-                                    providerName:          vm.providerName,
-                                    
-                                    product:               p,
-                                    billAmount:          amount,
-                                    
-                                    receiverMobileNumber: vm.receiverMobileNumber,
-                                    settingsData: vm.settingsData,
-//                                    settingsData: vm.settingsData as? [String: String] ?? [:],
-                                    
-                                    mobileNumber:          vm.mobileNumber,
-                                    serviceCode:           vm.serviceCode,
-                                    iPayCustomerID:        vm.iPayCustomerID
-                                )
-                                .navigationBarHidden(true)
-                            }else{
-                                EnterUtilityDetailsView(
-                                    saveRecharge:         vm.saveRecharge,
-                                    
-                                    countryIso:            vm.countryIso,
-                                    countryFlagUrl:        vm.countryFlagUrl,
-                                    countryName:           vm.countryName,
-                                    countryPrefix:         vm.countryPrefix,
-                                    countryMinimumLength:  vm.countryMinimumLength,
-                                    countryMaximumLength:  vm.countryMaximumLength,
-                                    
-                                    providerCode:          vm.providerCode,
-                                    providerLogoUrl:       vm.providerLogoUrl,
-                                    providerName:          vm.providerName,
-                                    providerValidationRegex: vm.providerValidationRegex,
-                                    
-                                    product:               p,
-                                    billAmount:          amount,
-                                    
-                                    mobileNumber:          vm.mobileNumber,
-                                    serviceCode:           vm.serviceCode,
-                                    iPayCustomerID:        vm.iPayCustomerID
-                                )
-                                .navigationBarHidden(true)
-                            }
+                            // if (vm.productSku != ""){
+                            ReviewUtilityView(
+                                saveRecharge:         vm.saveRecharge,
+                                
+                                countryIso:            vm.countryIso,
+                                countryFlagUrl:        vm.countryFlagUrl,
+                                countryName:           vm.countryName,
+                                countryPrefix:         vm.countryPrefix,
+                                
+                                providerCode:          vm.providerCode,
+                                providerLogoUrl:       vm.providerLogoUrl,
+                                providerName:          vm.providerName,
+                                
+                                product:               p,
+                                billAmount:          amount,
+                                
+                                receiverMobileNumber: vm.receiverMobileNumber,
+                                settingsData: vm.settingsData,
+                                //                                    settingsData: vm.settingsData as? [String: String] ?? [:],
+                                
+                                mobileNumber:          vm.mobileNumber,
+                                serviceCode:           vm.serviceCode,
+                                iPayCustomerID:        vm.iPayCustomerID
+                            )
+                            .environmentObject(coord)
+                            .navigationBarHidden(true)
+                            // }else{
+                            //                                EnterUtilityDetailsView(
+                            //                                    saveRecharge:         vm.saveRecharge,
+                            //
+                            //                                    countryIso:            vm.countryIso,
+                            //                                    countryFlagUrl:        vm.countryFlagUrl,
+                            //                                    countryName:           vm.countryName,
+                            //                                    countryPrefix:         vm.countryPrefix,
+                            //                                    countryMinimumLength:  vm.countryMinimumLength,
+                            //                                    countryMaximumLength:  vm.countryMaximumLength,
+                            //
+                            //                                    providerCode:          vm.providerCode,
+                            //                                    providerLogoUrl:       vm.providerLogoUrl,
+                            //                                    providerName:          vm.providerName,
+                            //                                    providerValidationRegex: vm.providerValidationRegex,
+                            //
+                            //                                    product:               p,
+                            //                                    billAmount:          amount,
+                            //
+                            //                                    mobileNumber:          vm.mobileNumber,
+                            //                                    serviceCode:           vm.serviceCode,
+                            //                                    iPayCustomerID:        vm.iPayCustomerID
+                            //                                )
+                            //                                .environmentObject(coord)
+                            //                                .navigationBarHidden(true)
+                            // }
                         }
                     },
                     isActive: $showEnterUtility,
@@ -225,6 +229,7 @@ public struct EnterAmountView: View {
             }
             .background(Color.white)
         }
+        .id(vm.products.count)
         .onAppear {
             Task { await vm.loadProducts() }
         }
@@ -249,6 +254,9 @@ public struct EnterAmountView: View {
                 toastMessage = m
                 showToast    = true
             }
+        }
+        .onReceive(vm.$products) { products in
+            productsCount = products.count
         }
         .toast(isShowing: $showToast, message: toastMessage)
         .contentShape(Rectangle())

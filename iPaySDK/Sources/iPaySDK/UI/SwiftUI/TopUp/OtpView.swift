@@ -123,7 +123,7 @@ public struct OtpView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -134,7 +134,7 @@ public struct OtpView: View {
                 
                 // Title
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Step 4 of 4")
+                    Text(vm.serviceCode == "INT_UTIL_PAYMENT" ? "Step 5 of 5" : "Step 4 of 4")
                         .font(.custom("VodafoneRg-Regular", size: 16))
                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
                         .multilineTextAlignment(.leading)
@@ -194,7 +194,17 @@ public struct OtpView: View {
                 
                 // ★ Countdown or Resend OTP
                 Group {
-                    if remainingSeconds > 0 {
+                    if(vm.showMsgImageType == 3) {
+                        Button("Invalid OTP") {
+                            Task {
+                                await vm.requestOtp()
+                                startTimer()
+                            }
+                        }
+                        .font(.custom("VodafoneRg-Bold", size: 16))
+                        .foregroundColor(Color("keyBs_bg_red_1", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                    } else if remainingSeconds > 0 {
                         Text("\(formatTime(remainingSeconds))")
                             .font(.custom("VodafoneRg-Bold", size: 16))
                             .foregroundColor(Color("keyBs_bg_red_1", bundle: .module))
@@ -224,14 +234,14 @@ public struct OtpView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(height: 30)
-                }else if vm.showMsgImageType == 2{
-                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
-                    //                        .indicator(.activity)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 56)
                 }
-                
+//                else if vm.showMsgImageType == 2{
+//                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
+//                    //                        .indicator(.activity)
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(height: 56)
+//                }
                 
                 Spacer()
             }
@@ -249,7 +259,13 @@ public struct OtpView: View {
             NotificationCenter.default.publisher(for: Notification.Name("OtpCodeChanged"))
         ) { _ in
             let newValue = otbCode
-            //            print("OTP code changed: \(newValue)")
+//            print("OTP code changed: \(newValue)")
+
+            if(vm.showMsgImageType == 3) {
+                vm.showMsgImageType = 0
+                remainingSeconds = 0
+            }
+            
             let count = newValue.count
             guard count > 0 else { return }
             activeIndex = count - 1
@@ -289,6 +305,8 @@ public struct OtpView: View {
         .onReceive(vm.$completedTransaction) { tx in
             guard let tx = tx else { return }
             receiptData = ReceiptData(
+                status: tx.status,
+                
                 amount: "\(tx.currency) \(tx.amount)",
                 dateTime: tx.dateTime,
 //                type: vm.serviceCode != "INT_VOUCHER" ? "Top up – IMT" : "Voucher",
@@ -380,7 +398,7 @@ public struct OtpView: View {
                     ZStack {
                         // Background & border
                         RoundedRectangle(cornerRadius: 5)
-                            .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
+                            .stroke(Color(vm.showMsgImageType != 3 ? "keyBs_bg_gray_1" : "keyBs_bg_red_1", bundle: .module), lineWidth: 1)
                             .background(
                                 (idx < otbCode.count)
                                 ? Color.white     // filled or active

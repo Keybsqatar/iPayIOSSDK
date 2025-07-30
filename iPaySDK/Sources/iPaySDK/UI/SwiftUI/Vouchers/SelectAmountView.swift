@@ -73,7 +73,7 @@ public struct SelectAmountView: View {
                             case "pop":
                                 presentationMode.wrappedValue.dismiss()
                             case "closeSDK":
-                                coord.closeSDK()
+                                coord.dismissSDK()
                             default:
                                 presentationMode.wrappedValue.dismiss()
                             }
@@ -84,7 +84,7 @@ public struct SelectAmountView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -93,29 +93,36 @@ public struct SelectAmountView: View {
                 
                 Spacer().frame(height: 24)
                 
-                // Title
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Step 2 of 4")
-                        .font(.custom("VodafoneRg-Regular", size: 16))
-                        .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                    
-                    Text("Select Amount")
-                        .font(.custom("VodafoneRg-Bold", size: 20))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
                 
-                Spacer().frame(height: 32)
                 
                 ScrollView {
+                    // Title
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Step 2 of 4")
+                            .font(.custom("VodafoneRg-Regular", size: 16))
+                            .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                        
+                        Text("Select Amount")
+                            .font(.custom("VodafoneRg-Bold", size: 20))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    
+                    Spacer().frame(height: 32)
+                    
                     amountSelectionSection
+                    
+                    //                    Spacer()
+                    
+                    
                 }
                 // .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
-                Spacer().frame(height: 32)
+                Spacer()
+                Spacer().frame(height: 16)
                 
                 Button(action: { showReview = true }) {
                     Text("Proceed")
@@ -147,6 +154,7 @@ public struct SelectAmountView: View {
                                 serviceCode:           vm.serviceCode,
                                 iPayCustomerID:        vm.iPayCustomerID
                             )
+                            .environmentObject(coord)
                             .navigationBarHidden(true)
                         }
                     },
@@ -156,7 +164,7 @@ public struct SelectAmountView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
@@ -192,16 +200,29 @@ public struct SelectAmountView: View {
         VStack(spacing: 24) {
             // Card with image, provider, country
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
+                //                VStack(spacing: 0) {
+                //                    RemoteImage(
+                //                        url: vm.providerLogoUrl,
+                //                        placeholder: AnyView(Color.gray.opacity(0.3)),
+                //                        isResizable: false
+                //                    )
+                //                    //                    .frame(height: 120)
+                //                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                //                    .padding(.vertical, 32)
+                //                    .padding(.horizontal, 50)
+                //                }
+                
+                HStack(spacing: 0) {
                     RemoteImage(
                         url: vm.providerLogoUrl,
-                        placeholder: AnyView(Color.gray.opacity(0.3))
+                        placeholder: AnyView(Color.gray.opacity(0.3)),
+                        isResizable: false
                     )
-                    .frame(height: 120)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .padding(.vertical, 32)
-                    .padding(.horizontal, 50)
+                    .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
+                    Spacer()
                 }
+                .padding(.top, 24)
+                .padding(.horizontal, 24)
                 
                 HStack(spacing: 8) {
                     Text(vm.providerName)
@@ -210,7 +231,7 @@ public struct SelectAmountView: View {
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-//                    Spacer()
+                    //                    Spacer()
                     
                     SVGImageView(url: vm.countryFlagUrl)
                         .frame(width: 20, height: 20)
@@ -231,39 +252,33 @@ public struct SelectAmountView: View {
             .padding(.horizontal, 16)
             
             // Description
-            VStack(alignment: .leading, spacing: 20) {
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: 6, height: 6)
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .padding(.top, 6)
-                    
-                    Text("Give this code to a friend or loved one to be redeemed at \(vm.providerName).")
-                        .font(.custom("VodafoneRg-Regular", size: 16))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-                
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: 6, height: 6)
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .padding(.top, 6)
-                    
-                    Text("The code will be saved under Gift Cards section to be copied or shared")
-                        .font(.custom("VodafoneRg-Regular", size: 16))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            .padding(.vertical, 12)
-            .padding(.horizontal, 16)
-            .background(Color("keyBs_bg_gray_7", bundle: .module))
-            .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-            .padding(.horizontal, 16)
+            //            if vm.selectedProduct?.terms != nil && !vm.selectedProduct!.terms!.info.isEmpty {
+            //                VStack(alignment: .leading, spacing: 20) {
+            //
+            //                ForEach(vm.selectedProduct!.terms!.info, id: \.self) { infoItem in
+            //                    HStack(alignment: .top, spacing: 8) {
+            //                        Image(systemName: "circle.fill")
+            //                            .resizable()
+            //                            .frame(width: 6, height: 6)
+            //                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+            //                            .padding(.top, 6)
+            //
+            //                        Text(infoItem)
+            //                            .font(.custom("VodafoneRg-Regular", size: 16))
+            //                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+            //                            .multilineTextAlignment(.leading)
+            //                    }
+            //                }
+            //                }
+            //                .padding(.vertical, 12)
+            //                .padding(.horizontal, 16)
+            //                .background(Color("keyBs_bg_gray_7", bundle: .module))
+            //                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+            //                .padding(.horizontal, 16)
+            //            }
             
+            
+            // Select amount
             VStack(alignment: .leading, spacing: 16) {
                 Text("Please select a voucher amount")
                     .font(.custom("VodafoneRg-Bold", size: 16))
@@ -363,73 +378,72 @@ public struct SelectAmountView: View {
             // .padding(.bottom, 16)
             
             // Important box
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Important :")
-                    .font(.custom("VodafoneRg-Bold", size: 14))
-                    .foregroundColor(Color("keyBs_bg_red_1", bundle: .module))
-                    .multilineTextAlignment(.leading)
-                
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: 6, height: 6)
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .padding(.top, 6)
-                    
-                    Text("This code is only going to be valid on \(vm.providerName) and is not valid on other Amazon sites")
-                        .font(.custom("VodafoneRg-Regular", size: 14))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-                
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: 6, height: 6)
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .padding(.top, 6)
-                    
-                    Text("This voucher will cost \(vm.selectedProduct?.sendCurrencyIso ?? "") \(vm.selectedProduct?.sendValue ?? "")")
-                        .font(.custom("VodafoneRg-Regular", size: 14))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            .padding(.top, 8)
-            .padding(.bottom, 16)
-            .padding(.horizontal, 16)
-            .background(Color("keyBs_bg_pink_1", bundle: .module))
-            .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-            .padding(.horizontal, 16)
+            //            if vm.selectedProduct?.terms != nil && !vm.selectedProduct!.terms!.important.isEmpty {
+            //                VStack(alignment: .leading, spacing: 20) {
+            //                    Text("Important :")
+            //                        .font(.custom("VodafoneRg-Bold", size: 14))
+            //                        .foregroundColor(Color("keyBs_bg_red_1", bundle: .module))
+            //                        .multilineTextAlignment(.leading)
+            //
+            //                    ForEach(vm.selectedProduct!.terms!.important, id: \.self) { infoItem in
+            //                        HStack(alignment: .top, spacing: 8) {
+            //                            Image(systemName: "circle.fill")
+            //                                .resizable()
+            //                                .frame(width: 6, height: 6)
+            //                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+            //                                .padding(.top, 6)
+            //
+            //                            Text(infoItem)
+            //                                .font(.custom("VodafoneRg-Regular", size: 14))
+            //                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+            //                                .multilineTextAlignment(.leading)
+            //                        }
+            //                    }
+            //                }
+            //                .padding(.top, 8)
+            //                .padding(.bottom, 16)
+            //                .padding(.horizontal, 16)
+            //                .background(Color("keyBs_bg_pink_1", bundle: .module))
+            //                .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+            //                .padding(.horizontal, 16)
+            //            }
             
-//            AccordionView(
-//                title: "Additional T&C’s",
-//                content: {
-//                    VStack(alignment: .leading, spacing: 8) {
-//                        ForEach([
-//                            "Lorem ipsum dolor sit amet consectetur",
-//                            "Nulla et tincidunt dui bibendum purus ullamcorper sit sit",
-//                            "Curabitur quisque nascetur ac mollis suspendisse morbi",
-//                            "Ipsum rutrum interdum semper mattis",
-//                            "In odio felis lectus enim molestie."
-//                        ], id: \.self) { item in
-//                            HStack(alignment: .top, spacing: 8) {
-//                                Image(systemName: "circle.fill")
-//                                    .resizable()
-//                                    .frame(width: 6, height: 6)
-//                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-//                                    .padding(.top, 6)
-//                                
-//                                Text(item)
-//                                    .font(.custom("VodafoneRg-Regular", size: 16))
-//                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-//                                    .multilineTextAlignment(.leading)
-//                            }
-//                        }
-//                    }
-//                }
-//            )
-//            .padding(.horizontal, 16)
+            // Key Information
+            let infoArr: [String] = {
+                var arr: [String] = []
+                if let desc = vm.selectedProduct?.descriptionMarkdown, !desc.isEmpty {
+                    arr.append(desc)
+                }
+                if let readMore = vm.selectedProduct?.readMoreMarkdown, !readMore.isEmpty {
+                    arr.append(readMore)
+                }
+                return arr
+            }()
+            if !infoArr.isEmpty {
+                AccordionView(
+                    title: "Key Information",
+                    content: {
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(infoArr, id: \.self) { item in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "circle.fill")
+                                        .resizable()
+                                        .frame(width: 6, height: 6)
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .padding(.top, 6)
+                                    
+                                    Text(item)
+                                        .font(.custom("VodafoneRg-Regular", size: 16))
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .multilineTextAlignment(.leading)
+                                }
+                            }
+                        }
+                    }
+                )
+                .padding(.horizontal, 16)
+            }
+            
             
         }
     }
@@ -546,73 +560,5 @@ public struct SelectAmountView: View {
             }
         }
     }
-
+    
 }
-//
-//#Preview {
-//    ProductsView(
-//        saveRecharge: "0",
-//        receiverMobileNumber: "45456456",
-//        countryIso: "AE",
-//        countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//        countryName: "United Arab Emirates",
-//        providerCode: "E6AE",
-//        providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//        providerName: "DU UAE",
-//        productSku: "",
-//        
-//        mobileNumber: "88776630",
-//        serviceCode: "INT_TOP_UP",
-//        iPayCustomerID: "13",
-//        
-//        dismissMode: "pop"
-//    )
-//}
-//
-//struct SelectAmountView_PreviewsData: PreviewProvider {
-//    static var previews: some View {
-//        // Mock ProductsViewModel with sample products
-//        let mockProducts = [
-//            ProductItem(skuCode: "E6AEAE12938", providerCode: "E6AE", countryIso: "AE", displayText: "AED 20.00", sendValue: "28", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE17155", providerCode: "E6AE", countryIso: "AE", displayText: "AED 50.00", sendValue: "69.6", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE17343", providerCode: "E6AE", countryIso: "AE", displayText: "AED 25.00", sendValue: "34.8", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE17361", providerCode: "E6AE", countryIso: "AE", displayText: "AED 5.00", sendValue: "7", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE22430", providerCode: "E6AE", countryIso: "AE", displayText: "AED 10.00", sendValue: "14.1", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE25659", providerCode: "E6AE", countryIso: "AE", displayText: "Data Bundle 25 (400MB Data)", sendValue: "34.8", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE33503", providerCode: "E6AE", countryIso: "AE", displayText: "Data Bundle 210 (8 GB Data)", sendValue: "292.4", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE35243", providerCode: "E6AE", countryIso: "AE", displayText: "AED 45.00", sendValue: "62.8", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE35435", providerCode: "E6AE", countryIso: "AE", displayText: "AED 300.00", sendValue: "416.7", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE46146", providerCode: "E6AE", countryIso: "AE", displayText: "AED 30.00", sendValue: "41.9", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE46729", providerCode: "E6AE", countryIso: "AE", displayText: "Data Bundle 525 (40 GB Data)", sendValue: "731.1", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE53289", providerCode: "E6AE", countryIso: "AE", displayText: "Data Bundle 110 (2.2 GB Data)", sendValue: "153.3", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE64011", providerCode: "E6AE", countryIso: "AE", displayText: "AED 40.00", sendValue: "55.7", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE73090", providerCode: "E6AE", countryIso: "AE", displayText: "AED 200.00", sendValue: "278.5", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE73954", providerCode: "E6AE", countryIso: "AE", displayText: "AED 35.00", sendValue: "48.9", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE81767", providerCode: "E6AE", countryIso: "AE", displayText: "Data Bundle 55 (1GB Data)", sendValue: "76.7", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE8527", providerCode: "E6AE", countryIso: "AE", displayText: "AED 15.00", sendValue: "20.9", sendCurrencyIso: "QR"),
-//            ProductItem(skuCode: "E6AEAE94772", providerCode: "E6AE", countryIso: "AE", displayText: "AED 100.00", sendValue: "139.3", sendCurrencyIso: "QR")
-//        ]
-//        
-//        let vm = SelectAmountViewModel(
-//            saveRecharge: "0",
-//            receiverMobileNumber: "45456456",
-//            countryIso: "AE",
-//            countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//            countryName: "United Arab Emirates",
-//            providerCode: "E6AE",
-//            providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//            providerName: "DU UAE",
-//            productSku: "",
-//            
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13",
-//            
-//            dismissMode: "pop"
-//        )
-//        vm.products = mockProducts
-//        
-//        return SelectAmountView(vm: vm)
-//            .previewLayout(.sizeThatFits)
-//    }
-//}

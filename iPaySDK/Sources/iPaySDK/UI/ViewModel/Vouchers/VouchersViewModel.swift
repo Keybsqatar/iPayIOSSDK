@@ -97,8 +97,10 @@ public class VouchersViewModel: ObservableObject {
             let items = try await repo.getProviders(
                 mobileNumber:  mobileNumber,
                 serviceCode:   serviceCode,
-                countryCode:   countryIso
+                countryCode:   countryIso,
+                targetNumber: ""
             )
+//            print("successfully fetched providers: \(items)")
             providers = items
         } catch let netErr as NetworkError {
             // unwrap your NetworkError enum
@@ -170,6 +172,7 @@ public class VouchersViewModel: ObservableObject {
         do {
             let resp = try await DeleteBillRepository()
                 .deleteBill(id: bill.id)
+            
             
             if resp.status == "SUCCESS" {
                 // remove locally

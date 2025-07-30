@@ -73,8 +73,6 @@ public struct ReviewUtilityView: View {
         self.mobileNumber          = mobileNumber
         self.serviceCode           = serviceCode
         self.iPayCustomerID        = iPayCustomerID
-        
-        print("settingsData: \(settingsData)")
     }
     
     @State private var otpVM: OtpViewModel? = nil
@@ -94,7 +92,7 @@ public struct ReviewUtilityView: View {
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -126,7 +124,12 @@ public struct ReviewUtilityView: View {
                         detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
                         detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
                         DashedDivider()
-                        detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
+                        if billAmount != "0" {
+                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
+                        }else{
+                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(product.sendValue)")
+                        }
+                        
                         if let data = settingsData.data(using: .utf8),
                            let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] {
                             ForEach(product.settingDefinitions, id: \.Name) { setting in
@@ -139,18 +142,28 @@ public struct ReviewUtilityView: View {
                         }
                         detailRow(label: "Mobile Number",value: "\(countryPrefix) \(receiverMobileNumber)")
                     }
-                    .padding(.all, 16)
+                    .padding(.top, 24)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 64)
                     .background(
-                        Color("keyBs_white_2", bundle: .module)
+                        ZStack {
+                            Image("keybs_bg_receipt_1", bundle: .module)
+                                .resizable()
+                                .frame(maxWidth: .infinity)
+                        }
                     )
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(
-                                Color("keyBs_bg_gray_1", bundle: .module),
-                                lineWidth: 1
-                            )
-                    )
+//                    .padding(.all, 16)
+//                    .background(
+//                        Color("keyBs_white_2", bundle: .module)
+//                    )
+//                    .cornerRadius(8)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+//                            .stroke(
+//                                Color("keyBs_bg_gray_1", bundle: .module),
+//                                lineWidth: 1
+//                            )
+//                    )
                 }
                 .padding(.horizontal, 16)
                 
@@ -199,6 +212,7 @@ public struct ReviewUtilityView: View {
                     destination: Group {
                         if let otpVM = otpVM {
                             OtpView(vm: otpVM)
+                                .environmentObject(coord)
                                 .navigationBarHidden(true)
                         }
                     },
@@ -208,7 +222,7 @@ public struct ReviewUtilityView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)

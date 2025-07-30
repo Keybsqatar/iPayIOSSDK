@@ -62,7 +62,7 @@ public final class HTTPClient {
             ApiError(status: http.statusCode,
                      error: nil, message: nil, messages: nil)
             
-            print("HTTPClient apiErr \(apiErr)")
+//            print("HTTPClient apiErr \(apiErr)")
             
             throw NetworkError.apiError(code: http.statusCode, error: apiErr)
         }

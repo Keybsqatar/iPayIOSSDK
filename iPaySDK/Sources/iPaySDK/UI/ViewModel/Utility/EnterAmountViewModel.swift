@@ -17,13 +17,13 @@ public class EnterAmountViewModel: ObservableObject {
     @Published public var countryFlagUrl: URL
     @Published public var countryName: String
     @Published public var countryPrefix: String
-    @Published public var countryMinimumLength: String
-    @Published public var countryMaximumLength: String
+    // @Published public var countryMinimumLength: String
+    // @Published public var countryMaximumLength: String
     
     @Published public var providerCode: String
     @Published public var providerLogoUrl: URL
     @Published public var providerName: String
-    @Published public var providerValidationRegex: String
+    // @Published public var providerValidationRegex: String
     
     @Published public var productSku: String
     @Published public var receiverMobileNumber: String
@@ -42,13 +42,13 @@ public class EnterAmountViewModel: ObservableObject {
         countryFlagUrl: URL,
         countryName: String,
         countryPrefix: String,
-        countryMinimumLength: String,
-        countryMaximumLength: String,
+        // countryMinimumLength: String,
+        // countryMaximumLength: String,
         
         providerCode: String,
         providerLogoUrl: URL,
         providerName: String,
-        providerValidationRegex: String,
+        // providerValidationRegex: String,
         
         productSku: String,
         receiverMobileNumber: String,
@@ -66,13 +66,13 @@ public class EnterAmountViewModel: ObservableObject {
         self.countryFlagUrl = countryFlagUrl
         self.countryName = countryName
         self.countryPrefix = countryPrefix
-        self.countryMinimumLength = countryMinimumLength
-        self.countryMaximumLength = countryMaximumLength
+        // self.countryMinimumLength = countryMinimumLength
+        // self.countryMaximumLength = countryMaximumLength
         
         self.providerCode = providerCode
         self.providerLogoUrl = providerLogoUrl
         self.providerName = providerName
-        self.providerValidationRegex = providerValidationRegex
+        // self.providerValidationRegex = providerValidationRegex
         
         self.productSku = productSku
         self.receiverMobileNumber = receiverMobileNumber
@@ -100,6 +100,8 @@ public class EnterAmountViewModel: ObservableObject {
                 providerCode: providerCode
             )
             
+            // print("Loaded products: \(products)")
+            
             if products.count == 1 {
                 selectedProduct = products.first
             }else{
@@ -107,6 +109,8 @@ public class EnterAmountViewModel: ObservableObject {
                     selectedProduct = products.first(where: { $0.skuCode == productSku })
                 }
             }
+            
+            // print("Selected product: \(String(describing: selectedProduct))")
         } catch let netErr as NetworkError {
             // unwrap your NetworkError enum
             switch netErr {

@@ -39,4 +39,7 @@ public struct SavedBillsItem: Identifiable, Decodable, Sendable {
     public let billingRef:       String?
     public let reciptParams:     String?
     public let settingsData:     String?
+    public let descriptionMarkdown: String?
+    public let readMoreMarkdown: String?
+    public let targetIdentifierSetting: String?
 }

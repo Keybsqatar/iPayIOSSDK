@@ -3,17 +3,27 @@ import SwiftUI
 struct RemoteImage: View {
     @ObservedObject private var loader: ImageLoader
     var placeholder: AnyView
-
-    init(url: URL?, placeholder: AnyView = AnyView(Color.gray.opacity(0.3))) {
+    var isResizable: Bool = true
+    
+    init(
+        url: URL?,
+        placeholder: AnyView = AnyView(Color.gray.opacity(0.3)),
+        isResizable: Bool = true
+    ) {
         self.loader = ImageLoader(url: url)
         self.placeholder = placeholder
+        self.isResizable = isResizable
     }
-
+    
     var body: some View {
         Group {
             if let image = loader.image {
-                Image(uiImage: image)
+                if isResizable {
+                    Image(uiImage: image)
                     .resizable()
+                }else {
+                    Image(uiImage: image)
+                }
             } else {
                 placeholder
             }
@@ -28,12 +38,12 @@ class ImageLoader: ObservableObject {
     @Published var image: UIImage?
     private static let cache = NSCache<NSURL, UIImage>()
     private let url: URL?
-
+    
     init(url: URL?) {
         self.url = url
         load()
     }
-
+    
     func load() {
         guard let url = url else {
             self.image = nil

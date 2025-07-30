@@ -13,7 +13,7 @@ struct ToastModifier: ViewModifier {
             
             if isShowing {
                 Text(message)
-                    .font(.subheadline)
+                    .font(.custom("VodafoneRg-Bold", size: 16))
                     .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)

@@ -4,8 +4,11 @@ import ContactsUI
 import UIKit
 
 public struct TopUpView: View {
-    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject private var coord: SDKCoordinator
+    @Environment(\.presentationMode) private var presentationMode
+    
+//    private var setPopSwiftUI: ((() -> Void) -> Void)?
+//    @State private var isActive: Bool = true // For pop
     
     @ObservedObject private var vm: TopUpViewModel
     
@@ -43,8 +46,11 @@ public struct TopUpView: View {
     public init (
         mobileNumber: String,
         serviceCode:  String,
-        iPayCustomerID: String
+        iPayCustomerID: String,
+        setPopSwiftUI: ((() -> Void) -> Void)? = nil
     ) {
+        // self.setPopSwiftUI = setPopSwiftUI
+        
         self.vm = TopUpViewModel(
             serviceCode: serviceCode,
             mobileNumber: mobileNumber,
@@ -65,134 +71,161 @@ public struct TopUpView: View {
     }
     
     public var body: some View {
-        NavigationView {
-            ZStack(alignment: .bottom) {
-                VStack(spacing: 0) {
-                    Spacer().frame(height: 32)
-                    
-                    // Top Bar
-                    HStack {
-                        Image("ic_back", bundle: .module)
-                            .onTapGesture { presentationMode.wrappedValue.dismiss() }
-                            .frame(width: 24, height: 24)
-                            .scaledToFit()
-                        
-                        Spacer()
-                        
-                        Image("ic_close", bundle: .module)
-                            .onTapGesture { coord.closeSDK() }
-                            .frame(width: 24, height: 24)
-                            .scaledToFit()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 16)
-                    
-                    Spacer().frame(height: 24)
-                    
-                    // Title
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Step 1 of 4")
-                            .font(.custom("VodafoneRg-Regular", size: 16))
-                            .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                        
-                        Text("Top Up International Number")
-                            .font(.custom("VodafoneRg-Bold", size: 20))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 16)
-                    
-                    Spacer().frame(height: 75)
-                    
-                    // Tabs
-                    TopUpTabView(selection: $tab)
-                    
-                    // Content
-                    if tab == .new {
-                        newTopUpView
-                    } else {
-                        savedTabView
-                    }
-                }
-                .background(Color.white)
+        //        NavigationView {
+        ZStack(alignment: .bottom) {
+            VStack(spacing: 0) {
+                 Spacer().frame(height: 32)
                 
-                if showDeletionModal {
-                    DeletionSuccessModalView(
-                        isPresented: $showDeletionModal,
-                        message:      deletionMessage,
-                        onHomepage: {
-                            showDeletionModal = false
-                            deletionMessage = ""
-                            vm.deleteSuccessMessage = ""
-                        }
-                    )
+                // Top Bar
+                HStack {
+                    Image("ic_back", bundle: .module)
+                        // .onTapGesture { presentationMode.wrappedValue.dismiss() }
+                        // .onTapGesture { coord.popSwiftUIScreen() }
+                         .onTapGesture { coord.dismissSDK() }
+                        .frame(width: 24, height: 24)
+                        .scaledToFit()
+                    
+                    Spacer()
+                    
+                    Image("ic_close", bundle: .module)
+                        .onTapGesture { coord.dismissSDK() }
+                        .frame(width: 24, height: 24)
+                        .scaledToFit()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                
+                Spacer().frame(height: 24)
+                
+                // Title
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Step 1 of 4")
+                        .font(.custom("VodafoneRg-Regular", size: 16))
+                        .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                    
+                    Text("Top Up International Number")
+                        .font(.custom("VodafoneRg-Bold", size: 20))
+                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                
+                Spacer().frame(height: 75)
+                
+                // Tabs
+                TopUpTabView(selection: $tab)
+                
+                // Content
+                if tab == .new {
+                    newTopUpView
+                } else {
+                    savedTabView
                 }
             }
-            .sheet(isPresented: $showPicker) {
-                CountryPicker(
-                    vm: vm
-                ) { selectedCountry in
-                    country = selectedCountry
-                    
-                    vm.mobileMaxLength = (Int(selectedCountry.maximumLength) ?? 0) - selectedCountry.prefix.count
-                    vm.mobileMinLength = (Int(selectedCountry.minimumLength) ?? 0) - selectedCountry.prefix.count
-                    
-                    if !phone.isEmpty {
-                        cleanAndSetPhone(selected: phone)
+            .background(Color.white)
+            
+            if showDeletionModal {
+                DeletionSuccessModalView(
+                    isPresented: $showDeletionModal,
+                    message:      deletionMessage,
+                    onHomepage: {
+                        showDeletionModal = false
+                        deletionMessage = ""
+                        vm.deleteSuccessMessage = ""
                     }
-                    
-                    if(!showProviders){
-                        if(!phone.isEmpty) {
-                            disabledProceed = false
-                        } else {
-                            disabledProceed = true
-                        }
-                    }else{
-                        Task {
-                            await vm.loadProviders(for: selectedCountry.countryIso)
-                        }
-                        selectedProvider = nil
-                        showProviders = true
-                        disabledProceed = true
-                    }
-                }
-            }
-            .onAppear {
-                Task { await vm.loadCountries() }
-                Task { await vm.loadSavedBills() }
-            }
-            .onReceive(errorStream) { msg in
-                if let m = msg {
-                    toastMessage = m
-                    showToast    = true
-                }
-            }
-            .toast(isShowing: $showToast, message: toastMessage)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                UIApplication.shared.endEditing()
+                )
             }
         }
+        .navigationBarHidden(true)
+        .sheet(isPresented: $showPicker) {
+            CountryPicker(
+                vm: vm
+            ) { selectedCountry in
+                country = selectedCountry
+                // print("Selected country: \(selectedCountry)")
+                
+                vm.mobileMaxLength = (Int(selectedCountry.maximumLength) ?? 0) - selectedCountry.prefix.count
+                vm.mobileMinLength = (Int(selectedCountry.minimumLength) ?? 0) - selectedCountry.prefix.count
+                
+                if !phone.isEmpty {
+                    cleanAndSetPhone(selected: phone)
+                }
+                
+                if(!showProviders){
+                    if(!phone.isEmpty) {
+                        disabledProceed = false
+                    } else {
+                        disabledProceed = true
+                    }
+                }else{
+                    Task {
+                        await vm.loadProviders(for: selectedCountry.countryIso, phone: phone)
+                        
+                        showProviders = true
+                        if(vm.providers.count == 1){
+                            selectedProvider = vm.providers.first
+                            showProvidersList = false
+                            disabledProceed = false
+                        }else{
+                            selectedProvider = nil
+                            showProvidersList = false
+                            disabledProceed = true
+                        }
+                    }
+                    
+
+                    
+//                    selectedProvider = nil
+//                    showProviders = true
+//                    disabledProceed = true
+                }
+            }
+        }
+        .onAppear {
+            Task { await vm.loadCountries() }
+            Task { await vm.loadSavedBills() }
+        }
+        .onReceive(errorStream) { msg in
+            if let m = msg {
+                toastMessage = m
+                showToast    = true
+            }
+        }
+        .toast(isShowing: $showToast, message: toastMessage)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            UIApplication.shared.endEditing()
+        }
+//        .onAppear {
+//            setPopSwiftUI?({
+//                self.isActive = false
+//            })
+//        }
+//        .background(
+//            NavigationLink(destination: EmptyView(), isActive: $isActive) {
+//                EmptyView()
+//            }
+//                .hidden()
+//        )
+        //        }
     }
     
     // MARK: – New Top-Up Tab
     private var newTopUpView: some View {
         ZStack {
             VStack(spacing: 0) {
-                Spacer().frame(height: 64)
+                Spacer().frame(height: 50)
                 
                 HStack(spacing: 16) {
                     // Country Field
                     VStack(spacing: 8) {
-                        if country != nil {
-                            Text("Country")
-                                .font(.custom("VodafoneRg-Regular", size: 16.0))
-                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                        Text(country != nil ? "Country" : "")
+                            .font(.custom("VodafoneRg-Regular", size: 16.0))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
                         Button {
                             showPicker = true
@@ -235,13 +268,11 @@ public struct TopUpView: View {
                     
                     // ─── Phone Field ────────────────────────────────────────────
                     VStack(spacing: 8) {
-                        if phone != "" {
-                            Text("Mobile Number")
-                                .font(.custom("VodafoneRg-Regular", size: 16.0))
-                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                        Text(phone != "" ? "Mobile Number": "")
+                            .font(.custom("VodafoneRg-Regular", size: 16.0))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
                         HStack {
                             TextField("", text: $phone)
@@ -287,19 +318,17 @@ public struct TopUpView: View {
                 }
                 .padding(.horizontal, 16)
                 
-                Spacer().frame(height: 47.5)
+                Spacer().frame(height: 30)
                 
                 if(showProviders){
                     ZStack(alignment: .top) {
                         // Operator Dropdown
                         VStack(spacing: 8) {
-                            if selectedProvider != nil {
-                                Text("Select operator name")
-                                    .font(.custom("VodafoneRg-Regular", size: 16.0))
-                                    .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                    .multilineTextAlignment(.leading)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
+                            Text(selectedProvider != nil ? "Select operator name" : "")
+                                .font(.custom("VodafoneRg-Regular", size: 16.0))
+                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             
                             // Dropdown header
                             VStack(spacing: 0) {
@@ -351,6 +380,7 @@ public struct TopUpView: View {
                                     VStack(spacing: 0) {
                                         ForEach(vm.providers) { p in
                                             Button {
+                                                // print("Selected provider: \(p)")
                                                 selectedProvider = p
                                                 showProvidersList = false
                                                 disabledProceed = false
@@ -511,9 +541,21 @@ public struct TopUpView: View {
                     if(!showProviders){
                         Task {
                             if let c = country {
-                                await vm.loadProviders(for: c.countryIso)
+                                await vm.loadProviders(for: c.countryIso, phone: phone)
+                                
                                 showProviders = true
-                                disabledProceed = true
+                                if(vm.providers.count == 1){
+                                    selectedProvider = vm.providers.first
+                                    showProvidersList = false
+                                    disabledProceed = false
+                                }else{
+                                    selectedProvider = nil
+                                    showProvidersList = false
+                                    disabledProceed = true
+                                }
+                                
+//                                showProviders = true
+//                                disabledProceed = true
                             }
                         }
                     }else{
@@ -563,6 +605,7 @@ public struct TopUpView: View {
                                 iPayCustomerID: vm.iPayCustomerID,
                                 dismissMode: "pop"
                             )
+                            .environmentObject(coord)
                             .navigationBarHidden(true)
                         }
                     },
@@ -572,10 +615,11 @@ public struct TopUpView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
+//                    .frame(height: 108)
                     .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
@@ -689,7 +733,7 @@ public struct TopUpView: View {
                                     ) : AnyView(EmptyView()),
                                     alignment: .bottom
                                 )
-
+                                
                             }
                             NavigationLink(
                                 destination: Group {
@@ -709,6 +753,7 @@ public struct TopUpView: View {
                                             iPayCustomerID: vm.iPayCustomerID,
                                             dismissMode: "pop"
                                         )
+                                        .environmentObject(coord)
                                         .navigationBarHidden(true)
                                     }
                                 },

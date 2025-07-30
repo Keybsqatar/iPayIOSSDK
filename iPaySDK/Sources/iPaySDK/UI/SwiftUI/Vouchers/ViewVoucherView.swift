@@ -24,6 +24,8 @@ public struct ViewVoucherView: View {
     public let providerLogoUrl:      URL
     public let dateTime:         String
     public let refId:          String
+    public let descriptionMarkdown: String
+    public let readMoreMarkdown: String
     public let textPin:       String
     public let valuePin:       String
     
@@ -41,6 +43,8 @@ public struct ViewVoucherView: View {
         providerLogoUrl:       URL,
         dateTime:         String,
         refId:          String,
+        descriptionMarkdown: String = "",
+        readMoreMarkdown: String = "",
         textPin:       String,
         valuePin:       String
     ) {
@@ -52,6 +56,8 @@ public struct ViewVoucherView: View {
         self.providerLogoUrl = providerLogoUrl
         self.dateTime = dateTime
         self.refId = refId
+        self.descriptionMarkdown = descriptionMarkdown
+        self.readMoreMarkdown = readMoreMarkdown
         self.textPin = textPin
         self.valuePin = valuePin
     }
@@ -59,17 +65,25 @@ public struct ViewVoucherView: View {
     @State private var otpVM: OtpViewModel? = nil
     
     private var receiptText: String {
-        return """
+        var details = """
         Receipt Details
-        \(textPin): \(valuePin)
+        \(textPin.uppercased()): \(valuePin)
         Voucher: \(displayText)
         Country:   \(countryName)
         Purchase Date: \(dateTime)
         Consumer ID: \(refId)
         """
+        
+        if !descriptionMarkdown.isEmpty || !readMoreMarkdown.isEmpty {
+            if !readMoreMarkdown.isEmpty {
+                details += "\n Key Information: \(readMoreMarkdown)"
+            }else {
+                details += "\n Key Information: \(descriptionMarkdown)"
+            }
+        }
+        
+        return details
     }
-    //        Type:   \(data.type)
-    //        Number: \(data.number)
     
     public var body: some View {
         ZStack(alignment: .bottom){
@@ -78,15 +92,17 @@ public struct ViewVoucherView: View {
                 
                 // Top Bar
                 HStack {
-                    Image("ic_back", bundle: .module)
-                        .onTapGesture { close ? coord.closeSDK() : presentationMode.wrappedValue.dismiss() }
-                        .frame(width: 24, height: 24)
-                        .scaledToFit()
+                    if !close{
+                        Image("ic_back", bundle: .module)
+                            .onTapGesture { close ? coord.dismissSDK() : presentationMode.wrappedValue.dismiss() }
+                            .frame(width: 24, height: 24)
+                            .scaledToFit()
+                    }
                     
                     Spacer()
                     
                     Image("ic_close", bundle: .module)
-                        .onTapGesture { coord.closeSDK() }
+                        .onTapGesture { coord.dismissSDK() }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                 }
@@ -95,106 +111,185 @@ public struct ViewVoucherView: View {
                 
                 Spacer().frame(height: 45)
                 
-                // Title
-                VStack(alignment: .leading) {
-                    Text(displayText)
-                        .font(.custom("VodafoneRg-Bold", size: 18))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                
-                Spacer().frame(height: 40)
-                
-                VStack(spacing: 32) {
-                    // Card with image
-                    VStack(spacing: 0) {
-                        VStack(spacing: 0) {
-                            RemoteImage(
-                                url: providerLogoUrl,
-                                placeholder: AnyView(Color.gray.opacity(0.3))
-                            )
-                            .frame(height: 120)
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 87)
-                        }
-                    }
-                    .background(Color("keyBs_bg_gray_7", bundle: .module))
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    
-                    HStack {
-                        Spacer()
-                        Text(valuePin)
-                            .font(.custom("VodafoneRg-Bold", size: 32))
+                ScrollView {
+                    // Title
+                    VStack(alignment: .leading) {
+                        Text(displayText)
+                            .font(.custom("VodafoneRg-Bold", size: 18))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.center)
-                        
-                        Button(action: {
-                            UIPasteboard.general.string = refId
-                            withAnimation {
-                                showToast = true
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    
+                    Spacer().frame(height: 40)
+                    
+                    VStack(spacing: 32) {
+                        // Card with image
+                        VStack(spacing: 0) {
+                            HStack(spacing: 0) {
+                                RemoteImage(
+                                    url: providerLogoUrl,
+                                    placeholder: AnyView(Color.gray.opacity(0.3)),
+                                    isResizable: false
+                                )
+                                .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
+                                Spacer()
                             }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            .padding(.top, 24)
+                            .padding(.horizontal, 24)
+                            
+                            HStack(spacing: 8) {
+                                Text(providerName)
+                                    .font(.custom("VodafoneRg-Bold", size: 20))
+                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                    .multilineTextAlignment(.leading)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                SVGImageView(url: countryFlagUrl)
+                                    .frame(width: 20, height: 20)
+                                    .scaledToFit()
+                                    .cornerRadius(20)
+                                
+                                Text(countryName)
+                                    .font(.custom("VodafoneRg-Regular", size: 18))
+                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .padding(.vertical, 16)
+                            .padding(.horizontal, 24)
+                            .background(Color("keyBs_bg_gray_3", bundle: .module))
+                        }
+                        .background(Color("keyBs_bg_gray_4", bundle: .module))
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        
+                        //                    VStack(spacing: 0) {
+                        //                        VStack(spacing: 0) {
+                        //                            RemoteImage(
+                        //                                url: providerLogoUrl,
+                        //                                placeholder: AnyView(Color.gray.opacity(0.3))
+                        //                            )
+                        //                            .frame(height: 120)
+                        //                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        //                            .padding(.vertical, 12)
+                        //                            .padding(.horizontal, 87)
+                        //                        }
+                        //                    }
+                        //                    .background(Color("keyBs_bg_gray_7", bundle: .module))
+                        //                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        
+                        HStack {
+                            Spacer()
+                            Text(valuePin)
+                                .font(.custom("VodafoneRg-Bold", size: 32))
+                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                .multilineTextAlignment(.center)
+                            
+                            Button(action: {
+                                UIPasteboard.general.string = refId
                                 withAnimation {
-                                    showToast = false
+                                    showToast = true
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    withAnimation {
+                                        showToast = false
+                                    }
+                                }
+                            }) {
+                                Image("ic_copy_content", bundle: .module)
+                                    .frame(width: 24, height: 24)
+                                    .scaledToFit()
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                        .background(Color("keyBs_bg_pink_1", bundle: .module))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color("keyBs_bg_red_1", bundle: .module), style: StrokeStyle(lineWidth: 2, dash: [4]))
+                        )
+                        .cornerRadius(12)
+                        .overlay(
+                            Group {
+                                if showToast {
+                                    Text("Copied!")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 8)
+                                        .background(Color.black.opacity(0.8))
+                                        .cornerRadius(16)
+                                        .transition(.opacity.combined(with: .move(edge: .top)))
+                                        .zIndex(1)
+                                        .offset(y: -56)
                                 }
                             }
-                        }) {
-                            Image("ic_copy_content", bundle: .module)
-                                .frame(width: 24, height: 24)
-                                .scaledToFit()
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        Spacer()
-                    }
-                    .padding(.vertical, 8)
-                    .background(Color("keyBs_bg_pink_1", bundle: .module))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color("keyBs_bg_red_1", bundle: .module), style: StrokeStyle(lineWidth: 2, dash: [4]))
-                    )
-                    .cornerRadius(12)
-                    .overlay(
-                        Group {
-                            if showToast {
-                                Text("Copied!")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color.black.opacity(0.8))
-                                    .cornerRadius(16)
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
-                                    .zIndex(1)
-                                    .offset(y: -56)
+                        )
+                        
+                        // Details card
+                        //                    VStack(spacing: 24) {
+                        //                        detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
+                        //                        detailRow(label: "Purchase Date",value: dateTime)
+                        //                        detailRow(label: "Consumer ID",value: refId)
+                        //                    }
+                        //                    .padding(.all, 16)
+                        //                    .background(
+                        //                        Color("keyBs_white_2", bundle: .module)
+                        //                    )
+                        //                    .cornerRadius(8)
+                        //                    .overlay(
+                        //                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        //                            .stroke(
+                        //                                Color("keyBs_bg_gray_1", bundle: .module),
+                        //                                lineWidth: 1
+                        //                            )
+                        //                    )
+                        
+                        // Key Information
+                        let infoArr: [String] = {
+                            var arr: [String] = []
+                            if !descriptionMarkdown.isEmpty {
+                                arr.append(descriptionMarkdown)
                             }
-                        }
-                    )
-                    
-                    // Details card
-                    VStack(spacing: 24) {
-                        detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
-                        detailRow(label: "Purchase Date",value: dateTime)
-                        detailRow(label: "Consumer ID",value: refId)
-                    }
-                    .padding(.all, 16)
-                    .background(
-                        Color("keyBs_white_2", bundle: .module)
-                    )
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(
-                                Color("keyBs_bg_gray_1", bundle: .module),
-                                lineWidth: 1
+                            if !readMoreMarkdown.isEmpty {
+                                arr.append(readMoreMarkdown)
+                            }
+                            return arr
+                        }()
+                        if !infoArr.isEmpty {
+                            AccordionView(
+                                title: "Key Information",
+                                content: {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        ForEach(infoArr, id: \.self) { item in
+                                            HStack(alignment: .top, spacing: 8) {
+                                                Image(systemName: "circle.fill")
+                                                    .resizable()
+                                                    .frame(width: 6, height: 6)
+                                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                                    .padding(.top, 6)
+                                                
+                                                Text(item)
+                                                    .font(.custom("VodafoneRg-Regular", size: 16))
+                                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                                    .multilineTextAlignment(.leading)
+                                            }
+                                        }
+                                    }
+                                }
                             )
-                    )
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    
+                    
+                    
                 }
-                .padding(.horizontal, 16)
                 
                 Spacer()
+                Spacer().frame(height: 16)
                 
                 // Share Receipt button
                 Button(action: { showShareSheet = true }) {
@@ -220,7 +315,7 @@ public struct ViewVoucherView: View {
                 }
                 
                 // Bottom pattern
-                Image("bottom_pattern2", bundle: .module)
+                Image("bottom_pattern3", bundle: .module)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
@@ -273,6 +368,43 @@ public struct ViewVoucherView: View {
             .frame(alignment: .trailing)
         }
     }
+    
+    struct AccordionView<Content: View>: View {
+        let title: String
+        @ViewBuilder let content: Content
+        @State private var expanded = false
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                Button(action: { withAnimation { expanded.toggle() } }) {
+                    HStack {
+                        Text(title)
+                            .font(.custom("VodafoneRg-Bold", size: 14))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                        
+                        Spacer()
+                        
+                        Image(systemName: expanded ? "chevron.up" : "chevron.down")
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .frame(width: 16, height: 16)
+                    }
+                    .padding(.all, 16)
+                }
+                
+                if expanded {
+                    content
+                        .padding(.top, 8)
+                        .padding(.bottom, 16)
+                        .padding(.horizontal, 16)
+                }
+                
+            }
+            .background(Color("keyBs_bg_gray_7", bundle: .module))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+    }
+    
 }
 
 private struct DashedDivider: View {

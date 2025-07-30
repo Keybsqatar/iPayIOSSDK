@@ -21,10 +21,37 @@ public struct iPaySDK {
         HTTPClient.shared.initialize(secretKey: secretKey)
         
         // 2) Coordinator for dismissal
+        // var hosting: UIHostingController<AnyView>? = nil
+        // let coordinator = SDKCoordinator {
+        //     hosting?.dismiss(animated: true)
+        // }
+        
+        // var hosting: UIHostingController<AnyView>? = nil
+        // let coordinator = SDKCoordinator(
+        //     close: {
+        //         hosting?.dismiss(animated: true)
+        //     },
+        //     popToRoot: {
+        //         if let nav = hosting?.navigationController {
+        //             nav.popToRootViewController(animated: true)
+        //         } else {
+        //             hosting?.dismiss(animated: true)
+        //         }
+        //     }
+        // )
+        
         var hosting: UIHostingController<AnyView>? = nil
-        let coordinator = SDKCoordinator {
-            hosting?.dismiss(animated: true)
-        }
+        // This will be set by TopUpView via a binding
+        var popSwiftUI: (() -> Void)? = nil
+        
+        let coordinator = SDKCoordinator(
+            dismiss: {
+                hosting?.navigationController?.dismiss(animated: true)
+            },
+            popSwiftUI: {
+                popSwiftUI?()
+            }
+        )
         
         // 3) Build the SwiftUI view
         let content: AnyView
@@ -63,6 +90,7 @@ public struct iPaySDK {
         
         // 4) Wrap and return
         hosting = UIHostingController(rootView: content)
+//        hosting?.navigationController?.setNavigationBarHidden(true, animated: false)
         return hosting!
     }
     
@@ -79,10 +107,38 @@ public struct iPaySDK {
         HTTPClient.shared.initialize(secretKey: secretKey)
         
         // 2) Coordinator for dismissal
+        // var hosting: UIHostingController<AnyView>? = nil
+        // let coordinator = SDKCoordinator {
+        //     hosting?.dismiss(animated: true)
+        // }
+        
+        // var hosting: UIHostingController<AnyView>? = nil
+        // let coordinator = SDKCoordinator(
+        //     close: {
+        //         hosting?.dismiss(animated: true)
+        //     },
+        //     popToRoot: {
+        //         if let nav = hosting?.navigationController {
+        //             nav.popToRootViewController(animated: true)
+        //         } else {
+        //             hosting?.dismiss(animated: true)
+        //         }
+        //     }
+        // )
+        
         var hosting: UIHostingController<AnyView>? = nil
-        let coordinator = SDKCoordinator {
-            hosting?.dismiss(animated: true)
-        }
+        // This will be set by TopUpView via a binding
+        var popSwiftUI: (() -> Void)? = nil
+        
+        let coordinator = SDKCoordinator(
+            dismiss: {
+                hosting?.navigationController?.dismiss(animated: true)
+            },
+            popSwiftUI: {
+                popSwiftUI?()
+            }
+        )
+        
         
         // 3) Build the SwiftUI view
         let content: AnyView
@@ -94,6 +150,57 @@ public struct iPaySDK {
                     mobileNumber:   mobileNumber,
                     iPayCustomerID: iPayCustomerID,
                     savedBillID:    savedBillID
+                ))
+                .environmentObject(coordinator)
+            )
+        default:
+            return nil // <-- Do nothing
+            
+        }
+        
+        // 4) Wrap and return
+        hosting = UIHostingController(rootView: content)
+//        hosting?.navigationController?.setNavigationBarHidden(true, animated: false)
+        return hosting!
+    }
+    
+    @MainActor
+    public static func openViewVoucherController(
+        secretKey:      String,
+        serviceCode:    String,
+        mobileNumber:   String,
+        iPayCustomerID: String,
+        billingRef:    String
+    ) -> UIViewController? {
+        // 1) Fonts & networking
+        FontLoader.registerFonts()
+        HTTPClient.shared.initialize(secretKey: secretKey)
+        
+        // 2) Coordinator for dismissal
+        var hosting: UIHostingController<AnyView>? = nil
+        // This will be set by TopUpView via a binding
+        var popSwiftUI: (() -> Void)? = nil
+        
+        let coordinator = SDKCoordinator(
+            dismiss: {
+                hosting?.navigationController?.dismiss(animated: true)
+            },
+            popSwiftUI: {
+                popSwiftUI?()
+            }
+        )
+        
+        
+        // 3) Build the SwiftUI view
+        let content: AnyView
+        switch serviceCode {
+        case "INT_VOUCHER":
+            content = AnyView(
+                OpenViewVoucherView(vm: OpenViewVoucherViewModel(
+                    serviceCode:    serviceCode,
+                    mobileNumber:   mobileNumber,
+                    iPayCustomerID: iPayCustomerID,
+                    billingRef:    billingRef
                 ))
                 .environmentObject(coordinator)
             )

@@ -7,13 +7,15 @@ public class ProvidersRepository {
     public func getProviders(
         mobileNumber: String,
         serviceCode:  String,
-        countryCode:  String
+        countryCode:  String,
+        targetNumber: String
     ) async throws -> [ProviderItem] {
         // print("ProvidersRepository getProviders")
         let req  = ProvidersRequest(
             mobileNumber: mobileNumber,
             serviceCode:  serviceCode,
-            countryCode:  countryCode
+            countryCode:  countryCode,
+            targetNumber: targetNumber
         )
         let resp = try await api.fetchProviders(request: req)
 //        print("Providers: \(resp.items)")
