@@ -50,9 +50,9 @@ public final class HTTPClient {
         }
         
         let decoder = JSONDecoder()
-//         print("HTTPClient http.statusCode \(http.statusCode) \(url)")
-//        print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
-//        print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
+        //  print("HTTPClient http.statusCode \(http.statusCode) \(url)")
+        // print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
+        // print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
         
         if 200..<300 ~= http.statusCode {
             return try decoder.decode(T.self, from: data)
@@ -62,7 +62,7 @@ public final class HTTPClient {
             ApiError(status: http.statusCode,
                      error: nil, message: nil, messages: nil)
             
-//            print("HTTPClient apiErr \(apiErr)")
+            // print("HTTPClient apiErr \(apiErr)")
             
             throw NetworkError.apiError(code: http.statusCode, error: apiErr)
         }

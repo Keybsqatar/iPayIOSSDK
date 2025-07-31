@@ -588,7 +588,7 @@ public struct UtilityView: View {
                             SVGImageView(url: bill.countryFlagUrl)
                                 .frame(width: 30, height: 30)
                                 .scaledToFit()
-                                .cornerRadius(30)
+                                .cornerRadius(15)
                         }
                         .frame(width: 48, height: 48)
                         .background(Color("keyBs_bg_gray_4", bundle: .module))
