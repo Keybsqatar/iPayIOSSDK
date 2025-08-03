@@ -157,7 +157,7 @@ public struct OtpView: View {
                     
                     Text(
                         vm.serviceCode == "INT_TOP_UP" ? "Intl Top up" :
-                        vm.serviceCode == "INT_VOUCHER" ? "Intl Voucher" :
+                        vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
                         vm.serviceCode == "INT_UTIL_PAYMENT" ? "Intl Utility" : ""
                     )
                         .font(.custom("VodafoneRg-Bold", size: 16))

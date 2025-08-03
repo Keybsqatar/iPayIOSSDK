@@ -109,7 +109,7 @@ public struct ViewVoucherView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
                 
-                Spacer().frame(height: 45)
+                Spacer().frame(height: 24)
                 
                 ScrollView {
                     // Title
@@ -249,11 +249,10 @@ public struct ViewVoucherView: View {
                         // Key Information
                         let infoArr: [String] = {
                             var arr: [String] = []
-                            if !descriptionMarkdown.isEmpty {
-                                arr.append(descriptionMarkdown)
-                            }
                             if !readMoreMarkdown.isEmpty {
                                 arr.append(readMoreMarkdown)
+                            } else if !descriptionMarkdown.isEmpty {
+                                arr.append(descriptionMarkdown)
                             }
                             return arr
                         }()
@@ -298,7 +297,7 @@ public struct ViewVoucherView: View {
                             .frame(width: 24, height: 24)
                             .scaledToFit()
                         
-                        Text("Share Receipt")
+                        Text("Share")
                             .font(.custom("VodafoneRg-Bold", size: 16))
                             .foregroundColor(Color("keyBs_white", bundle: .module))
                             .multilineTextAlignment(.leading)
