@@ -144,11 +144,6 @@ public struct ReviewTopUpView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 
-                                // Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit")
-                                //     .font(.custom("VodafoneRg-Regular", size: 14))
-                                //     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                //     .multilineTextAlignment(.center)
-                                //     .padding(.top, 4)
                             }
                             .padding(.top, 28)
                             .padding(.bottom, 20)
@@ -290,23 +285,6 @@ public struct ReviewTopUpView: View {
                 }
                 .disabled(disabledProceed)
                 NavigationLink(
-                    // destination: Group {
-                    //     OtpView(
-                    //         saveRecharge: saveRecharge,
-                    //         receiverMobileNumber: receiverMobileNumber,
-                    //         countryIso: countryIso,
-                    //         countryFlagUrl: countryFlagUrl,
-                    //         countryName: countryName,
-                    //         providerCode: providerCode,
-                    //         providerLogoUrl: providerLogoUrl,
-                    //         providerName: providerName,
-                    //         product: product,
-                    //         mobileNumber: mobileNumber,
-                    //         serviceCode: serviceCode,
-                    //         iPayCustomerID: iPayCustomerID
-                    //     )
-                    //     .navigationBarHidden(true)
-                    // },
                     destination: Group {
                         if let otpVM = otpVM {
                             OtpView(vm: otpVM)

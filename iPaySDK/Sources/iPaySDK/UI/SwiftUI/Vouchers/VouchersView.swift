@@ -635,22 +635,3 @@ private struct DashedDivider: View {
         .frame(height: 1)
     }
 }
-
-#Preview {
-    VouchersView(
-        mobileNumber: "88776630",
-        serviceCode:  "INT_TOP_UP",
-        iPayCustomerID: "13"
-    )
-}
-
-//struct TopUpView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        VouchersView(
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13"
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

@@ -198,18 +198,6 @@ public struct TopUpView: View {
         .onTapGesture {
             UIApplication.shared.endEditing()
         }
-//        .onAppear {
-//            setPopSwiftUI?({
-//                self.isActive = false
-//            })
-//        }
-//        .background(
-//            NavigationLink(destination: EmptyView(), isActive: $isActive) {
-//                EmptyView()
-//            }
-//                .hidden()
-//        )
-        //        }
     }
     
     // MARK: – New Top-Up Tab
@@ -430,79 +418,6 @@ public struct TopUpView: View {
                                 .offset(y: 0)
                                 .zIndex(1)
                             }
-                            // if showProvidersList {
-                            //     // VStack(spacing: 0) {
-                            //     List {
-                            //         ForEach(vm.providers) { p in
-                            //             Button {
-                            //                 selectedProvider = p
-                            //                 showProvidersList = false
-                            //                 disabledProceed = false
-                            //             } label: {
-                            //                 VStack(spacing: 0) {
-                            //                     HStack(spacing: 16) {
-                            //                         // AsyncImage(url: p.logoUrl) { phase in
-                            //                         //     if case .success(let img) = phase {
-                            //                         //         img.resizable().scaledToFit()
-                            //                         //     } else {
-                            //                         //         Color.gray.opacity(0.3)
-                            //                         //     }
-                            //                         // }
-                            //                         RemoteImage(
-                            //                             url: p.logoUrl,
-                            //                             placeholder: AnyView(Color.gray.opacity(0.3))
-                            //                         )
-                            //                         .frame(width: 16, height: 16)
-                            
-                            //                         Text(p.name)
-                            //                             .font(.custom("VodafoneRg-Regular", size: 16))
-                            //                             .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                            //                             .multilineTextAlignment(.leading)
-                            //                     }
-                            //                     .padding(.all, 16)
-                            //                     .frame(maxWidth: .infinity, alignment: .leading)
-                            //                     .background(
-                            //                         selectedProvider?.providerCode == p.providerCode
-                            //                         ? Color("keyBs_bg_pink_1", bundle: .module)
-                            //                         : Color.white
-                            //                     )
-                            
-                            //                     if p.providerCode != vm.providers.last?.providerCode {
-                            //                         Divider()
-                            //                             .overlay(Color("keyBs_bg_gray_1", bundle: .module))
-                            //                             .padding(.horizontal, 16)
-                            //                     }
-                            //                 }
-                            //             }
-                            //             .listRowInsets(EdgeInsets())
-                            //             // .listRowInsets(EdgeInsets())
-                            //             //                                        if #available(iOS 14.0, *) {
-                            //             //                                            listRowInsets(EdgeInsets())
-                            //             //                                        }
-                            //             //                                        // .listRowSeparator(.hidden)
-                            //             //                                        if #available(iOS 15.0, *) {
-                            //             //                                            listRowSeparator(.hidden)
-                            //             //                                        }
-                            //             .buttonStyle(.plain)
-                            //         }
-                            //     }
-                            //     .listStyle(.plain)
-                            //     .frame(
-                            //         maxHeight: min(CGFloat(vm.providers.count) * 56, 300)
-                            //     ) // 56 is estimated row height, 300 is max height for scroll
-                            //     //                                .listRowInsets(EdgeInsets())
-                            //     //                                .listRowSeparator(.hidden)
-                            //     // }
-                            //     .cornerRadius(8, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
-                            //     .background(
-                            //         RoundedRectangle(cornerRadius: 8)
-                            //             .fill(Color.white)
-                            //             .shadow(color: Color.black.opacity(0.3),
-                            //                     radius: 4, x: 0, y: 2)
-                            //     )
-                            //     .offset(y: 0) // <-- Adjust this value to position the dropdown
-                            //     .zIndex(1)
-                            // }
                         }
                         .padding(.horizontal, 16)
                     }
@@ -915,14 +830,3 @@ private struct DashedDivider: View {
         iPayCustomerID: "13"
     )
 }
-
-//struct TopUpView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TopUpView(
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13"
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

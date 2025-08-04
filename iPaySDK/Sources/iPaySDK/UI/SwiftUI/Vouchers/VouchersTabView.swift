@@ -70,10 +70,3 @@ struct VouchersTabView_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
-
-
-// #Preview {
-//     VouchersTabView(
-//         selection: .constant(.new)
-//     )
-// }

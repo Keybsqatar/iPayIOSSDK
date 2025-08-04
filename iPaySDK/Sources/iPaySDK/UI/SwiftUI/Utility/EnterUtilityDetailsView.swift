@@ -44,12 +44,6 @@ public struct EnterUtilityDetailsView: View {
     @State private var toastMessage = ""
         
     @State private var enterAmountVM: EnterAmountViewModel? = nil
-
-    
-    //    let settingDefinitions = [
-    //        SettingDefinition(Name: "MeterId", Description: "Meter Id", IsMandatory: true),
-    //        SettingDefinition(Name: "ConsumerId", Description: "Consumer Id", IsMandatory: true)
-    //    ]
     
     public init(
         saveRecharge:         String,
@@ -196,43 +190,6 @@ public struct EnterUtilityDetailsView: View {
                         }
                     }
                     
-                    // ─── Enter Account No/Consumer ID ────────────────────────────────────────────
-                    //                    VStack(spacing: 8) {
-                    //                        if accountNoConsumerId != "" {
-                    //                            Text("Enter Account No/Consumer ID")
-                    //                                .font(.custom("VodafoneRg-Regular", size: 16.0))
-                    //                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                    //                                .multilineTextAlignment(.leading)
-                    //                                .frame(maxWidth: .infinity, alignment: .leading)
-                    //                        }
-                    //
-                    //                        HStack {
-                    //                            TextField("", text: $accountNoConsumerId)
-                    //                                .font(.custom("VodafoneRg-Bold", size: 16.0))
-                    //                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                    //                                .multilineTextAlignment(.leading)
-                    //                                .placeholder(when: accountNoConsumerId.isEmpty) {
-                    //                                    Text("Enter Account No/Consumer ID")
-                    //                                        .font(.custom("VodafoneRg-Regular", size: 16.0))
-                    //                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                    //                                        .multilineTextAlignment(.leading)
-                    //                                }
-                    //                                .keyboardType(.numberPad)
-                    //                                .frame(maxWidth: .infinity)
-                    //                                .onReceive(Just(accountNoConsumerId)) { newValue in
-                    //
-                    //                                }
-                    //                        }
-                    //                        .buttonStyle(.plain)
-                    //                        .padding(.bottom, 16)
-                    //                        .overlay(
-                    //                            Rectangle()
-                    //                                .frame(height: 1)
-                    //                                .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module)),
-                    //                            alignment: .bottom
-                    //                        )
-                    //                    }
-                    
                     // ─── Phone Field ────────────────────────────────────────────
                     VStack(spacing: 8) {
                         if phone != "" {
@@ -319,13 +276,10 @@ public struct EnterUtilityDetailsView: View {
                             countryFlagUrl:        countryFlagUrl,
                             countryName:           countryName,
                             countryPrefix:         countryPrefix,
-                            // countryMinimumLength: c.minimumLength,
-                            // countryMaximumLength: c.maximumLength,
                            
                             providerCode:          providerCode,
                             providerLogoUrl:       providerLogoUrl,
                             providerName:          providerName,
-                            // providerValidationRegex: p.validationRegex,
                            
                             productSku: "",
                             receiverMobileNumber: phone,
@@ -360,59 +314,6 @@ public struct EnterUtilityDetailsView: View {
                                 .navigationBarHidden(true)
                         }
                     },
-                    // destination: Group {
-                    //     EnterAmountView(
-                    //         saveRecharge: saveRecharge,
-                            
-                    //         countryIso:            countryIso,
-                    //         countryFlagUrl:        countryFlagUrl,
-                    //         countryName:           countryName,
-                    //         countryPrefix:         countryPrefix,
-                    //         // countryMinimumLength: c.minimumLength,
-                    //         // countryMaximumLength: c.maximumLength,
-                            
-                    //         providerCode:          providerCode,
-                    //         providerLogoUrl:       providerLogoUrl,
-                    //         providerName:          providerName,
-                    //         // providerValidationRegex: p.validationRegex,
-                            
-                    //         productSku: "",
-                    //         receiverMobileNumber: phone,
-                    //         settingsData: encodeDynamicFields() ?? "",
-                            
-                    //         mobileNumber:          mobileNumber,
-                    //         serviceCode:           serviceCode,
-                    //         iPayCustomerID:        iPayCustomerID,
-                            
-                    //         dismissMode: "pop"
-                    //     )
-                    //     .environmentObject(coord)
-                    //     .navigationBarHidden(true)
-                    //     //                        ReviewUtilityView(
-                    //     //                            saveRecharge:         saveRecharge,
-                    //     //                            
-                    //     //                            countryIso:            countryIso,
-                    //     //                            countryFlagUrl:        countryFlagUrl,
-                    //     //                            countryName:           countryName,
-                    //     //                            countryPrefix:         countryPrefix,
-                    //     //                            
-                    //     //                            providerCode:          providerCode,
-                    //     //                            providerLogoUrl:       providerLogoUrl,
-                    //     //                            providerName:          providerName,
-                    //     //                            
-                    //     //                                                        product:               product,
-                    //     //                                                        billAmount:          billAmount,
-                    //     //                            
-                    //     //                            receiverMobileNumber: phone,
-                    //     //                            settingsData: encodeDynamicFields() ?? "",
-                    //     //                            //                            settingsData: dynamicFields,
-                    //     //                            
-                    //     //                            mobileNumber:          mobileNumber,
-                    //     //                            serviceCode:           serviceCode,
-                    //     //                            iPayCustomerID:        iPayCustomerID
-                    //     //                        )
-               
-                    // },
                     isActive: $showEnterAmount,
                     label: { EmptyView() }
                 )

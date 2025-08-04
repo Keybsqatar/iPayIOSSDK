@@ -88,6 +88,7 @@ public class OtpViewModel: ObservableObject {
     
     // MARK: – iPayOtp
     public func requestOtp() async {
+        // For debugging purposes, you can uncomment the following lines to simulate a successful OTP request without making an actual network call.
 //         otpDisabled = false
 //         return
 //        
@@ -150,7 +151,7 @@ public class OtpViewModel: ObservableObject {
     }
     
     public func submitOtpAndPoll(for otbCode: String) async {
-        
+        // For debugging purposes, you can uncomment the following lines to simulate a successful transaction without making an actual network call.
 //         textPin = "pin"
 //         valuePin = "001234567890"
 //         completedTransaction = CheckTransaction(

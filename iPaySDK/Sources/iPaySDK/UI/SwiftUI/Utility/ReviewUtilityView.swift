@@ -152,18 +152,6 @@ public struct ReviewUtilityView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     )
-//                    .padding(.all, 16)
-//                    .background(
-//                        Color("keyBs_white_2", bundle: .module)
-//                    )
-//                    .cornerRadius(8)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-//                            .stroke(
-//                                Color("keyBs_bg_gray_1", bundle: .module),
-//                                lineWidth: 1
-//                            )
-//                    )
                 }
                 .padding(.horizontal, 16)
                 
@@ -276,12 +264,6 @@ public struct ReviewUtilityView: View {
         }
     }
     
-//    private func encodeDynamicFields() -> String? {
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: settingsData, options: []) else {
-//            return nil
-//        }
-//        return String(data: jsonData, encoding: .utf8)
-//    }
 }
 
 private struct DashedDivider: View {

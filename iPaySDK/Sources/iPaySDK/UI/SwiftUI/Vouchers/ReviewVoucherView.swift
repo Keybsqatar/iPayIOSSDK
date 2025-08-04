@@ -131,18 +131,6 @@ public struct ReviewVoucherView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     )
-//                    .padding(.all, 16)
-//                    .background(
-//                        Color("keyBs_white_2", bundle: .module)
-//                    )
-//                    .cornerRadius(8)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-//                            .stroke(
-//                                Color("keyBs_bg_gray_1", bundle: .module),
-//                                lineWidth: 1
-//                            )
-//                    )
                 }
                 .padding(.horizontal, 16)
                 
@@ -271,54 +259,3 @@ private struct DashedDivider: View {
         .frame(height: 1)
     }
 }
-
-//#Preview {
-//    ReviewVoucherView(
-//        saveRecharge: "1",
-//        receiverMobileNumber: "45456456",
-//        countryIso: "AE",
-//        countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//        countryName: "United Arab Emirates",
-//        providerCode: "E6AE",
-//        providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//        providerName: "DU UAE",
-//        product: ProductItem(
-//            skuCode: "E6AEAE12938",
-//            providerCode: "E6AE",
-//            countryIso: "AE",
-//            displayText: "AED 20.00",
-//            sendValue: "28",
-//            sendCurrencyIso: "QR"
-//        ),
-//        mobileNumber: "88776630",
-//        serviceCode: "INT_TOP_UP",
-//        iPayCustomerID: "13"
-//    )
-//}
-//
-//struct ReviewVoucherView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ReviewVoucherView(
-//            saveRecharge: "1",
-//            receiverMobileNumber: "45456456",
-//            countryIso: "AE",
-//            countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//            countryName: "United Arab Emirates",
-//            providerCode: "E6AE",
-//            providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//            providerName: "DU UAE",
-//            product: ProductItem(
-//                skuCode: "E6AEAE12938",
-//                providerCode: "E6AE",
-//                countryIso: "AE",
-//                displayText: "AED 20.00",
-//                sendValue: "28",
-//                sendCurrencyIso: "QR"
-//            ),
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13"
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

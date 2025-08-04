@@ -274,30 +274,6 @@ public struct OtpView: View {
                 if newValue.count == 4 {
                     Task {
                         await vm.submitOtpAndPoll(for: newValue)
-                        
-//                        vm.completedTransaction = CheckTransaction(
-//                            id: "",
-//                            mobileNumber: vm.mobileNumber,
-//                            iPayCustomerID: vm.iPayCustomerID,
-//                            targetIdentifier: vm.receiverMobileNumber,
-//                            countryIso2: vm.countryIso,
-//                            countryIso3: vm.countryIso,
-//                            countryName: vm.countryName,
-//                            countryFlagUrl: vm.countryFlagUrl,
-//                            providerCode: vm.providerCode,
-//                            providerName: vm.providerName,
-//                            providerImgUrl: vm.providerLogoUrl,
-//                            productSku: vm.product.skuCode,
-//                            productDisplayText: vm.product.displayText,
-//                            serviceCode: vm.serviceCode,
-//                            amount: vm.product.sendValue,
-//                            currency: vm.product.sendCurrencyIso,
-//                            billingRef: "123123123213",
-//                            status: "COMPLETED",
-//                            statusMessage: "Transaction completed successfully",
-//                            reciptParams: "",
-//                            dateTime: "17 Oct 2023, 12:00 PM"
-//                        )
                     }
                 }
             }
@@ -376,19 +352,7 @@ public struct OtpView: View {
     private var otpBoxes: some View {
         ZStack {
             // Hidden TextField to capture input
-            // TextField("", text: $vm.code)
-            //     .focused($isTextFieldFocused)
-            //     .keyboardType(.numberPad)
-            //     .textContentType(.oneTimeCode)
-            //     .onChange(of: vm.code) { v in
-            //         // cap at 4
-            //         vm.code = String(v.prefix(4))
-            //     }
-            //     .foregroundColor(.clear)
-            //     .accentColor(.clear)
-            //     .frame(width: 0, height: 0) // Hide from layout
-            
-            // FocusableTextField(text: $otbCode, isFirstResponder: $isTextFieldFocused)
+
             FocusableTextField(text: $otbCode, isFirstResponder: $isTextFieldFocused, isDisabled: vm.otpDisabled)
                 .frame(width: 0, height: 0)
             
@@ -485,54 +449,3 @@ struct FocusableTextField: UIViewRepresentable {
         }
     }
 }
-
-// #Preview {
-//     OtpView(
-//         saveRecharge: "1",
-//         receiverMobileNumber: "45456456",
-//         countryIso: "AE",
-//         countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//         countryName: "United Arab Emirates",
-//         providerCode: "E6AE",
-//         providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//         providerName: "DU UAE",
-//         product: ProductItem(
-//             skuCode: "E6AEAE12938",
-//             providerCode: "E6AE",
-//             countryIso: "AE",
-//             displayText: "AED 20.00",
-//             sendValue: "28",
-//             sendCurrencyIso: "QR"
-//         ),
-//         mobileNumber: "88776630",
-//         serviceCode: "INT_TOP_UP",
-//         iPayCustomerID: "13"
-//     )
-// }
-
-// struct OtpView_Previews: PreviewProvider {
-//     static var previews: some View {
-//         OtpView(
-//             saveRecharge: "1",
-//             receiverMobileNumber: "45456456",
-//             countryIso: "AE",
-//             countryFlagUrl: URL(string: "http://keybs.ai/fg/ae.svg")!,
-//             countryName: "United Arab Emirates",
-//             providerCode: "E6AE",
-//             providerLogoUrl: URL(string: "https://imagerepo.ding.com/logo/DU/AE.png")!,
-//             providerName: "DU UAE",
-//             product: ProductItem(
-//                 skuCode: "E6AEAE12938",
-//                 providerCode: "E6AE",
-//                 countryIso: "AE",
-//                 displayText: "AED 20.00",
-//                 sendValue: "28",
-//                 sendCurrencyIso: "QR"
-//             ),
-//             mobileNumber: "88776630",
-//             serviceCode: "INT_TOP_UP",
-//             iPayCustomerID: "13"
-//         )
-//         .previewLayout(.sizeThatFits)
-//     }
-// }

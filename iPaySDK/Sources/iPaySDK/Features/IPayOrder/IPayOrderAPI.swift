@@ -15,17 +15,3 @@ public class IPayOrderAPI: IPayOrderAPIProtocol {
         try await client.request(IPayOrderEndpoint.order(otp: otp, transactionId: transactionId))
     }
 }
-
-//public protocol IPayOrderAPIProtocol {
-//    func placeOrder(_ request: IPayOrderRequest) async throws -> IPayOrderResponse
-//}
-//
-//public class IPayOrderAPI: IPayOrderAPIProtocol {
-//    let client: HTTPClient
-//    
-//    public init(client: HTTPClient = .shared) { self.client = client }
-//    
-//    public func placeOrder(_ request: IPayOrderRequest) async throws -> IPayOrderResponse {
-//        try await client.request(IPayOrderEndpoint.requestOrder(request))
-//    }
-//}

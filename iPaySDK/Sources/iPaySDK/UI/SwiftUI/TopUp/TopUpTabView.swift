@@ -70,10 +70,3 @@ struct TopUpTabView_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
-
-
-// #Preview {
-//     TopUpTabView(
-//         selection: .constant(.new)
-//     )
-// }

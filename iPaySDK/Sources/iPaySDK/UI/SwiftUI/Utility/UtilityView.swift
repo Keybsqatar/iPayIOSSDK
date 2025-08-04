@@ -373,31 +373,6 @@ public struct UtilityView: View {
                                 serviceCode:           vm.serviceCode,
                                 iPayCustomerID:        vm.iPayCustomerID
                             )
-//                            EnterAmountView(
-//                                saveRecharge: "1",
-//                                                                
-//                                countryIso: c.countryIso,
-//                                countryFlagUrl: c.flagUrl,
-//                                countryName: c.name,
-//                                countryPrefix: c.prefix,
-//                                countryMinimumLength: c.minimumLength,
-//                                countryMaximumLength: c.maximumLength,
-//                                
-//                                providerCode: p.providerCode,
-//                                providerLogoUrl: p.logoUrl,
-//                                providerName: p.name,
-//                                providerValidationRegex: p.validationRegex,
-//                                
-//                                productSku: "",
-//                                receiverMobileNumber: "",
-//                                settingsData: "",
-//                                
-//                                mobileNumber: vm.mobileNumber,
-//                                serviceCode:  vm.serviceCode,
-//                                iPayCustomerID: vm.iPayCustomerID,
-//                                
-//                                dismissMode: "pop"
-//                            )
                             .environmentObject(coord)
                             .navigationBarHidden(true)
                         }
@@ -550,28 +525,6 @@ public struct UtilityView: View {
         
         var body: some View {
             ZStack(alignment: .trailing) {
-                // Delete button background
-//                HStack {
-//                    Spacer()
-//                    Button(action: {
-//                        withAnimation {
-//                            offsetX = 0
-//                            isOpen = false
-//                        }
-//                        onDelete()
-//                    }) {
-//                        Image("ic_delete", bundle: .module)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 24, height: 24)
-//                            .padding()
-//                            .background(Color("keyBs_bg_gray_4", bundle: .module))
-//                            .cornerRadius(12)
-//                    }
-//                    .frame(width: deleteWidth, height: 60)
-//                    .padding(.trailing, 16)
-//                }
-                
                 // Main content
                 Button(action: {
                     if !isOpen {
@@ -613,29 +566,6 @@ public struct UtilityView: View {
                     .background(Color.white)
                 }
                 .buttonStyle(.plain)
-//                .offset(x: offsetX)
-//                .highPriorityGesture(
-//                    DragGesture()
-//                        .onChanged { value in
-//                            // Only allow left swipe, clamp to -deleteWidth
-//                            if value.translation.width < 0 {
-//                                offsetX = max(value.translation.width, -deleteWidth)
-//                            }
-//                        }
-//                        .onEnded { value in
-//                            withAnimation {
-//                                if value.translation.width < -deleteWidth / 2 {
-//                                    offsetX = -deleteWidth
-//                                    isOpen = true
-//                                } else {
-//                                    offsetX = 0
-//                                    isOpen = false
-//                                }
-//                            }
-//                        }
-//                    
-//                )
-//                .animation(.easeOut(duration: 0.2), value: offsetX)
             }
             .clipped()
         }
@@ -667,14 +597,3 @@ private struct DashedDivider: View {
         iPayCustomerID: "13"
     )
 }
-
-//struct UtilityView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        UtilityView(
-//            mobileNumber: "88776630",
-//            serviceCode: "INT_TOP_UP",
-//            iPayCustomerID: "13"
-//        )
-//        .previewLayout(.sizeThatFits)
-//    }
-//}

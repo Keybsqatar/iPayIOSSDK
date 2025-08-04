@@ -56,21 +56,3 @@ public struct ApiError: Decodable, Sendable {
         ?? "Unknown error (status=\(status ?? -1))"
     }
 }
-
-//public struct ApiError: Codable {
-//  public let status:   Int?
-//  public let error:    String?
-//  public let message:  String?
-//  public let messages: ErrorMessages?
-//
-//  public struct ErrorMessages: Codable {
-//    public let error: String?
-//  }
-//
-//  public func userMessage() -> String {
-//    return message
-//        ?? messages?.error
-//        ?? error
-//        ?? "Unknown error (status=\(status ?? -1))"
-//  }
-//}

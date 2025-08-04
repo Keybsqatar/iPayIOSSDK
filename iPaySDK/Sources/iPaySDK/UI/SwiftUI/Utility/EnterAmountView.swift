@@ -168,7 +168,6 @@ public struct EnterAmountView: View {
                 NavigationLink(
                     destination: Group {
                         if let p = vm.selectedProduct {
-                            // if (vm.productSku != ""){
                             ReviewUtilityView(
                                 saveRecharge:         vm.saveRecharge,
                                 
@@ -186,40 +185,14 @@ public struct EnterAmountView: View {
                                 
                                 receiverMobileNumber: vm.receiverMobileNumber,
                                 settingsData: vm.settingsData,
-                                //                                    settingsData: vm.settingsData as? [String: String] ?? [:],
-                                
+
                                 mobileNumber:          vm.mobileNumber,
                                 serviceCode:           vm.serviceCode,
                                 iPayCustomerID:        vm.iPayCustomerID
                             )
                             .environmentObject(coord)
                             .navigationBarHidden(true)
-                            // }else{
-                            //                                EnterUtilityDetailsView(
-                            //                                    saveRecharge:         vm.saveRecharge,
-                            //
-                            //                                    countryIso:            vm.countryIso,
-                            //                                    countryFlagUrl:        vm.countryFlagUrl,
-                            //                                    countryName:           vm.countryName,
-                            //                                    countryPrefix:         vm.countryPrefix,
-                            //                                    countryMinimumLength:  vm.countryMinimumLength,
-                            //                                    countryMaximumLength:  vm.countryMaximumLength,
-                            //
-                            //                                    providerCode:          vm.providerCode,
-                            //                                    providerLogoUrl:       vm.providerLogoUrl,
-                            //                                    providerName:          vm.providerName,
-                            //                                    providerValidationRegex: vm.providerValidationRegex,
-                            //
-                            //                                    product:               p,
-                            //                                    billAmount:          amount,
-                            //
-                            //                                    mobileNumber:          vm.mobileNumber,
-                            //                                    serviceCode:           vm.serviceCode,
-                            //                                    iPayCustomerID:        vm.iPayCustomerID
-                            //                                )
-                            //                                .environmentObject(coord)
-                            //                                .navigationBarHidden(true)
-                            // }
+
                         }
                     },
                     isActive: $showEnterUtility,
@@ -467,10 +440,6 @@ public struct EnterAmountView: View {
                 }
                 amount = newAmount
             }
-            // default:
-            //     if amount == "0" { amount = value }
-            //     else { amount.append(value) }
-            // }
         }
     }
     

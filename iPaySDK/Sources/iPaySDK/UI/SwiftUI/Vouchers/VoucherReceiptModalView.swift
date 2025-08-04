@@ -48,18 +48,6 @@ public struct VoucherReceiptModalView: View {
         Ref ID: \(data.refId)
         """
         
-        //        if !data.textPin.isEmpty, !data.valuePin.isEmpty {
-        //            details += "\n\(data.textPin): \(data.valuePin)"
-        //        }
-        
-//        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
-//            if !data.readMoreMarkdown.isEmpty {
-//                details += "\n Description: \(data.readMoreMarkdown)"
-//            }else {
-//                details += "\n Description: \(data.descriptionMarkdown)"
-//            }
-//        }
-        
         return details
     }
     
@@ -236,17 +224,6 @@ public struct VoucherReceiptModalView: View {
                 
                 detailRow(label: "iPay Ref ID",   value: data.refId)
                 
-//                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
-//                    Divider()
-//                        .overlay(Color("keyBs_bg_gray_3", bundle: .module))
-//                    
-//                    if !data.readMoreMarkdown.isEmpty {
-//                        detailRow(label: data.readMoreMarkdown, value: "")
-//                    }else {
-//                        detailRow(label: data.descriptionMarkdown, value: "")
-//                    }
-//                }
-                
                 Spacer().frame(height: 16)
             }
         }
@@ -278,36 +255,3 @@ public struct VoucherReceiptModalView: View {
     }
 }
 
-
-// #Preview {
-//     ReceiptModalView(
-//         isPresented: .constant(true),
-//         data: ReceiptData(
-//             amount: "QR 300",
-//             dateTime: "15 Jul 2024 7:24 AM",
-//             type: "Top up - IMT",
-//             number: "92 303 4334334",
-//             operatorName: "Jazz",
-//             refId: "1698760015123970"
-//         )
-//     )
-// }
-
-// struct ReceiptModalView_Previews: PreviewProvider {
-//     @State static var isPresented = true
-
-//     static var previews: some View {
-//         ReceiptModalView(
-//             isPresented: $isPresented,
-//             data: ReceiptData(
-//                 amount: "QR 300",
-//                 dateTime: "15 Jul 2024 7:24 AM",
-//                 type: "Top up - IMT",
-//                 number: "92 303 4334334",
-//                 operatorName: "Jazz",
-//                 refId: "1698760015123970"
-//             )
-//         )
-//         .previewLayout(.sizeThatFits)
-//     }
-// }

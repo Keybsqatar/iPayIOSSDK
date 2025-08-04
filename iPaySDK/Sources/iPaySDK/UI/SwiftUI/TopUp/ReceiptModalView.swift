@@ -201,17 +201,6 @@ public struct ReceiptModalView: View {
         snapshotImage = renderer.image { _ in
             view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
         }
-        
-        // let hostVC = UIHostingController(rootView: cardContent)
-        // let view = hostVC.view!
-        // let targetSize = view.intrinsicContentSize
-        // view.bounds = CGRect(origin: .zero, size: targetSize)
-        // view.backgroundColor = .clear
-        
-        // let renderer = UIGraphicsImageRenderer(size: targetSize)
-        // snapshotImage = renderer.image { _ in
-        //     view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-        // }
     }
     
     /// The card content without dim background
@@ -277,12 +266,6 @@ public struct ReceiptModalView: View {
                             }
                         }
                     )
-                    
-//                    if !data.readMoreMarkdown.isEmpty {
-//                        detailRow(label: data.readMoreMarkdown, value: "")
-//                    }else {
-//                        detailRow(label: data.descriptionMarkdown, value: "")
-//                    }
                 }
                 
                 Spacer().frame(height: 16)

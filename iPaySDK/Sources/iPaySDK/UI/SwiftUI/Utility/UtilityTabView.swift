@@ -70,10 +70,3 @@ struct UtilityTabView_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
-
-
-// #Preview {
-//     UtilityTabView(
-//         selection: .constant(.new)
-//     )
-// }

@@ -200,17 +200,6 @@ public struct SelectAmountView: View {
         VStack(spacing: 24) {
             // Card with image, provider, country
             VStack(spacing: 0) {
-                //                VStack(spacing: 0) {
-                //                    RemoteImage(
-                //                        url: vm.providerLogoUrl,
-                //                        placeholder: AnyView(Color.gray.opacity(0.3)),
-                //                        isResizable: false
-                //                    )
-                //                    //                    .frame(height: 120)
-                //                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                //                    .padding(.vertical, 32)
-                //                    .padding(.horizontal, 50)
-                //                }
                 
                 HStack(spacing: 0) {
                     RemoteImage(
@@ -251,33 +240,6 @@ public struct SelectAmountView: View {
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .padding(.horizontal, 16)
             
-            // Description
-            //            if vm.selectedProduct?.terms != nil && !vm.selectedProduct!.terms!.info.isEmpty {
-            //                VStack(alignment: .leading, spacing: 20) {
-            //
-            //                ForEach(vm.selectedProduct!.terms!.info, id: \.self) { infoItem in
-            //                    HStack(alignment: .top, spacing: 8) {
-            //                        Image(systemName: "circle.fill")
-            //                            .resizable()
-            //                            .frame(width: 6, height: 6)
-            //                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            //                            .padding(.top, 6)
-            //
-            //                        Text(infoItem)
-            //                            .font(.custom("VodafoneRg-Regular", size: 16))
-            //                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            //                            .multilineTextAlignment(.leading)
-            //                    }
-            //                }
-            //                }
-            //                .padding(.vertical, 12)
-            //                .padding(.horizontal, 16)
-            //                .background(Color("keyBs_bg_gray_7", bundle: .module))
-            //                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-            //                .padding(.horizontal, 16)
-            //            }
-            
-            
             // Select amount
             VStack(alignment: .leading, spacing: 16) {
                 Text("Please select a voucher amount")
@@ -309,104 +271,6 @@ public struct SelectAmountView: View {
             }
             .padding(.horizontal, 16)
             
-            //             VStack(alignment: .leading, spacing: 16) {
-            //                 Text("Please select a voucher amount")
-            //                     .font(.custom("VodafoneRg-Bold", size: 18))
-            //                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            
-            //                 // Set how many buttons per row you want
-            //                 let itemsPerRow = 3
-            // let rows = vm.products.chunked(into: itemsPerRow)
-            // ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-            //     HStack(spacing: 16) {
-            //         ForEach(row, id: \.skuCode) { product in
-            //             Button(action: {
-            //                 vm.selectedProduct = product
-            //             }) {
-            //                 Text(product.displayText)
-            //                     .font(.custom("VodafoneRg-Bold", size: 16))
-            //                     .foregroundColor(vm.selectedProduct?.skuCode == product.skuCode ? .white : Color("keyBs_font_gray_2", bundle: .module))
-            //                     .padding(.vertical, 8)
-            //                     .padding(.horizontal, 28)
-            //                     .background(
-            //                         vm.selectedProduct?.skuCode == product.skuCode
-            //                         ? Color("keyBs_bg_red_1", bundle: .module)
-            //                         : Color("keyBs_bg_gray_1", bundle: .module)
-            //                     )
-            //                     .cornerRadius(24)
-            //             }
-            //         }
-            //         Spacer()
-            //     }
-            // }
-            //             }
-            //             .padding(.horizontal, 16)
-            //             .padding(.bottom, 16)
-            
-            
-            // Select amount
-            // VStack(alignment: .leading, spacing: 16) {
-            //     Text("Please select a voucher amount")
-            //         .font(.custom("VodafoneRg-Bold", size: 18))
-            //         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            
-            //     FlexibleView(
-            //         data: vm.products,
-            //         id: \.skuCode,
-            //         spacing: 16,
-            //         alignment: .leading
-            //     ) { product in
-            //         Button(action: {
-            //             vm.selectedProduct = product
-            //         }) {
-            //             Text(product.displayText)
-            //                 .font(.custom("VodafoneRg-Bold", size: 16))
-            //                 .foregroundColor(vm.selectedProduct?.skuCode == product.skuCode ? .white : Color("keyBs_font_gray_2", bundle: .module))
-            //                 .padding(.vertical, 8)
-            //                 .padding(.horizontal, 28)
-            //                 .background(
-            //                     vm.selectedProduct?.skuCode == product.skuCode
-            //                     ? Color("keyBs_bg_red_1", bundle: .module)
-            //                     : Color("keyBs_bg_gray_1", bundle: .module)
-            //                 )
-            //                 .cornerRadius(24)
-            //         }
-            //     }
-            //     .fixedSize(horizontal: false, vertical: true) // Important for iOS 13
-            // }
-            // .padding(.horizontal, 16)
-            // .padding(.bottom, 16)
-            
-            // Important box
-            //            if vm.selectedProduct?.terms != nil && !vm.selectedProduct!.terms!.important.isEmpty {
-            //                VStack(alignment: .leading, spacing: 20) {
-            //                    Text("Important :")
-            //                        .font(.custom("VodafoneRg-Bold", size: 14))
-            //                        .foregroundColor(Color("keyBs_bg_red_1", bundle: .module))
-            //                        .multilineTextAlignment(.leading)
-            //
-            //                    ForEach(vm.selectedProduct!.terms!.important, id: \.self) { infoItem in
-            //                        HStack(alignment: .top, spacing: 8) {
-            //                            Image(systemName: "circle.fill")
-            //                                .resizable()
-            //                                .frame(width: 6, height: 6)
-            //                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            //                                .padding(.top, 6)
-            //
-            //                            Text(infoItem)
-            //                                .font(.custom("VodafoneRg-Regular", size: 14))
-            //                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-            //                                .multilineTextAlignment(.leading)
-            //                        }
-            //                    }
-            //                }
-            //                .padding(.top, 8)
-            //                .padding(.bottom, 16)
-            //                .padding(.horizontal, 16)
-            //                .background(Color("keyBs_bg_pink_1", bundle: .module))
-            //                .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-            //                .padding(.horizontal, 16)
-            //            }
             
             // Key Information
             let infoArr: [String] = {

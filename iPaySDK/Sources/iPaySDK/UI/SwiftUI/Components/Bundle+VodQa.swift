@@ -1,11 +1,3 @@
-//import Foundation
-//
-//private final class BundleFinder: NSObject {}
-//extension Bundle {
-//  static let vodQa = Bundle(for: BundleFinder.self)
-//}
-
-
 import Foundation
 
 /// Wraps `Bundle.module` (which SwiftPM makes `internal`) in a `public` property.

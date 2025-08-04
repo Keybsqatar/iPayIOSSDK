@@ -136,15 +136,6 @@ public struct UtilityReceiptModalView: View {
                                     .multilineTextAlignment(.leading)
                             }
                             .frame(maxWidth: .infinity, minHeight: 56)
-                            //                            .background(
-                            //                                RoundedRectangle(cornerRadius: 60)
-                            //                                    .fill(Color("keyBs_white", bundle: .module))
-                            //                                    .stroke(
-                            //                                        Color("keyBs_font_gray_2", bundle: .module)
-                            //                                        ,
-                            //                                        lineWidth: 1
-                            //                                    )
-                            //                            )
                             .background(
                                 Color("keyBs_white", bundle: .module)
                             )
@@ -264,12 +255,6 @@ public struct UtilityReceiptModalView: View {
                             }
                         }
                     )
-                    
-                    //                    if !data.readMoreMarkdown.isEmpty {
-                    //                        detailRow(label: data.readMoreMarkdown, value: "")
-                    //                    }else {
-                    //                        detailRow(label: data.descriptionMarkdown, value: "")
-                    //                    }
                 }
                 
                 Spacer().frame(height: 16)
@@ -320,13 +305,7 @@ public struct UtilityReceiptModalView: View {
         guard let img = snapshotImage else { return }
         
         PHPhotoLibrary.requestAuthorization { status in
-            // guard status == .authorized || status == .limited else {
-            //     DispatchQueue.main.async {
-            //         savedError     = "Photo Library access denied."
-            //         showSavedAlert = true
-            //     }
-            //     return
-            // }
+
             guard status == .authorized else {
                 DispatchQueue.main.async {
                     savedError     = "Photo Library access denied."
