@@ -253,6 +253,8 @@ public struct UtilityReceiptModalView: View {
                                 .padding(.bottom, 8)
                                 .padding(.horizontal, 12)
                             }
+                            .frame(maxHeight: 100)
+                            .fixedSize(horizontal: false, vertical: true)
                         }
                     )
                 }

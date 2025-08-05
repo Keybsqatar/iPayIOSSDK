@@ -28,7 +28,7 @@ public final class HTTPClient {
         guard let url = comps.url else {
             throw NetworkError.invalidURL
         }
-        
+        // print("Req at: \(Date())")
         // Build URLRequest
         var req = URLRequest(url: url)
         req.httpMethod = endpoint.method.rawValue
@@ -50,9 +50,10 @@ public final class HTTPClient {
         }
         
         let decoder = JSONDecoder()
-        //  print("HTTPClient http.statusCode \(http.statusCode) \(url)")
-        // print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
-        // print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
+        //   print("HTTPClient http.statusCode \(http.statusCode) \(url)")
+        //  print("HTTPClient req.httpBody \(String(data: req.httpBody ?? Data(), encoding: .utf8) ?? "")")
+                        // print("Res at: \(Date())")
+//         print("HTTPClient response \(String(data: data, encoding: .utf8) ?? "")")
         
         if 200..<300 ~= http.statusCode {
             return try decoder.decode(T.self, from: data)

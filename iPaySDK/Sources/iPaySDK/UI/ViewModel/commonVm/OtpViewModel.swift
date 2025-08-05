@@ -222,7 +222,7 @@ public class OtpViewModel: ObservableObject {
             let checkRepo = CheckTransactionRepository()
             var checkResp: CheckTransactionResponse? = nil
             
-            for _ in 1...3 {
+            for _ in 1...13 { // Poll up to 13 times, with a delay of 5 seconds each
                 //                print("Polling at: \(Date())")
                 // try await Task.sleep(for: .seconds(5))
                 try await Task.sleep(nanoseconds: 5_000_000_000)
