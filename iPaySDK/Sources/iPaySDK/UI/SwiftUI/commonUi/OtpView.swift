@@ -61,7 +61,7 @@ public struct OtpView: View {
     // Existing initializer (with all parameters)
     public init(
         saveRecharge: String,
-
+        
         countryIso: String,
         countryFlagUrl: URL,
         countryName: String,
@@ -82,7 +82,7 @@ public struct OtpView: View {
     ) {
         self.vm = OtpViewModel(
             saveRecharge: saveRecharge,
-
+            
             countryIso: countryIso,
             countryFlagUrl: countryFlagUrl,
             countryName: countryName,
@@ -157,12 +157,12 @@ public struct OtpView: View {
                     
                     Text(
                         vm.serviceCode == "INT_TOP_UP" ? "Intl Top up" :
-                        vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
-                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Intl Utility" : ""
+                            vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
+                            vm.serviceCode == "INT_UTIL_PAYMENT" ? "Intl Utility" : ""
                     )
-                        .font(.custom("VodafoneRg-Bold", size: 16))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
+                    .font(.custom("VodafoneRg-Bold", size: 16))
+                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    .multilineTextAlignment(.leading)
                     
                     Spacer()
                     
@@ -171,9 +171,9 @@ public struct OtpView: View {
                         ? "\(vm.product.sendCurrencyIso) \(vm.product.sendValue)"
                         : "\(vm.product.sendCurrencyIso) \(vm.billAmount)"
                     )
-                        .font(.custom("VodafoneRg-Bold", size: 24))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
+                    .font(.custom("VodafoneRg-Bold", size: 24))
+                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    .multilineTextAlignment(.leading)
                 }
                 .padding(.all, 16)
                 .background(Color("keyBs_bg_pink_1", bundle: .module))
@@ -233,15 +233,16 @@ public struct OtpView: View {
                     //                        .indicator(.activity)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 30)
+                        .frame(width: 20, height: 20)
+//                        .frame(height: 20)
                 }
-//                else if vm.showMsgImageType == 2{
-//                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
-//                    //                        .indicator(.activity)
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(height: 56)
-//                }
+                //                else if vm.showMsgImageType == 2{
+                //                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
+                //                    //                        .indicator(.activity)
+                //                        .resizable()
+                //                        .scaledToFit()
+                //                        .frame(height: 56)
+                //                }
                 
                 Spacer()
             }
@@ -259,8 +260,8 @@ public struct OtpView: View {
             NotificationCenter.default.publisher(for: Notification.Name("OtpCodeChanged"))
         ) { _ in
             let newValue = otbCode
-//            print("OTP code changed: \(newValue)")
-
+            //            print("OTP code changed: \(newValue)")
+            
             if(vm.showMsgImageType == 3) {
                 vm.showMsgImageType = 0
                 remainingSeconds = 0
@@ -278,14 +279,47 @@ public struct OtpView: View {
                 }
             }
         }
-        .onReceive(vm.$completedTransaction) { tx in
-            guard let tx = tx else { return }
-            receiptData = ReceiptData(
-                status: tx.status,
+        .onReceive(vm.$showReceiptModal) { shouldShow in
+            if shouldShow {
+                guard let tx = vm.completedTransaction else { return }
+                // print("OptView shouldShow Completed transaction status: \(tx.status)")
                 
+                receiptData = ReceiptData(
+                    status: tx.status, // ✅ Show PENDING when processing
+                    amount: "\(tx.currency) \(tx.amount)",
+                    dateTime: tx.dateTime,
+                    type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
+                        vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
+                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
+                    number: tx.targetIdentifier,
+                    operatorName: tx.providerName,
+                    refId: tx.billingRef,
+                    
+                    countryName: vm.countryName,
+                    countryFlagUrl: vm.countryFlagUrl,
+                    providerName: vm.providerName,
+                    providerLogoUrl: vm.providerLogoUrl,
+                    product: vm.product,
+                    
+                    readMoreMarkdown: tx.readMoreMarkdown,
+                    descriptionMarkdown: tx.descriptionMarkdown,
+                    
+                    textPin: vm.textPin,
+                    valuePin: vm.valuePin,
+                    
+                    isPending: vm.isTransactionPending
+                )
+                withAnimation { showReceipt = true }
+            }
+        }
+        .onReceive(vm.$completedTransaction) { tx in
+            guard let tx = tx, showReceipt else { return } // ✅ Only update if receipt is already showing
+            // print("OptView Completed transaction status: \(tx.status)")
+            
+            receiptData = ReceiptData(
+                status: tx.status, // ✅ Update status based on pending state
                 amount: "\(tx.currency) \(tx.amount)",
                 dateTime: tx.dateTime,
-//                type: vm.serviceCode != "INT_VOUCHER" ? "Top up – IMT" : "Voucher",
                 type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
                     vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
                     vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
@@ -303,10 +337,92 @@ public struct OtpView: View {
                 descriptionMarkdown: tx.descriptionMarkdown,
                 
                 textPin: vm.textPin,
-                valuePin: vm.valuePin
+                valuePin: vm.valuePin,
+                
+                isPending: vm.isTransactionPending
             )
-            withAnimation { showReceipt = true }
         }
+//        .onReceive(vm.$showReceiptModal) { shouldShow in
+//            if shouldShow {
+//                // Create receipt data immediately
+//                guard let tx = vm.completedTransaction else { return }
+//                print("OptView shouldShow Completed transaction status: \(tx.status)")
+//                
+////                let textPin = ""
+////                let valuePin = ""
+//                
+////                let receiptParamsString = tx.reciptParams
+////                if let data = receiptParamsString.data(using: .utf8),
+////                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+////                   let (key, value) = json.first {
+////                     
+////                    vm.textPin = key
+////                    vm.valuePin = "\(value)"
+////                     
+////                }
+//                
+//                receiptData = ReceiptData(
+//                    status: tx.status,
+//                    
+//                    amount: "\(tx.currency) \(tx.amount)",
+//                    dateTime: tx.dateTime,
+//                    type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
+//                        vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
+//                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
+//                    number: tx.targetIdentifier,
+//                    operatorName: tx.providerName,
+//                    refId: tx.billingRef,
+//                    
+//                    countryName: vm.countryName,
+//                    countryFlagUrl: vm.countryFlagUrl,
+//                    providerName: vm.providerName,
+//                    providerLogoUrl: vm.providerLogoUrl,
+//                    product: vm.product,
+//                    
+//                    readMoreMarkdown: tx.readMoreMarkdown,
+//                    descriptionMarkdown: tx.descriptionMarkdown,
+//                    
+//                    textPin: vm.textPin,
+//                    valuePin: vm.valuePin,
+//                    
+//                    isPending: vm.isTransactionPending
+//                )
+//                withAnimation { showReceipt = true }
+//            }
+//        }
+//        .onReceive(vm.$completedTransaction) { tx in
+//            guard let tx = tx else { return }
+//            print("OptView Completed transaction status: \(tx.status)")
+//            receiptData = ReceiptData(
+//                // status: tx.status,
+//                status: tx.status,
+//                
+//                amount: "\(tx.currency) \(tx.amount)",
+//                dateTime: tx.dateTime,
+//                //                type: vm.serviceCode != "INT_VOUCHER" ? "Top up – IMT" : "Voucher",
+//                type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
+//                    vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
+//                    vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
+//                number: tx.targetIdentifier,
+//                operatorName: tx.providerName,
+//                refId: tx.billingRef,
+//                
+//                countryName: vm.countryName,
+//                countryFlagUrl: vm.countryFlagUrl,
+//                providerName: vm.providerName,
+//                providerLogoUrl: vm.providerLogoUrl,
+//                product: vm.product,
+//                
+//                readMoreMarkdown: tx.readMoreMarkdown,
+//                descriptionMarkdown: tx.descriptionMarkdown,
+//                
+//                textPin: vm.textPin,
+//                valuePin: vm.valuePin,
+//                
+//                isPending: vm.isTransactionPending
+//            )
+//            withAnimation { showReceipt = true }
+//        }
         .overlay(receiptOverlay)
         .onReceive(vm.$iPayOtpError) { msg in
             if let m = msg {
@@ -352,7 +468,7 @@ public struct OtpView: View {
     private var otpBoxes: some View {
         ZStack {
             // Hidden TextField to capture input
-
+            
             FocusableTextField(text: $otbCode, isFirstResponder: $isTextFieldFocused, isDisabled: vm.otpDisabled)
                 .frame(width: 0, height: 0)
             
@@ -421,7 +537,7 @@ struct FocusableTextField: UIViewRepresentable {
         // uiView.text = text
         uiView.text = String(text.prefix(4))
         uiView.isUserInteractionEnabled = !isDisabled // <-- Update disabled state
-
+        
         //        print("Updating UITextField with text: \(uiView.text ?? "")")
         if isFirstResponder && !uiView.isFirstResponder {
             uiView.becomeFirstResponder()

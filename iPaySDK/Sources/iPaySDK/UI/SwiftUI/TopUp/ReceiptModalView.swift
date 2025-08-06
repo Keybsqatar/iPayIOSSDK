@@ -48,11 +48,11 @@ public struct ReceiptModalView: View {
         Ref ID: \(data.refId)
         """
         
-        if !data.textPin.isEmpty, !data.valuePin.isEmpty {
+        if !data.textPin.isEmpty, !data.valuePin.isEmpty, data.status == "SUCCESS" {
             details += "\n\(data.textPin.uppercased()): \(data.valuePin)"
         }
         
-        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+        if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty, data.status == "SUCCESS" {
             if !data.readMoreMarkdown.isEmpty {
                 details += "\n Key Information: \(data.readMoreMarkdown)"
             }else {
@@ -207,7 +207,7 @@ public struct ReceiptModalView: View {
     private var cardContent: some View {
         VStack(spacing: 0) {
             // GIF banner
-            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : "oops", withExtension: "gif") {
+            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : data.status == "PROCESSING" ? "in_progress" : "oops", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
@@ -240,14 +240,14 @@ public struct ReceiptModalView: View {
                 
                 detailRow(label: "Ref ID",   value: data.refId)
                 
-                if !data.textPin.isEmpty, !data.valuePin.isEmpty {
+                if !data.textPin.isEmpty, !data.valuePin.isEmpty, data.status == "SUCCESS" {
                     Divider()
                         .overlay(Color("keyBs_bg_gray_3", bundle: .module))
                     
                     detailRow(label: data.textPin.uppercased(), value: data.valuePin)
                 }
                 
-                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty {
+                if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty, data.status == "SUCCESS" {
                     Divider()
                         .overlay(Color("keyBs_bg_gray_3", bundle: .module))
                     
