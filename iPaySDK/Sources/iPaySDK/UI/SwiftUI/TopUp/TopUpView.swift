@@ -330,8 +330,12 @@ public struct TopUpView: View {
                                                 url: p.logoUrl,
                                                 placeholder: AnyView(Color.gray.opacity(0.3))
                                             )
-                                            .frame(width: 16, height: 16)
-                                            
+                                            .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                                            .frame(
+                                                    maxWidth: 16,
+                                                    alignment: .leading
+                                                )
+
                                             Text(p.name)
                                                 .font(.custom("VodafoneRg-Bold", size: 16.0))
                                                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
@@ -379,7 +383,12 @@ public struct TopUpView: View {
                                                             url: p.logoUrl,
                                                             placeholder: AnyView(Color.gray.opacity(0.3))
                                                         )
-                                                        .frame(width: 16, height: 16)
+                                                        .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                                                        .frame(
+                                                                maxWidth: 16,
+                                                                alignment: .leading
+                                                            )
+
                                                         
                                                         Text(p.name)
                                                             .font(.custom("VodafoneRg-Regular", size: 16))
@@ -704,16 +713,16 @@ public struct TopUpView: View {
         let bill: SavedBillsItem
         let onTap: () -> Void
         let onDelete: () -> Void
-        
+
         @State private var offsetX: CGFloat = 0
         @State private var isOpen: Bool = false
-        
-        // The width of the delete button area
+        @GestureState private var dragOffset: CGFloat = 0
+
         private let deleteWidth: CGFloat = 90
-        
+
         var body: some View {
             ZStack(alignment: .trailing) {
-                // Delete button background
+                // Background: Delete button
                 HStack {
                     Spacer()
                     Button(action: {
@@ -733,60 +742,53 @@ public struct TopUpView: View {
                     }
                     .frame(width: deleteWidth, height: 60)
                     .padding(.trailing, 16)
+                    .contentShape(Rectangle()) // <-- fixes button tap zone
                 }
-                
-                // Main content
-                Button(action: {
-                    if !isOpen {
-                        onTap()
-                    } else {
-                        withAnimation {
-                            offsetX = 0
-                            isOpen = false
-                        }
+
+                // Foreground: Swipeable row content
+                HStack(spacing: 16) {
+                    VStack {
+                        SVGImageView(url: bill.countryFlagUrl)
+                            .frame(width: 30, height: 30)
+                            .scaledToFit()
+                            .cornerRadius(15)
                     }
-                }) {
-                    HStack(spacing: 16) {
-                        VStack{
-                            SVGImageView(url: bill.countryFlagUrl)
-                                .frame(width: 30, height: 30)
-                                .scaledToFit()
-                                .cornerRadius(15)
-                        }
-                        .frame(width: 48, height: 48)
-                        .background(Color("keyBs_bg_gray_4", bundle: .module))
-                        .cornerRadius(16)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(bill.targetIdentifier)
-                                .font(.custom("VodafoneRg-Bold", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                            
-                            Text(bill.providerName)
-                                .font(.custom("VodafoneRg-Regular", size: 14))
-                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                        }
-                        
-                        Spacer()
+                    .frame(width: 48, height: 48)
+                    .background(Color("keyBs_bg_gray_4", bundle: .module))
+                    .cornerRadius(16)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(bill.targetIdentifier)
+                            .font(.custom("VodafoneRg-Bold", size: 16))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+
+                        Text(bill.providerName)
+                            .font(.custom("VodafoneRg-Regular", size: 14))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 31)
-                    .background(Color.white)
+
+                    Spacer()
                 }
-                .buttonStyle(.plain)
-                .offset(x: offsetX)
-                .highPriorityGesture(
+                .padding(.horizontal, 16)
+                .padding(.vertical, 31)
+                .background(Color.white)
+                .contentShape(Rectangle())
+                .offset(x: offsetX + dragOffset)
+                .simultaneousGesture(
                     DragGesture()
-                        .onChanged { value in
-                            // Only allow left swipe, clamp to -deleteWidth
-                            if value.translation.width < 0 {
-                                offsetX = max(value.translation.width, -deleteWidth)
+                        .updating($dragOffset) { value, state, _ in
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            if horizontal > vertical {
+                                state = max(value.translation.width, -deleteWidth)
                             }
                         }
                         .onEnded { value in
-                            withAnimation {
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            guard horizontal > vertical else { return }
+
+                            //withAnimation(.easeOut(duration: 0.2)) {
                                 if value.translation.width < -deleteWidth / 2 {
                                     offsetX = -deleteWidth
                                     isOpen = true
@@ -794,15 +796,27 @@ public struct TopUpView: View {
                                     offsetX = 0
                                     isOpen = false
                                 }
-                            }
+                           // }
                         }
-                    
                 )
-                .animation(.easeOut(duration: 0.2), value: offsetX)
+                .onTapGesture {
+                    // Close swipe if it's open
+                    if isOpen {
+                        withAnimation {
+                            offsetX = 0
+                            isOpen = false
+                        }
+                    } else {
+                        onTap()
+                    }
+                }
             }
             .clipped()
+            .background(Color.white)
         }
     }
+
+
 }
 
 /// A dashed horizontal divider

@@ -12,6 +12,9 @@ public class VouchersViewModel: ObservableObject {
     @Published public var countriesError: String?    = nil
     @Published public var mobileMaxLength: Int = 0
     @Published public var mobileMinLength: Int = 0
+    @Published public var countrySearch: String = ""
+    private var cancellables = Set<AnyCancellable>()
+
 
     // ── Providers ───────────────────────────────────────────────
     @Published public var providers: [ProviderItem] = []
@@ -39,6 +42,13 @@ public class VouchersViewModel: ObservableObject {
         self.serviceCode  = serviceCode
         self.mobileNumber = mobileNumber
         self.iPayCustomerID = iPayCustomerID
+        $countrySearch
+                .removeDuplicates()
+                .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+                .sink { [weak self] value in
+                    self?.filterCountries(by: value)
+                }
+                .store(in: &cancellables)
     }
     
     // MARK: – Countries

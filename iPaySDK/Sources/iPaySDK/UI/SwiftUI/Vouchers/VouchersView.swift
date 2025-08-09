@@ -351,8 +351,9 @@ public struct VouchersView: View {
                     url: provider.logoUrl,
                     placeholder: AnyView(Color.gray.opacity(0.3))
                 )
-                //                .scaledToFit()
-                .frame(height: cardWidth * 0.6) // 60% of card height for image
+                .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                .frame(minHeight: cardWidth * 0.6) // 60% of card height for image
+                //.frame(height: cardWidth * 0.6) // 60% of card height for image
                 .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
                 
                 Text(provider.name)
@@ -556,13 +557,19 @@ public struct VouchersView: View {
                         VStack{
                             RemoteImage(
                                 url: bill.providerImgUrl,
-                                placeholder: AnyView(Color.gray.opacity(0.3))
+                                placeholder: AnyView(Color.gray.opacity(0.3)),
+                                isResizable: true
                             )
-                            .frame(width: 24, height: 24)
+                          //  .frame(width: 24, height: 24)
+                            .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                          //  .scaledToFit()
+                            .padding(10)
+
+
                         }
                         .frame(width: 48, height: 48)
                         .background(Color("keyBs_bg_gray_4", bundle: .module))
-                        .cornerRadius(16)
+                        .cornerRadius(12)
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text(bill.productDisplayText)

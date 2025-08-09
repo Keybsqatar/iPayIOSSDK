@@ -236,8 +236,12 @@ public struct UtilityView: View {
                                             url: p.logoUrl,
                                             placeholder: AnyView(Color.gray.opacity(0.3))
                                         )
-                                        .frame(width: 16, height: 16)
-                                        
+                                        .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                                        .frame(
+                                                width: 16,
+                                                height:16,
+                                                alignment: .leading
+                                            )
                                         Text(p.name)
                                             .font(.custom("VodafoneRg-Bold", size: 16.0))
                                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
@@ -284,8 +288,13 @@ public struct UtilityView: View {
                                                         url: p.logoUrl,
                                                         placeholder: AnyView(Color.gray.opacity(0.3))
                                                     )
-                                                    .frame(width: 16, height: 16)
-                                                    
+                                                    .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                                                    .frame(
+                                                                                width: 16,
+                                                                                height:16,
+                                                                                alignment: .leading
+                                                                            )
+                        
                                                     Text(p.name)
                                                         .font(.custom("VodafoneRg-Regular", size: 16))
                                                         .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))

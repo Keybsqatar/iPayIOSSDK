@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+
 
 public struct ProductsView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -11,7 +13,8 @@ public struct ProductsView: View {
     
     @State private var disabledProceed = true
     @State private var showReview = false
-    
+    @State private var search: String = ""
+
     @State private var selectedSection = 0
     
     public init(
@@ -110,6 +113,7 @@ public struct ProductsView: View {
                         if(!vm.products.filter{ $0.classification != "2" }.isEmpty) {
                             Button(action: {
                                 selectedSection = 1
+                                vm.selectedClass = "1"
                                 vm.filteredProducts = vm.products.filter { $0.classification != "2" }
                             }) {
                                 Text("Airtime Topup")
@@ -125,7 +129,10 @@ public struct ProductsView: View {
                         if(!vm.products.filter{ $0.classification == "2" }.isEmpty) {
                             Button(action: {
                                 selectedSection = 2
+                                vm.selectedClass = "2"
                                 vm.filteredProducts = vm.products.filter { $0.classification == "2" }
+                                //vm.filterProducts(by: "")
+
                             }) {
                                 Text("Plan")
                                     .font(.custom(selectedSection == 2 ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 14))
@@ -141,101 +148,206 @@ public struct ProductsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     
-                    Spacer().frame(height: 16)
+                    Spacer().frame(height: 32)
                 }
                 
-                // Products list
-                ScrollView {
-                    VStack(spacing: 24) {
-                        ForEach(vm.filteredProducts) { p in
-                            Button {
-                                vm.selectedProduct = p
-                            } label: {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(p.displayText)
-                                            .font(.custom("VodafoneRg-Bold", size: 16))
-                                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                            .multilineTextAlignment(.leading)
-                                        
-                                        Text("= \(p.sendCurrencyIso) \(p.sendValue)")
-                                            .font(.custom(vm.selectedProduct?.skuCode == p.skuCode ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 14))
-                                            .foregroundColor(Color(vm.selectedProduct?.skuCode == p.skuCode ? "keyBs_font_red_1" : "keyBs_font_gray_3", bundle: .module))
-                                            .multilineTextAlignment(.leading)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    ZStack {
-                                        if vm.selectedProduct?.skuCode == p.skuCode {
-                                            Image("ic_selected_circle", bundle: .module)
-                                                .frame(width: 32, height: 32)
-                                                .scaledToFit()
-                                        }else{
-                                            Circle()
-                                                .stroke(
-                                                    Color("keyBs_bg_gray_2", bundle: .module),
-                                                    lineWidth: 2
-                                                )
-                                                .frame(width: 20, height: 20)
+                
+                if selectedSection != 2 {
+                    
+                    // Products list
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            ForEach(vm.filteredProducts) { p in
+                                    Button {
+                                        vm.selectedProduct = p
+                                    } label: {
+                                        HStack {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(p.displayText)
+                                                    .font(.custom("VodafoneRg-Bold", size: 16))
+                                                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                                    .multilineTextAlignment(.leading)
+
+                                                Text("= \(p.sendCurrencyIso) \(p.sendValue)")
+                                                    .font(.custom(vm.selectedProduct?.skuCode == p.skuCode ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 14))
+                                                    .foregroundColor(Color(vm.selectedProduct?.skuCode == p.skuCode ? "keyBs_font_red_1" : "keyBs_font_gray_3", bundle: .module))
+                                                    .multilineTextAlignment(.leading)
+                                            }
+
+                                            Spacer()
+
+                                            ZStack {
+                                                if vm.selectedProduct?.skuCode == p.skuCode {
+                                                    Image("ic_selected_circle", bundle: .module)
+                                                        .frame(width: 32, height: 32)
+                                                        .scaledToFit()
+                                                } else {
+                                                    Circle()
+                                                        .stroke(
+                                                            Color("keyBs_bg_gray_2", bundle: .module),
+                                                            lineWidth: 2
+                                                        )
+                                                        .frame(width: 20, height: 20)
+                                                }
+                                            }
+                                            .frame(width: 32, height: 32)
+                                            .scaledToFit()
                                         }
                                     }
-                                    .frame(width: 32, height: 32)
-                                    .scaledToFit()
-                                }
-                            }
-                            .padding(.vertical, 16)
-                            .padding(.horizontal, 24)
-                            .background(
-                                Color(
-                                    vm.selectedProduct?.skuCode == p.skuCode
-                                    ? "keyBs_bg_pink_1"
-                                    : "keyBs_white",
-                                    bundle: .module
-                                )
-                            )
-                            .cornerRadius(8)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                    .stroke(
+                                    .padding(.vertical, 16)
+                                    .padding(.horizontal, 24)
+                                    .background(
                                         Color(
                                             vm.selectedProduct?.skuCode == p.skuCode
-                                            ? "keyBs_bg_red_1"
-                                            : "keyBs_bg_gray_1",
+                                            ? "keyBs_bg_pink_1"
+                                            : "keyBs_white",
                                             bundle: .module
-                                        ),
-                                        lineWidth: 1
+                                        )
                                     )
-                            )
-                            .shadow(
-                                color: Color.black.opacity(0.1),
-                                radius: 4,
-                                x: 0,
-                                y: 2
-                            )
+                                    .cornerRadius(8)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                            .stroke(
+                                                Color(
+                                                    vm.selectedProduct?.skuCode == p.skuCode
+                                                    ? "keyBs_bg_red_1"
+                                                    : "keyBs_bg_gray_1",
+                                                    bundle: .module
+                                                ),
+                                                lineWidth: 1
+                                            )
+                                    )
+                                    .shadow(
+                                        color: Color.black.opacity(0.1),
+                                        radius: 4,
+                                        x: 0,
+                                        y: 2
+                                    )
+                                    .buttonStyle(.plain)
+
+                            }
+
+                            
                         }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 16)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
-                Spacer().frame(height: 32)
-                
-                Button(action: { showReview = true }) {
-                    Text("Proceed")
-                        .font(.custom("VodafoneRg-Bold", size: 16))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, minHeight: 56)
-                        .background(
-                            Color(!disabledProceed ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
-                        )
-                        .cornerRadius(60)
+                        .padding(.vertical, 5)
                         .padding(.horizontal, 16)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
+                    Spacer().frame(height: 32)
+                    
+                    Button(action: { showReview = true }) {
+                        Text("Proceed")
+                            .font(.custom("VodafoneRg-Bold", size: 16))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, minHeight: 56)
+                            .background(
+                                Color(!disabledProceed ? "keyBs_bg_red_1" : "keyBs_bg_gray_1", bundle: .module)
+                            )
+                            .cornerRadius(60)
+                            .padding(.horizontal, 16)
+                    }
+                    .disabled(disabledProceed)
+                    Image("bottom_pattern3", bundle: .module)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                } else if selectedSection == 2 {
+                    HStack(spacing: 8) {
+                        Image("ic_search", bundle: .module)
+                            .frame(width: 16, height: 16)
+                            .scaledToFit()
+                        
+                        TextField("Search", text: $vm.searchText)
+                            .foregroundColor(.primary)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
+                    .background(Color("keyBs_white", bundle: .module))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 24)
+
+                    Spacer().frame(height: 32)
+
+                    ScrollView {
+                        VStack(spacing: 8) {
+                            ForEach(vm.filteredProducts) { p in
+                                Button {
+                                    vm.selectedProduct = p
+                                    showReview = true
+                                    // print("Product: \(p)")
+                                } label: {
+                                    VStack(spacing: 0) {
+                                        // Top Red Bar with Price
+                                        HStack {
+                                            Text(p.displayText)
+                                                .font(.custom("VodafoneRg-Bold", size: 18))
+                                                .foregroundColor(.white)
+                                            Spacer()
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 12)
+                                        .background(LinearGradient(
+                                            stops: [
+                                                Gradient.Stop(color: Color(red: 159.0 / 255.0, green: 0.0, blue: 0.0), location: 0.0),
+                                                Gradient.Stop(color: Color(red: 83.0 / 255.0, green: 0.0, blue: 0.0), location: 1.0)],
+                                            startPoint: .leading,
+                                            endPoint: .trailing))
+                                        .overlay(
+                                            Rectangle()
+                                                .inset(by: 0.5)
+                                                .stroke(Color(white: 235.0 / 255.0), lineWidth: 1.0)
+                                        )                                        .cornerRadius(12, corners: [.topLeft, .topRight])
+                                        
+                                        // Bottom White Section with Display Text and Subtitle
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            
+                                            Text(p.descriptionMarkdown ?? "")
+                                                .font(.custom("VodafoneRg-Bold", size: 14))
+                                                .foregroundColor(.black)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            
+                                        }
+                                        .padding(16)
+                                        .background(Color.white)
+                                        .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
+                                    }
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(
+                                                Color.gray.opacity(0.2),
+                                                lineWidth: 1
+                                            )
+                                    )
+                                    
+                                }
+                                .padding(.horizontal, 8)
+                                //.padding(.vertical, 12)
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 16)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                        
+                    }
+                    .padding(.bottom,20)
+                    Spacer().frame(height: 32)
+
+                    
                 }
-                .disabled(disabledProceed)
+                
+               
                 NavigationLink(
                     destination: Group {
                         if let p = vm.selectedProduct {
@@ -263,30 +375,29 @@ public struct ProductsView: View {
                 .hidden()
                 
                 // Bottom pattern
-                Image("bottom_pattern3", bundle: .module)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity)
-                    .edgesIgnoringSafeArea(.all)
+
             }
             .background(Color.white)
             .edgesIgnoringSafeArea(.bottom)
         }
         .onAppear {
             Task {
-                await vm.loadProducts()
+               // await vm.loadProducts()
                 
                 if(vm.selectedProduct != nil) {
                     selectedSection = vm.selectedProduct?.classification == "2" ? 2 : 1
                     vm.filteredProducts = vm.products.filter{ $0.classification == vm.selectedProduct?.classification }
                 }else{
+                    await vm.loadProducts()
                     // Default to Airtime Topup
                     selectedSection = 1
-                    vm.filteredProducts = vm.products.filter { $0.classification != "2" }
+                    vm.filteredProducts = vm.products.filter { $0.classification == "1" }
                     if(vm.filteredProducts.isEmpty) {
                         // If no Airtime Topup, then show Plan
+
                         selectedSection = 2
                         vm.filteredProducts = vm.products.filter { $0.classification == "2" }
+
                     }
                 }
             }

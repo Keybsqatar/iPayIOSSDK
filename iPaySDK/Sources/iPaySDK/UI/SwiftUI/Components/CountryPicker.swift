@@ -2,6 +2,7 @@ import SwiftUI
 
 public protocol CountryFilterable: ObservableObject {
     var filteredCountries: [CountryItem] { get }
+    var countrySearch: String { get set } // 🔥 Add this line
     func filterCountries(by search: String)
 }
 
@@ -14,7 +15,7 @@ public struct CountryPicker<VM: CountryFilterable>: View {
     @Environment(\.presentationMode) private var mode
     // @ObservedObject var vm: TopUpViewModel
     @ObservedObject var vm: VM
-    @State private var search = ""
+    //@State private var search = ""
     public var onSelect: ((CountryItem) -> Void)?
     
     public init(vm: VM,
@@ -57,13 +58,18 @@ public struct CountryPicker<VM: CountryFilterable>: View {
                     Image("ic_search", bundle: .module)
                         .frame(width: 16, height: 16)
                         .scaledToFit()
-                    
+                    TextField("Search", text: $vm.countrySearch)
+                        .foregroundColor(.primary)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                    /*
                     TextField("Search", text: $search, onEditingChanged: { _ in
                         vm.filterCountries(by: search)
                     })
                     .foregroundColor(.primary)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                     */
                 }
                 .padding(.vertical, 8)
                 .padding(.horizontal, 12)

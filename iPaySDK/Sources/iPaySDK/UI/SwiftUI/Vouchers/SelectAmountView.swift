@@ -197,21 +197,30 @@ public struct SelectAmountView: View {
     }
     
     private var amountSelectionSection: some View {
+        
         VStack(spacing: 24) {
+       
             // Card with image, provider, country
             VStack(spacing: 0) {
-                
-                HStack(spacing: 0) {
-                    RemoteImage(
-                        url: vm.providerLogoUrl,
-                        placeholder: AnyView(Color.gray.opacity(0.3)),
-                        isResizable: false
-                    )
-                    .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
-                    Spacer()
-                }
-                .padding(.top, 24)
-                .padding(.horizontal, 24)
+                    
+                    HStack(spacing: 0) {
+                        RemoteImage(
+                            url: vm.providerLogoUrl,
+                            placeholder: AnyView(Color.gray.opacity(0.3)),
+                            isResizable: true
+                        )
+                        .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                        .frame(
+                                maxWidth: UIScreen.main.bounds.width * 0.4,
+                                alignment: .leading
+                            )
+                        .clipShape(RoundedCorner(radius: 16, corners: [.topLeft, .topRight]))
+                        Spacer()
+                        
+                        
+                    }
+                    .padding(.top, 24)
+                    .padding(.horizontal, 24)
                 
                 HStack(spacing: 8) {
                     Text(vm.providerName)
@@ -253,7 +262,7 @@ public struct SelectAmountView: View {
                             Button(action: {
                                 vm.selectedProduct = product
                             }) {
-                                Text("$ \(product.displayText.filter { $0.isNumber })")
+                                Text("\(product.displayText)")
                                     .font(.custom(vm.selectedProduct?.skuCode == product.skuCode ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 12))
                                     .foregroundColor(vm.selectedProduct?.skuCode == product.skuCode ? Color("keyBs_white", bundle: .module) : Color("keyBs_font_gray_2", bundle: .module))
                                     .padding(.vertical, 9)

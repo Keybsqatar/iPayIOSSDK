@@ -252,7 +252,12 @@ public struct ReviewUtilityView: View {
                         url: url,
                         placeholder: AnyView(Color.gray.opacity(0.3))
                     )
-                    .frame(width: 16, height: 16)
+                    .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                    .frame(
+                        width: 16,
+                        height:16,
+                        alignment: .leading
+                    )
                 }
                 
                 Text(value)

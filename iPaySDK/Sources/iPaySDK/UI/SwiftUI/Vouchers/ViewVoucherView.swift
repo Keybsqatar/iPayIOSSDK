@@ -131,8 +131,13 @@ public struct ViewVoucherView: View {
                                 RemoteImage(
                                     url: providerLogoUrl,
                                     placeholder: AnyView(Color.gray.opacity(0.3)),
-                                    isResizable: false
+                                    isResizable: true
                                 )
+                                .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                                .frame(
+                                        maxWidth: UIScreen.main.bounds.width * 0.4,
+                                        alignment: .leading
+                                    )
                                 .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
                                 Spacer()
                             }

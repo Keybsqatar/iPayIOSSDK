@@ -3,7 +3,7 @@ import SDWebImageSwiftUI
 
 private class BundleToken {}
 
-public struct DeletionSuccessModalView: View {
+public struct OtpAlertModalView: View {
     @EnvironmentObject private var coord: SDKCoordinator
     
     /// bind to show/hide
@@ -13,7 +13,7 @@ public struct DeletionSuccessModalView: View {
     
     public var body: some View {
         ZStack {
-            Color.black.opacity(0.4)
+            Color.black.opacity(0.2)
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 32) {
@@ -39,7 +39,7 @@ public struct DeletionSuccessModalView: View {
                 
                 VStack(spacing: 24) {
                     // GIF banner
-                    if let url = Bundle.module.url(forResource: "summary", withExtension: "gif") {
+                    if let url = Bundle.module.url(forResource: "oops", withExtension: "gif") {
                         AnimatedImage(url: url)
                             .resizable()
                             .scaledToFit()
@@ -51,8 +51,8 @@ public struct DeletionSuccessModalView: View {
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
-                    Button(action: { 
-                        isPresented = false 
+                    Button(action: {
+                        isPresented = false
                         onHomepage?()
                     }) {
                         Text("Homepage")
@@ -76,7 +76,7 @@ public struct DeletionSuccessModalView: View {
 }
 
 #Preview {
-    DeletionSuccessModalView(
+    OtpAlertModalView(
         isPresented: .constant(true), message: "Bill deleted successfully."
     )
 }

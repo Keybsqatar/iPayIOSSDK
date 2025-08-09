@@ -4,9 +4,14 @@ import Combine     // ← add this
 @MainActor
 public class ProductsViewModel: ObservableObject {
     
+    @Published var searchText: String = ""
+    @Published var selectedClass: String = "1"
+    private var cancellables = Set<AnyCancellable>()
+
     // ── Products ────────────────────────────────────────────────
     @Published public var products: [ProductItem] = []
     @Published public var filteredProducts: [ProductItem] = []
+    
     @Published public var isLoadingProducts = false
     @Published public var productsError: String? = nil
     @Published public var selectedProduct: ProductItem?
@@ -60,8 +65,29 @@ public class ProductsViewModel: ObservableObject {
         self.iPayCustomerID = iPayCustomerID
         
         self.dismissMode = dismissMode
+        
+        $searchText
+                 .removeDuplicates()
+                 .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+                 .sink { [weak self] value in
+                     self?.filterProducts(by: value)
+                 }
+                 .store(in: &cancellables)
     }
     
+    func filterProducts(by query: String) {
+        if query.isEmpty {
+            filteredProducts = products.filter { $0.classification == selectedClass }
+        } else {
+            filteredProducts = products.filter {
+                $0.classification == "2" && (
+                    $0.displayText.localizedCaseInsensitiveContains(query) ||
+                    $0.descriptionMarkdown?.localizedCaseInsensitiveContains(query) == true
+                )
+            }
+        }
+    }
+
     // MARK: – Products
     public func loadProducts() async {
         isLoadingProducts = true

@@ -13,6 +13,9 @@ public struct OtpView: View {
     @State private var showToast = false
     @State private var toastMessage = ""
     
+    @State private var showAlertModal = false
+    @State private var alertMessage = "Unfortunately, your request didn't go through. Please retry."
+
     @State private var otbCode = ""
     
     @State private var activeIndex: Int? = nil
@@ -247,6 +250,19 @@ public struct OtpView: View {
                 Spacer()
             }
             .background(Color.white)
+            
+            if showAlertModal {
+                
+                OtpAlertModalView(
+                    isPresented: $showAlertModal,
+                    message:      alertMessage,
+                    onHomepage: {
+                        showAlertModal = false
+                        alertMessage = ""
+                      //  vm.deleteSuccessMessage = ""
+                    }
+                )
+            }
         }
         .onAppear {
             Task {
@@ -428,6 +444,11 @@ public struct OtpView: View {
             if let m = msg {
                 toastMessage = m
                 showToast    = true
+                if(vm.showMsgImageType == 2)
+                {
+                    showAlertModal = true
+                }
+                
             }
         }
         .toast(isShowing: $showToast, message: toastMessage)
@@ -439,6 +460,8 @@ public struct OtpView: View {
         .onTapGesture {
             UIApplication.shared.endEditing()
         }
+        
+        
     }
     
     private func startTimer() {

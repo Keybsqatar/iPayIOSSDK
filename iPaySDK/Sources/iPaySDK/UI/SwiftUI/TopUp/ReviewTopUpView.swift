@@ -112,7 +112,7 @@ public struct ReviewTopUpView: View {
                                         .clipShape(Circle())
                                     
                                     Text("\(product.sendCurrencyIso) \(product.sendValue)")
-                                        .font(.custom("VodafoneRg-Bold", size: 22))
+                                        .font(.custom("VodafoneRg-Bold", size: 24))
                                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -136,7 +136,7 @@ public struct ReviewTopUpView: View {
                                         .clipShape(Circle())
                                     
                                     Text(product.displayText)
-                                        .font(.custom("VodafoneRg-Bold", size: 22))
+                                        .font(.custom("VodafoneRg-Bold", size: 24))
                                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
 //                                        .lineLimit(nil)
 //                                        .fixedSize(horizontal: false, vertical: true)
@@ -226,8 +226,8 @@ public struct ReviewTopUpView: View {
                     // Details card
                     VStack(spacing: 12) {
                         detailRow(label: "Country",      value: countryName,        svgIconURL: countryFlagUrl)
-                        detailRow(label: "Mobile Number",value: receiverMobileNumber)
-                        detailRow(label: "Operator Name",value: providerName,       logoIconURL: providerLogoUrl)
+                        detailRow(label: "Mobile",value: receiverMobileNumber)
+                        detailRow(label: "Operator",value: providerName,       logoIconURL: providerLogoUrl)
                     }
                     .padding(.all, 16)
                     .background(
@@ -340,7 +340,12 @@ public struct ReviewTopUpView: View {
                         url: url,
                         placeholder: AnyView(Color.gray.opacity(0.3))
                     )
-                    .frame(width: 16, height: 16)
+                    .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                    .frame(
+                        width: 16,
+                        height:16,
+                        // alignment: .leading
+                    )
                 }
                 
                 Text(value)

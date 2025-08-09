@@ -10,6 +10,9 @@ public class UtilityViewModel: ObservableObject {
     @Published public var filteredCountries: [CountryItem] = []
     @Published public var isLoadingCountries: Bool  = false
     @Published public var countriesError: String?    = nil
+    @Published public var countrySearch: String = ""
+    private var cancellables = Set<AnyCancellable>()
+
 
     // ── Providers ───────────────────────────────────────────────
     @Published public var providers: [ProviderItem] = []
@@ -37,6 +40,13 @@ public class UtilityViewModel: ObservableObject {
         self.serviceCode  = serviceCode
         self.mobileNumber = mobileNumber
         self.iPayCustomerID = iPayCustomerID
+        $countrySearch
+                .removeDuplicates()
+                .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+                .sink { [weak self] value in
+                    self?.filterCountries(by: value)
+                }
+                .store(in: &cancellables)
     }
     
     // MARK: – Countries

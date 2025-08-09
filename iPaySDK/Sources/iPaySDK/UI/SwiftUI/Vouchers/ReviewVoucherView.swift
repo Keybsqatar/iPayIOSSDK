@@ -116,10 +116,10 @@ public struct ReviewVoucherView: View {
                     // Details card
                     VStack(spacing: 24) {
                         detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
-//                        detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
-//                        DashedDivider()
+                        detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
+                        DashedDivider()
                         detailRow(label: "Voucher Name",value: product.displayText)
-                        detailRow(label: "Voucher Amount",value: "$ \(product.displayText.filter { $0.isNumber })")
+                        detailRow(label: "Voucher Amount",value: "\(product.receiveCurrencyIso) \(product.displayText.filter { $0.isNumber })")
                     }
                     .padding(.top, 24)
                     .padding(.horizontal, 16)
@@ -230,7 +230,12 @@ public struct ReviewVoucherView: View {
                         url: url,
                         placeholder: AnyView(Color.gray.opacity(0.3))
                     )
-                    .frame(width: 16, height: 16)
+                    .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                    .frame(
+                            width: 16,
+                            height:16,
+                           // alignment: .leading
+                        )
                 }
                 
                 Text(value)

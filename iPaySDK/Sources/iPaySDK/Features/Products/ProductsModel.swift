@@ -27,6 +27,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let displayText: String
     public let sendValue: String
     public let sendCurrencyIso: String
+    public let receiveCurrencyIso: String
     public let sendValueMax: String
     public let settingDefinitions: [SettingDefinition]
     public let terms: Terms?
@@ -35,7 +36,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let classification: String?
     
     enum CodingKeys: String, CodingKey {
-        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, sendValueMax, settingDefinitions, terms, descriptionMarkdown, readMoreMarkdown, classification
+        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, receiveCurrencyIso, sendValueMax, settingDefinitions, terms, descriptionMarkdown, readMoreMarkdown, classification
     }
     
     public init(
@@ -46,6 +47,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         displayText: String,
         sendValue: String,
         sendCurrencyIso: String,
+        receiveCurrencyIso: String,
         sendValueMax: String,
         settingDefinitions: [SettingDefinition],
         terms: Terms? = nil,
@@ -60,6 +62,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         self.displayText = displayText
         self.sendValue = sendValue
         self.sendCurrencyIso = sendCurrencyIso
+        self.receiveCurrencyIso = receiveCurrencyIso
         self.sendValueMax = sendValueMax
         self.settingDefinitions = settingDefinitions
         self.terms = terms
@@ -75,6 +78,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         countryIso = try container.decode(String.self, forKey: .countryIso)
         displayText = try container.decode(String.self, forKey: .displayText)
         sendCurrencyIso = try container.decode(String.self, forKey: .sendCurrencyIso)
+        receiveCurrencyIso = try container.decode(String.self, forKey: .receiveCurrencyIso)
         settingDefinitions = try container.decodeIfPresent([SettingDefinition].self, forKey: .settingDefinitions) ?? []
         terms = try container.decodeIfPresent(Terms.self, forKey: .terms)
         descriptionMarkdown = try container.decodeIfPresent(String.self, forKey: .descriptionMarkdown)

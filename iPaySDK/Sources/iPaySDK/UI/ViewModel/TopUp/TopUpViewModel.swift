@@ -5,6 +5,9 @@ import Combine     // ← add this
 @MainActor
 public class TopUpViewModel: ObservableObject {
     
+    @Published public var countrySearch: String = ""
+    private var cancellables = Set<AnyCancellable>()
+
     // ── Countries ────────────────────────────────────────────────
     @Published public var countries: [CountryItem]   = []
     @Published public var filteredCountries: [CountryItem] = []
@@ -39,6 +42,13 @@ public class TopUpViewModel: ObservableObject {
         self.serviceCode  = serviceCode
         self.mobileNumber = mobileNumber
         self.iPayCustomerID = iPayCustomerID
+        $countrySearch
+                .removeDuplicates()
+                .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+                .sink { [weak self] value in
+                    self?.filterCountries(by: value)
+                }
+                .store(in: &cancellables)
     }
     
     // MARK: – Countries
