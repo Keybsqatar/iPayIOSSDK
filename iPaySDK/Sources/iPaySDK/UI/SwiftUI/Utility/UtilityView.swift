@@ -2,6 +2,8 @@ import SwiftUI
 import Combine
 import ContactsUI
 import UIKit
+import SDWebImageSwiftUI
+
 
 public struct UtilityView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -412,17 +414,25 @@ public struct UtilityView: View {
         return ZStack {
             VStack(spacing: 0) {
                 if vm.savedBills.isEmpty {
-                    Spacer().frame(height: 96)
+                    Spacer().frame(height: 20)
                     
-                    Image("keybs_empty_saved_topups", bundle: .module)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 235, height: 220)
-                    
+                    LottieView(name: "utility_no_bills", bundle: .module)
+                        .frame(width: 200, height: 200)
+
+                        /*
+                                           AnimatedImage(url: url)
+                                               .resizable()
+                                               .scaledToFit()
+                                               .frame(height: 220)
+                         */
+
+                   // }
+                     
+                    /*
                     Spacer().frame(height: 26)
                     
                     VStack(spacing: 8) {
-                        Text("No Top up Yet")
+                        Text("No Voucher Yet")
                             .font(.custom("VodafoneRg-Bold", size: 28))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                             .multilineTextAlignment(.leading)
@@ -434,6 +444,7 @@ public struct UtilityView: View {
                     }
                     
                     Spacer()
+                     */
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {

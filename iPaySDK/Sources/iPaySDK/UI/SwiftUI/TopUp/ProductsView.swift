@@ -382,23 +382,31 @@ public struct ProductsView: View {
         }
         .onAppear {
             Task {
-               // await vm.loadProducts()
-                
+
+                if (!vm.productsLoaded) {
+                    await vm.loadProducts()
+                }
                 if(vm.selectedProduct != nil) {
+                    print("product: \(vm.selectedProduct)")
                     selectedSection = vm.selectedProduct?.classification == "2" ? 2 : 1
+                    vm.selectedClass = vm.selectedProduct?.classification == "2" ? "2" : "1"
                     vm.filteredProducts = vm.products.filter{ $0.classification == vm.selectedProduct?.classification }
                 }else{
-                    await vm.loadProducts()
+                    //await vm.loadProducts()
                     // Default to Airtime Topup
+                    
                     selectedSection = 1
+                    vm.selectedClass = "1"
                     vm.filteredProducts = vm.products.filter { $0.classification == "1" }
                     if(vm.filteredProducts.isEmpty) {
                         // If no Airtime Topup, then show Plan
 
                         selectedSection = 2
+                        vm.selectedClass = "2"
                         vm.filteredProducts = vm.products.filter { $0.classification == "2" }
 
                     }
+                     
                 }
             }
         }

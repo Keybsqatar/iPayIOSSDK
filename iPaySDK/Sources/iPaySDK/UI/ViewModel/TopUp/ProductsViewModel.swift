@@ -13,6 +13,7 @@ public class ProductsViewModel: ObservableObject {
     @Published public var filteredProducts: [ProductItem] = []
     
     @Published public var isLoadingProducts = false
+    @Published public var productsLoaded = false
     @Published public var productsError: String? = nil
     @Published public var selectedProduct: ProductItem?
 
@@ -102,7 +103,7 @@ public class ProductsViewModel: ObservableObject {
                 countryCode:  countryIso,
                 providerCode: providerCode
             )
-                        
+            productsLoaded = true;
             if !productSku.isEmpty {
                 selectedProduct = products.first(where: { $0.skuCode == productSku })
             }

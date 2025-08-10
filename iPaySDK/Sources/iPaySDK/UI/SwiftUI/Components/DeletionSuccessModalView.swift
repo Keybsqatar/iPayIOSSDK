@@ -51,9 +51,10 @@ public struct DeletionSuccessModalView: View {
                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
-                    Button(action: { 
-                        isPresented = false 
-                        onHomepage?()
+                    Button(action: {
+                        coord.dismissSDK()
+                       // isPresented = false
+                       // onHomepage?()
                     }) {
                         Text("Homepage")
                             .font(.custom("VodafoneRg-Bold", size: 16))

@@ -207,11 +207,11 @@ public struct ReceiptModalView: View {
     private var cardContent: some View {
         VStack(spacing: 0) {
             // GIF banner
-            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : data.status == "PROCESSING" ? "in_progress" : "oops", withExtension: "gif") {
+            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : data.status == "PROCESSING" ? "transaction_in_progress" : "transaction_failed", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 56)
+                    .frame(height: 55)
             }
             
             // Amount & date
@@ -246,7 +246,7 @@ public struct ReceiptModalView: View {
                     
                     detailRow(label: data.textPin.uppercased(), value: data.valuePin)
                 }
-                
+                /*
                 if !data.descriptionMarkdown.isEmpty || !data.readMoreMarkdown.isEmpty, data.status == "SUCCESS" {
                     Divider()
                         .overlay(Color("keyBs_bg_gray_3", bundle: .module))
@@ -269,6 +269,7 @@ public struct ReceiptModalView: View {
                         }
                     )
                 }
+                 */
                 
                 Spacer().frame(height: 16)
             }

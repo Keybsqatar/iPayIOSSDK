@@ -43,7 +43,7 @@ public struct OtpAlertModalView: View {
                         AnimatedImage(url: url)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 56)
+                            .frame(height: 55)
                     }
                     
                     Text(message)
@@ -52,8 +52,9 @@ public struct OtpAlertModalView: View {
                         .multilineTextAlignment(.leading)
                     
                     Button(action: {
-                        isPresented = false
-                        onHomepage?()
+                        coord.dismissSDK()
+                        //isPresented = false
+                        //onHomepage?()
                     }) {
                         Text("Homepage")
                             .font(.custom("VodafoneRg-Bold", size: 16))

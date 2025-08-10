@@ -197,13 +197,13 @@ public struct UtilityReceiptModalView: View {
     private var cardContent: some View {
         VStack(spacing: 0) {
             // GIF banner
-            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : data.status == "PROCESSING" ? "in_progress" : "oops", withExtension: "gif") {
+            if let url = Bundle.module.url(forResource: data.status == "SUCCESS" ? "summary" : data.status == "PROCESSING" ? "transaction_in_progress" : "transaction_failed", withExtension: "gif") {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 56)
+                    .frame(height: 55)
             }
-            
+
             // Amount & date
             VStack(spacing: 8) {
                 Text(data.amount)

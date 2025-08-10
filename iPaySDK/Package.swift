@@ -26,6 +26,10 @@ let package = Package(
         .package(
             url: "https://github.com/SDWebImage/SDWebImageSVGCoder.git",
             from: "1.8.0"
+        ),
+        .package(
+                    url: "https://github.com/airbnb/lottie-ios.git",
+                    from: "4.4.0"
         )
     ],
     targets: [
@@ -37,7 +41,8 @@ let package = Package(
                 // Reference the products exported by the above packages:
                 .product(name: "SVGKit", package: "SVGKit"),
                 .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI"),
-                .product(name: "SDWebImageSVGCoder", package: "SDWebImageSVGCoder")
+                .product(name: "SDWebImageSVGCoder", package: "SDWebImageSVGCoder"),
+                .product(name: "Lottie", package: "lottie-ios")
 
             ],
             path: "Sources/iPaySDK",

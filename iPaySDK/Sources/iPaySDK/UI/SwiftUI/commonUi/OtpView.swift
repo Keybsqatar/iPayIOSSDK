@@ -239,13 +239,13 @@ public struct OtpView: View {
                         .frame(width: 20, height: 20)
 //                        .frame(height: 20)
                 }
-                //                else if vm.showMsgImageType == 2{
+                //else if vm.showMsgImageType == 2{
                 //                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
                 //                    //                        .indicator(.activity)
                 //                        .resizable()
                 //                        .scaledToFit()
                 //                        .frame(height: 56)
-                //                }
+               //                 }
                 
                 Spacer()
             }
