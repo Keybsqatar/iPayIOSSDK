@@ -134,7 +134,7 @@ public struct ProductsView: View {
                                 //vm.filterProducts(by: "")
 
                             }) {
-                                Text("Plan")
+                                Text("Bundles")
                                     .font(.custom(selectedSection == 2 ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 14))
                                     .foregroundColor(Color(selectedSection == 2 ? "keyBs_white" : "keyBs_font_gray_2", bundle: .module))
                                     .padding(.vertical, 9)

@@ -344,7 +344,7 @@ public struct ReviewTopUpView: View {
                     .frame(
                         width: 16,
                         height:16,
-                        // alignment: .leading
+                         alignment: .leading
                     )
                 }
                 

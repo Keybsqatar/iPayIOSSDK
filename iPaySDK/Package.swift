@@ -27,10 +27,7 @@ let package = Package(
             url: "https://github.com/SDWebImage/SDWebImageSVGCoder.git",
             from: "1.8.0"
         ),
-        .package(
-                    url: "https://github.com/airbnb/lottie-ios.git",
-                    from: "4.4.0"
-        )
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -42,7 +39,7 @@ let package = Package(
                 .product(name: "SVGKit", package: "SVGKit"),
                 .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI"),
                 .product(name: "SDWebImageSVGCoder", package: "SDWebImageSVGCoder"),
-                .product(name: "Lottie", package: "lottie-ios")
+                .product(name: "Lottie", package: "lottie-spm")
 
             ],
             path: "Sources/iPaySDK",
