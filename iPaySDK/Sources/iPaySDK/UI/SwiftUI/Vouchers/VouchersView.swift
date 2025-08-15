@@ -152,14 +152,17 @@ public struct VouchersView: View {
                 }
             }
             .onAppear {
-                Task {
-                    await vm.loadCountries()
-                    if let qaCountry = vm.countries.first(where: { $0.countryIso == "QA" }) {
-                        country = qaCountry
-                        await vm.loadProviders(for: qaCountry.countryIso)
+                if country==nil {
+                    Task {
+                        await vm.loadCountries()
+                        if let qaCountry = vm.countries.first(where: { $0.countryIso == "QA" }) {
+                            country = qaCountry
+                            await vm.loadProviders(for: qaCountry.countryIso)
+                        }
                     }
+                    Task { await vm.loadSavedBills() }
                 }
-                Task { await vm.loadSavedBills() }
+                
             }
             .onReceive(errorStream) { msg in
                 if let m = msg {
@@ -346,44 +349,53 @@ public struct VouchersView: View {
     private struct ProviderCard: View {
         let provider: ProviderItem
         let cardWidth: CGFloat
-        
+        private let corner: CGFloat = 8
+        private let logoInset: CGFloat = 16
+        /// choose the look you want (1 -> square well like your design)
+        private let imageAspect: CGFloat = 1.0 // or 4.0/3.0, 16.0/9.0, etc.
+
         var body: some View {
             VStack(spacing: 0) {
-                RemoteImage(
-                    url: provider.logoUrl,
-                    placeholder: AnyView(Color.gray.opacity(0.3))
-                )
-                .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                // LOGO WELL
+                ZStack {
+                    Color.white // ensures white bg even if logo has transparency
+                    RemoteImage(
+                        url: provider.logoUrl,
+                        placeholder: AnyView(Color.gray.opacity(0.3)),
+                        isResizable: true
+                    )
+                    .scaledToFit()               // keep logo aspect
+                    //.padding(logoInset)          // breathing room inside well
+                    .frame(maxWidth: .infinity)  // center horizontally
+                }
+                .aspectRatio(contentMode: .fit) // size from width; no hard height
                 .frame(minHeight: cardWidth * 0.6) // 60% of card height for image
-                //.frame(height: cardWidth * 0.6) // 60% of card height for image
-                .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
-                
+                .clipShape(RoundedCorner(radius: corner, corners: [.topLeft, .topRight]))
+
+                // TITLE BAR
                 Text(provider.name)
                     .font(.custom("VodafoneRg-Regular", size: 16))
                     .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                    .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(1)
-//                    .frame(height: cardWidth * 0.3)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 16)
+                    .background(Color("keyBs_bg_gray_3", bundle: .module))
+                    .clipShape(RoundedCorner(radius: corner, corners: [.bottomLeft, .bottomRight]))
             }
             .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(
-                        Color("keyBs_bg_gray_1", bundle: .module),
-                        lineWidth: 1
-                    )
+                RoundedRectangle(cornerRadius: corner, style: .continuous)
+                    .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
             )
             .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color("keyBs_bg_gray_3", bundle: .module))
+                RoundedRectangle(cornerRadius: corner)
+                    .fill(Color.clear) // keep outer bg clear; inner parts already colored
                     .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
             )
             .padding(.bottom, 24)
-            //            .frame(width: cardWidth, height: cardWidth * 1.2) // Square card, or change height as needed
         }
     }
+
     
     //    ----------------------
     

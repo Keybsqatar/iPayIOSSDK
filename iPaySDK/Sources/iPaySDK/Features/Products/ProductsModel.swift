@@ -27,6 +27,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let displayText: String
     public let sendValue: String
     public let sendCurrencyIso: String
+    public let receiveValue: String
     public let receiveCurrencyIso: String
     public let sendValueMax: String
     public let settingDefinitions: [SettingDefinition]
@@ -36,7 +37,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
     public let classification: String?
     
     enum CodingKeys: String, CodingKey {
-        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso, receiveCurrencyIso, sendValueMax, settingDefinitions, terms, descriptionMarkdown, readMoreMarkdown, classification
+        case skuCode, providerCode, countryIso, displayText, sendValue, sendCurrencyIso,receiveValue, receiveCurrencyIso, sendValueMax, settingDefinitions, terms, descriptionMarkdown, readMoreMarkdown, classification
     }
     
     public init(
@@ -47,6 +48,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         displayText: String,
         sendValue: String,
         sendCurrencyIso: String,
+        receiveValue: String,
         receiveCurrencyIso: String,
         sendValueMax: String,
         settingDefinitions: [SettingDefinition],
@@ -62,6 +64,7 @@ public struct ProductItem: Identifiable, Codable, Sendable {
         self.displayText = displayText
         self.sendValue = sendValue
         self.sendCurrencyIso = sendCurrencyIso
+        self.receiveValue = receiveValue
         self.receiveCurrencyIso = receiveCurrencyIso
         self.sendValueMax = sendValueMax
         self.settingDefinitions = settingDefinitions
@@ -105,6 +108,19 @@ public struct ProductItem: Identifiable, Codable, Sendable {
             sendValue = String(intValue)
         } else {
             sendValue = try container.decode(String.self, forKey: .sendValue)
+        }
+        
+        // Try to decode as Float, Int, or String, then convert to String
+        if let floatValue = try? container.decode(Float.self, forKey: .receiveValue) {
+            if floatValue.truncatingRemainder(dividingBy: 1) == 0 {
+                receiveValue = String(format: "%.0f", floatValue)
+            } else {
+                receiveValue = String(floatValue)
+            }
+        } else if let intValue = try? container.decode(Int.self, forKey: .receiveValue) {
+            receiveValue = String(intValue)
+        } else {
+            receiveValue = try container.decode(String.self, forKey: .receiveValue)
         }
         
         // Try to decode as Float, Int, or String, then convert to String

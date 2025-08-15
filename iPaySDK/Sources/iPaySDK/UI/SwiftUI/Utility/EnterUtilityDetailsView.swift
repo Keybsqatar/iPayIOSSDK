@@ -258,13 +258,29 @@ public struct EnterUtilityDetailsView: View {
                         return
                     }
                     
-                    let regexPattern = providerValidationRegex ?? ""
-                    let fullReceiverMobileNumber = (countryPrefix ?? "") + phone
+                   /* let regexPattern = selectedProvider?.validationRegex ?? ""
+                    let fullReceiverMobileNumber = (country?.prefix ?? "") + phone
+                    
                     if !regexPattern.isEmpty {
                         if fullReceiverMobileNumber.range(of: regexPattern, options: .regularExpression) == nil {
                             toastMessage = "Invalid mobile number format for the selected provider."
                             showToast = true
                             return
+                        }
+                    }*/
+
+                    
+                    let regexPattern = providerValidationRegex ?? ""
+                    //let fullReceiverMobileNumber = phone//(countryPrefix ?? "") + phone
+                    
+                    if !regexPattern.isEmpty {
+                        if phone.range(of: regexPattern, options: .regularExpression) == nil {
+                            let fullReceiverMobileNumber = (countryPrefix ?? "") + phone
+                            if fullReceiverMobileNumber.range(of: regexPattern, options: .regularExpression) == nil {
+                                toastMessage = "Invalid mobile number format for the selected provider."
+                                showToast = true
+                                return
+                            }
                         }
                     }
                     

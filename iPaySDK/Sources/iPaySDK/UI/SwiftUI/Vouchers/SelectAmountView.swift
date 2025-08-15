@@ -202,21 +202,26 @@ public struct SelectAmountView: View {
        
             // Card with image, provider, country
             VStack(spacing: 0) {
-                    
                     HStack(spacing: 0) {
-                        RemoteImage(
-                            url: vm.providerLogoUrl,
-                            placeholder: AnyView(Color.gray.opacity(0.3)),
-                            isResizable: true
-                        )
-                        .aspectRatio(contentMode: .fit) // maintain aspect ratio
-                        .frame(
-                                maxWidth: UIScreen.main.bounds.width * 0.4,
-                                alignment: .leading
+                        
+                        ZStack {
+                            Color.white // ensures white bg even if logo has transparency
+                            RemoteImage(
+                                url: vm.providerLogoUrl,
+                                placeholder: AnyView(Color.gray.opacity(0.3)),
+                                isResizable: true
                             )
+                            .scaledToFit()               // keep logo aspect
+                            //.padding(logoInset)          // breathing room inside well
+                            .frame(maxWidth: UIScreen.main.bounds.width * 0.4,
+                                   alignment: .leading
+                            )  // center horizontally
+
+                        }
+                        .aspectRatio(contentMode: .fit) // size from width; no hard height
+                        .frame(maxWidth: UIScreen.main.bounds.width * 0.4, alignment: .leading) // 60% of card height for image
                         .clipShape(RoundedCorner(radius: 16, corners: [.topLeft, .topRight]))
                         Spacer()
-                        
                         
                     }
                     .padding(.top, 24)
@@ -251,7 +256,7 @@ public struct SelectAmountView: View {
             
             // Select amount
             VStack(alignment: .leading, spacing: 16) {
-                Text("Please select a voucher amount")
+                Text("Please select")
                     .font(.custom("VodafoneRg-Bold", size: 16))
                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                     .multilineTextAlignment(.leading)
@@ -262,21 +267,37 @@ public struct SelectAmountView: View {
                             Button(action: {
                                 vm.selectedProduct = product
                             }) {
-                                Text("\(product.displayText)")
-                                    .font(.custom(vm.selectedProduct?.skuCode == product.skuCode ? "VodafoneRg-Bold" : "VodafoneRg-Regular", size: 12))
-                                    .foregroundColor(vm.selectedProduct?.skuCode == product.skuCode ? Color("keyBs_white", bundle: .module) : Color("keyBs_font_gray_2", bundle: .module))
-                                    .padding(.vertical, 9)
-                                    .padding(.horizontal, 16)
-                                    .background(
-                                        vm.selectedProduct?.skuCode == product.skuCode
-                                        ? Color("keyBs_bg_red_1", bundle: .module)
-                                        : Color("keyBs_bg_gray_6", bundle: .module)
-                                    )
-                                    .cornerRadius(40)
+                                VStack {
+                                    Text(product.displayText)
+                                        .font(.custom(
+                                            vm.selectedProduct?.skuCode == product.skuCode ? "VodafoneRg-Bold" : "VodafoneRg-Regular",
+                                            size: 13
+                                        ))
+                                        .foregroundColor(
+                                            vm.selectedProduct?.skuCode == product.skuCode
+                                            ? Color("keyBs_white", bundle: .module)
+                                            : Color("keyBs_font_gray_2", bundle: .module)
+                                        )
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                        .fixedSize(horizontal: false, vertical: true) // allow wrapping but avoid forced width
+                                        .frame(maxWidth: 100) // only limits width for long text
+
+                                }
+                                .padding(.vertical, 16)
+                                .padding(.horizontal, 16)
+                                .background(
+                                    vm.selectedProduct?.skuCode == product.skuCode
+                                    ? Color("keyBs_bg_red_1", bundle: .module)
+                                    : Color("keyBs_bg_gray_6", bundle: .module)
+                                )
+                                .cornerRadius(40)
                             }
                         }
                     }
                 }
+                
+
             }
             .padding(.horizontal, 16)
             

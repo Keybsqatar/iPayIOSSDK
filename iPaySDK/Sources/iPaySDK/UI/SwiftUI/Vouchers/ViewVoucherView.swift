@@ -128,18 +128,25 @@ public struct ViewVoucherView: View {
                         // Card with image
                         VStack(spacing: 0) {
                             HStack(spacing: 0) {
-                                RemoteImage(
-                                    url: providerLogoUrl,
-                                    placeholder: AnyView(Color.gray.opacity(0.3)),
-                                    isResizable: true
-                                )
-                                .aspectRatio(contentMode: .fit) // maintain aspect ratio
-                                .frame(
-                                        maxWidth: UIScreen.main.bounds.width * 0.4,
-                                        alignment: .leading
+                                ZStack {
+                                    Color.white // ensures white bg even if logo has transparency
+                                    RemoteImage(
+                                        url: providerLogoUrl,
+                                        placeholder: AnyView(Color.gray.opacity(0.3)),
+                                        isResizable: true
                                     )
-                                .clipShape(RoundedCorner(radius: 8, corners: [.topLeft, .topRight]))
+                                    .scaledToFit()               // keep logo aspect
+                                    //.padding(logoInset)          // breathing room inside well
+                                    .frame(maxWidth: UIScreen.main.bounds.width * 0.4,
+                                           alignment: .leading
+                                    )  // center horizontally
+
+                                }
+                                .aspectRatio(contentMode: .fit) // size from width; no hard height
+                                .frame(maxWidth: UIScreen.main.bounds.width * 0.4, alignment: .leading) // 60% of card height for image
+                                .clipShape(RoundedCorner(radius: 16, corners: [.topLeft, .topRight]))
                                 Spacer()
+                                
                             }
                             .padding(.top, 24)
                             .padding(.horizontal, 24)

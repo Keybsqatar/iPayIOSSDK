@@ -487,7 +487,7 @@ public struct TopUpView: View {
                     }else{
                         let regexPattern = selectedProvider?.validationRegex ?? ""
                         let fullReceiverMobileNumber = (country?.prefix ?? "") + phone
-                        
+
                         if !regexPattern.isEmpty {
                             if fullReceiverMobileNumber.range(of: regexPattern, options: .regularExpression) == nil {
                                 toastMessage = "Invalid mobile number format for the selected provider."

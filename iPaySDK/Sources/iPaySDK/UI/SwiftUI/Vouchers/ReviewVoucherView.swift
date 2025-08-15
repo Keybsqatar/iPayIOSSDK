@@ -119,7 +119,7 @@ public struct ReviewVoucherView: View {
                         detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
                         DashedDivider()
                         detailRow(label: "Voucher Name",value: product.displayText)
-                        detailRow(label: "Voucher Amount",value: "\(product.receiveCurrencyIso) \(product.displayText.filter { $0.isNumber })")
+                        detailRow(label: "Voucher Amount",value: "\(product.receiveCurrencyIso) \(product.receiveValue)")
                     }
                     .padding(.top, 24)
                     .padding(.horizontal, 16)
