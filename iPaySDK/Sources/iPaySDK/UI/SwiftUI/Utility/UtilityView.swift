@@ -416,9 +416,14 @@ public struct UtilityView: View {
                 if vm.savedBills.isEmpty {
                     Spacer().frame(height: 20)
                     
-                    LottieView(name: "utility_no_bills", bundle: .module)
-                        .frame(width: 200, height: 200)
+                    //LottieView(name: "utility_no_bills", bundle: .module)
+                    //    .frame(width: 200, height: 200)
+                    let url = Bundle.module.url(forResource: "utility_no_bills", withExtension: "gif")
 
+                    AnimatedImage(url: url)
+                                               .resizable()
+                                               .scaledToFit()
+                                               .frame(height: 300)
                         /*
                                            AnimatedImage(url: url)
                                                .resizable()

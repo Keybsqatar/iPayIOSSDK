@@ -1,3 +1,4 @@
+/*
 import SwiftUI
 import Lottie
 
@@ -28,3 +29,4 @@ public struct LottieView: UIViewRepresentable {
 
     public func updateUIView(_ uiView: LottieAnimationView, context: Context) {}
 }
+*/

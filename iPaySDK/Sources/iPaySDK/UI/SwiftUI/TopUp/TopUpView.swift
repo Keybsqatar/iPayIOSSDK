@@ -615,14 +615,15 @@ public struct TopUpView: View {
                 if vm.savedBills.isEmpty {
                     Spacer().frame(height: 20)
                     
-                    LottieView(name: "topup_no_bills", bundle: .module)
-                        .frame(width: 200, height: 200)
-                        /*
-                                           AnimatedImage(url: url)
+                   // LottieView(name: "topup_no_bills", bundle: .module)
+                     //   .frame(width: 200, height: 200)
+                    let url = Bundle.module.url(forResource: "topup_no_bills", withExtension: "gif") 
+
+                    AnimatedImage(url: url)
                                                .resizable()
                                                .scaledToFit()
-                                               .frame(height: 220)
-                         */
+                                               .frame(height: 300)
+                         
 
                    // }
                      

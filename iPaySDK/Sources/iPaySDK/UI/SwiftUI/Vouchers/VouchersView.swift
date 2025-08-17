@@ -408,8 +408,14 @@ public struct VouchersView: View {
                     
                     
                     
-                    LottieView(name: "vouchers_no_bills", bundle: .module)
-                        .frame(width: 200, height: 200)
+                   // LottieView(name: "vouchers_no_bills", bundle: .module)
+                     //   .frame(width: 200, height: 200)
+                    let url = Bundle.module.url(forResource: "vouchers_no_bills", withExtension: "gif")
+
+                    AnimatedImage(url: url)
+                                               .resizable()
+                                               .scaledToFit()
+                                               .frame(height: 300)
                         /*
                                            AnimatedImage(url: url)
                                                .resizable()
