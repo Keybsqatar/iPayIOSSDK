@@ -119,6 +119,8 @@ public struct VoucherReceiptModalView: View {
                             label: { EmptyView() }
                         )
                         .hidden()
+                        .allowsHitTesting(false)     // ← add this line
+
                         
                         // Share Receipt button
                         Button(action: { showShareSheet = true }) {

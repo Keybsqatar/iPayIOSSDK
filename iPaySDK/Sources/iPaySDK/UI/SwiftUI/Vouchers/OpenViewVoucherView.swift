@@ -67,6 +67,8 @@ public struct OpenViewVoucherView: View {
                 label: { EmptyView() }
             )
             .hidden()
+            .allowsHitTesting(false)     // ← add this line
+
         }
         .onAppear {
             Task {

@@ -208,6 +208,8 @@ public struct ReviewUtilityView: View {
                     label: { EmptyView() }
                 )
                 .hidden()
+                .allowsHitTesting(false)     // ← add this line
+
                 
                 // Bottom pattern
                 Image("bottom_pattern3", bundle: .module)
@@ -219,10 +221,11 @@ public struct ReviewUtilityView: View {
             .background(Color.white)
             .edgesIgnoringSafeArea(.bottom)
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
+        .sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder

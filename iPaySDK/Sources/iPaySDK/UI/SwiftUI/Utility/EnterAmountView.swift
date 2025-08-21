@@ -199,6 +199,8 @@ public struct EnterAmountView: View {
                     label: { EmptyView() }
                 )
                 .hidden()
+                .allowsHitTesting(false)     // ← add this line
+
             }
             .background(Color.white)
         }
@@ -232,10 +234,11 @@ public struct EnterAmountView: View {
             productsCount = products.count
         }
         .toast(isShowing: $showToast, message: toastMessage)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
+        .sdkDismissKeyboardOnTap() 
     }
     
     // MARK: – Products List View

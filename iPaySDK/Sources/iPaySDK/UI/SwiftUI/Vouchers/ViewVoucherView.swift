@@ -335,10 +335,11 @@ public struct ViewVoucherView: View {
             .background(Color.white)
             .edgesIgnoringSafeArea(.bottom)
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
+        .sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder

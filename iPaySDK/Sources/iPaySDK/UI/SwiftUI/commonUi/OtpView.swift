@@ -456,10 +456,11 @@ public struct OtpView: View {
             get: { vm.otpError != nil },
             set: { if !$0 { vm.otpError = nil } }
         ), message: vm.otpError ?? "")
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
+        .sdkDismissKeyboardOnTap() 
         
         
     }

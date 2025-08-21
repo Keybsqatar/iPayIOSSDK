@@ -373,6 +373,7 @@ public struct ProductsView: View {
                     label: { EmptyView() }
                 )
                 .hidden()
+                .allowsHitTesting(false)     // ← add this line
                 
                 // Bottom pattern
 
@@ -424,9 +425,10 @@ public struct ProductsView: View {
             }
         }
         .toast(isShowing: $showToast, message: toastMessage)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
+        .sdkDismissKeyboardOnTap() 
     }
 }

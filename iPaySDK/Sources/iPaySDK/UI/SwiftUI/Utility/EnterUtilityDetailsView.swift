@@ -334,6 +334,8 @@ public struct EnterUtilityDetailsView: View {
                     label: { EmptyView() }
                 )
                 .hidden()
+                .allowsHitTesting(false)     // ← add this line
+
                 
                 // Bottom pattern
                 Image("bottom_pattern3", bundle: .module)
@@ -346,10 +348,11 @@ public struct EnterUtilityDetailsView: View {
             .edgesIgnoringSafeArea(.bottom)
         }
         .toast(isShowing: $showToast, message: toastMessage)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            UIApplication.shared.endEditing()
-        }
+        .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
+        //.contentShape(Rectangle())
+        //.onTapGesture {
+        //    UIApplication.shared.endEditing()
+        //}
     }
     
     class ContactDelegate: NSObject, CNContactPickerDelegate {

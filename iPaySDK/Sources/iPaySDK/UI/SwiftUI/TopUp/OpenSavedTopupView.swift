@@ -65,6 +65,7 @@ public struct OpenSavedTopupView: View {
                     label: { EmptyView() }
                 )
                 .hidden()
+                .allowsHitTesting(false)     // ← add this line
             }
             .onAppear {
                 Task {
