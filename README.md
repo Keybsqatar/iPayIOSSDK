@@ -55,9 +55,8 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
             return
         }
         
-        let nav = UINavigationController(rootViewController: topUpVC)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
+        topUpVC.modalPresentationStyle = .overFullScreen
+        present(topUpVC, animated: true)
     }
 ```
 
@@ -77,9 +76,8 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
             return
         }
         
-        let nav = UINavigationController(rootViewController: savedVC)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
+        savedVC.modalPresentationStyle = .overFullScreen
+        present(savedVC, animated: true)
     }
 ```
 
@@ -99,9 +97,8 @@ This document explains how to integrate and use the iPaySDK in your iOS applicat
             return
         }
         
-        let nav = UINavigationController(rootViewController: viewVoucherVC)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
+        viewVoucherVC.modalPresentationStyle = .overFullScreen
+        present(viewVoucherVC, animated: true)
     }
 ```
 
