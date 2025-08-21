@@ -40,7 +40,7 @@ public struct iPaySDK {
         //     }
         // )
         
-        var hosting: UIHostingController<AnyView>? = nil
+        var hosting: SDKHostingController<AnyView>? = nil
         // This will be set by TopUpView via a binding
         var popSwiftUI: (() -> Void)? = nil
         
@@ -89,7 +89,7 @@ public struct iPaySDK {
         }
         
         // 4) Wrap and return
-        hosting = UIHostingController(rootView: content)
+        hosting = SDKHostingController(rootView: content)
 //        hosting?.navigationController?.setNavigationBarHidden(true, animated: false)
         return hosting!
     }

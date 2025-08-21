@@ -339,7 +339,7 @@ public struct ViewVoucherView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+       // .sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder

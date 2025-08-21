@@ -44,6 +44,7 @@ public struct EnterUtilityDetailsView: View {
     @State private var toastMessage = ""
         
     @State private var enterAmountVM: EnterAmountViewModel? = nil
+
     
     public init(
         saveRecharge:         String,

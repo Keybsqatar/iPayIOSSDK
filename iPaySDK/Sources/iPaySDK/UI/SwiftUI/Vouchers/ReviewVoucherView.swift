@@ -203,7 +203,7 @@ public struct ReviewVoucherView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+       // .sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder

@@ -313,7 +313,7 @@ public struct ReviewTopUpView: View {
        // .onTapGesture {
        //     UIApplication.shared.endEditing()
        // }
-        .sdkDismissKeyboardOnTap() 
+       // .sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder

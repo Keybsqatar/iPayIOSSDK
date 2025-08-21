@@ -154,7 +154,7 @@ public struct UtilityView: View {
             //.onTapGesture {
             //    UIApplication.shared.endEditing()
             //}
-            .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
+            //.sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
 
         // }
     }
@@ -409,6 +409,8 @@ public struct UtilityView: View {
             .edgesIgnoringSafeArea(.all)
         }
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
+        .sdkDismissKeyboardOnTap()
+
     }
     
     //    ----------------------

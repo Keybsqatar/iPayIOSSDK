@@ -13,6 +13,7 @@ extension UIApplication {
     static func sdkDismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)
+        UIApplication.shared.endEditing()
     }
 }
 
@@ -21,12 +22,16 @@ struct SDKDismissOnBackgroundTap: ViewModifier {
     func body(content: Content) -> some View {
         content
             .contentShape(Rectangle())
+            .onTapGesture {
+                UIApplication.sdkDismissKeyboard()
+            }
             .simultaneousGesture(TapGesture().onEnded {
                 UIApplication.sdkDismissKeyboard()
             })
-            .highPriorityGesture(DragGesture(minimumDistance: 1).onChanged { _ in
-                UIApplication.sdkDismissKeyboard()
-            })
+            
+            //.highPriorityGesture(DragGesture(minimumDistance: 1).onChanged { _ in
+            //    UIApplication.sdkDismissKeyboard()
+            //})
     }
 }
 

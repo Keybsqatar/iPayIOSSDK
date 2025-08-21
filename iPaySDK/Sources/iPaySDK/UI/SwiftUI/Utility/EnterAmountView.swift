@@ -238,7 +238,7 @@ public struct EnterAmountView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+        //.sdkDismissKeyboardOnTap() 
     }
     
     // MARK: – Products List View

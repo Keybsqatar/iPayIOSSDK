@@ -196,7 +196,7 @@ public struct SelectAmountView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+       // .sdkDismissKeyboardOnTap() 
     }
     
     private var amountSelectionSection: some View {

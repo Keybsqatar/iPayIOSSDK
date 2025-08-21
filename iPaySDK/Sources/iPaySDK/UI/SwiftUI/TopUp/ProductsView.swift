@@ -429,6 +429,6 @@ public struct ProductsView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+        //.sdkDismissKeyboardOnTap() 
     }
 }

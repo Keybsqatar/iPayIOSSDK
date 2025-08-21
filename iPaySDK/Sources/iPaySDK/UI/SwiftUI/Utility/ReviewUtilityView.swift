@@ -225,7 +225,7 @@ public struct ReviewUtilityView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        .sdkDismissKeyboardOnTap() 
+        //.sdkDismissKeyboardOnTap() 
     }
     
     @ViewBuilder
