@@ -83,7 +83,9 @@ public struct TopUpView: View {
                     Image("ic_back", bundle: .module)
                         // .onTapGesture { presentationMode.wrappedValue.dismiss() }
                         // .onTapGesture { coord.popSwiftUIScreen() }
-                         .onTapGesture { coord.dismissSDK() }
+                        .onTapGesture {
+                            coord.dismissSDK()
+                        }
                         .frame(width: 24, height: 24)
                         .scaledToFit()
                     

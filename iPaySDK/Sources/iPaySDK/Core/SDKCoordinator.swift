@@ -2,19 +2,22 @@ import Foundation
 import Combine     // ← add this
 
 final class SDKCoordinator: ObservableObject {
-    private let dismissAction: () -> Void
-    private let popSwiftUIAction: () -> Void
-    
-    init(dismiss: @escaping () -> Void, popSwiftUI: @escaping () -> Void) {
+    private let dismissAction: @MainActor () -> Void
+    private let popSwiftUIAction: @MainActor () -> Void
+
+    init(dismiss: @escaping @MainActor () -> Void,
+         popSwiftUI: @escaping @MainActor () -> Void) {
         self.dismissAction = dismiss
         self.popSwiftUIAction = popSwiftUI
     }
-    
-    func dismissSDK() {
+
+    @MainActor func dismissSDK() {
+        //print("[SDK] dismiss tapped")
         dismissAction()
     }
-    
-    func popSwiftUIScreen() {
+
+    @MainActor func popSwiftUIScreen() {
         popSwiftUIAction()
     }
 }
+

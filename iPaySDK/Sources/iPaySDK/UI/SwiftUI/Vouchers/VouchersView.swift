@@ -175,7 +175,7 @@ public struct VouchersView: View {
             //.onTapGesture {
             //    UIApplication.shared.endEditing()
             //}
-           // .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
+            .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
 
         // }
     }
