@@ -37,26 +37,51 @@ public struct OpenSavedTopupView: View {
                 NavigationLink(
                     destination: vm.item != nil ?
                     AnyView(
-                        ProductsView(
-                            saveRecharge:         "0",
+                        EnterAmountView(
+                            saveRecharge: "1",
+                                                            
+                            countryIso: vm.item!.countryIso2,
+                            countryFlagUrl: vm.item!.countryFlagUrl,
+                            countryName: vm.item!.countryName,
+                            countryPrefix: vm.item!.countryPrefix ?? "",
+                            // countryMinimumLength: c.countryMinimumLength ?? "" ,
+                            // countryMaximumLength: c.countryMaximumLength ?? "",
+                            
+                            providerCode: vm.item!.providerCode,
+                            providerLogoUrl: vm.item!.providerImgUrl,
+                            providerName: vm.item!.providerName,
+                            // providerValidationRegex: c.providerValidationRegex ?? "",
+                            
+                            productSku: vm.item!.productSku,
                             receiverMobileNumber: vm.item!.targetIdentifier,
+                            settingsData: vm.item!.settingsData ?? "",
                             
-                            countryIso:           vm.item!.countryIso2,
-                            countryFlagUrl:       vm.item!.countryFlagUrl,
-                            countryName:          vm.item!.countryName,
+                            mobileNumber: vm.mobileNumber,
+                            serviceCode:  vm.serviceCode,
+                            iPayCustomerID: vm.iPayCustomerID,
                             
-                            providerCode:         vm.item!.providerCode,
-                            providerLogoUrl:      vm.item!.providerImgUrl,
-                            providerName:         vm.item!.providerName,
-                            
-                            productSku:           vm.item!.productSku,
-                            
-                            mobileNumber:         vm.mobileNumber,
-                            serviceCode:          vm.serviceCode,
-                            iPayCustomerID:       vm.iPayCustomerID,
-                            
-                            dismissMode:          "closeSDK"
+                            dismissMode: "closeSDK"
                         )
+//                        ProductsView(
+//                            saveRecharge:         "0",
+//                            receiverMobileNumber: vm.item!.targetIdentifier,
+//                            
+//                            countryIso:           vm.item!.countryIso2,
+//                            countryFlagUrl:       vm.item!.countryFlagUrl,
+//                            countryName:          vm.item!.countryName,
+//                            
+//                            providerCode:         vm.item!.providerCode,
+//                            providerLogoUrl:      vm.item!.providerImgUrl,
+//                            providerName:         vm.item!.providerName,
+//                            
+//                            productSku:           vm.item!.productSku,
+//                            
+//                            mobileNumber:         vm.mobileNumber,
+//                            serviceCode:          vm.serviceCode,
+//                            iPayCustomerID:       vm.iPayCustomerID,
+//                            
+//                            dismissMode:          "closeSDK"
+//                        )
                         .environmentObject(coord)
                         .navigationBarHidden(true)
                     )
