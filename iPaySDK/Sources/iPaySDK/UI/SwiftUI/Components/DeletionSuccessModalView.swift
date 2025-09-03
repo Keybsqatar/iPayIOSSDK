@@ -43,7 +43,7 @@ public struct DeletionSuccessModalView: View {
                         AnimatedImage(url: url)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 56)
+                            .frame(idealWidth: 215, maxHeight: 75)
                     }
                     
                     Text(message)

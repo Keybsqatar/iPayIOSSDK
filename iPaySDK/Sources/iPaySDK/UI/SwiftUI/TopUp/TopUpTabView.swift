@@ -4,6 +4,7 @@ public struct TopUpTabView: View {
     public enum Tab { case new, saved }
     @Binding var selection: Tab
 //    private let bundle = Bundle.mySwiftUIPackage
+
     
     public init(selection: Binding<Tab>) {
         self._selection = selection
@@ -18,7 +19,9 @@ public struct TopUpTabView: View {
             .resizable()
             
             HStack(spacing: 0) {
-                Button(action: { selection = .new }) {
+                Button(action: { selection = .new
+                    TopUpTabBus.selection.send(.new)
+                }) {
                     HStack(spacing: 8) {
                         if selection == .new {
                             Image("ic_file", bundle: .module)
@@ -35,7 +38,10 @@ public struct TopUpTabView: View {
                 .padding(.top, selection == .new ? 0 : 15)
                 .buttonStyle(.plain)
                 
-                Button(action: { selection = .saved }) {
+                Button(action: {
+                    selection = .saved
+                    TopUpTabBus.selection.send(.saved)
+                }) {
                     HStack(spacing: 8) {
                         if selection == .saved {
                             Image("ic_file", bundle: .module)

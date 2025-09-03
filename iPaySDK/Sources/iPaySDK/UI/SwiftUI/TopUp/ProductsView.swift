@@ -256,6 +256,7 @@ public struct ProductsView: View {
                         .edgesIgnoringSafeArea(.all)
                     
                 } else if selectedSection == 2 {
+                    
                     HStack(spacing: 8) {
                         Image("ic_search", bundle: .module)
                             .frame(width: 16, height: 16)
@@ -293,6 +294,9 @@ public struct ProductsView: View {
                                                 .font(.custom("VodafoneRg-Bold", size: 18))
                                                 .foregroundColor(.white)
                                             Spacer()
+                                            Text("\(p.sendCurrencyIso) \(p.sendValue)")
+                                                .font(.custom("VodafoneRg-Bold", size: 18))
+                                                .foregroundColor(.white)
                                         }
                                         .padding(.horizontal, 16)
                                         .padding(.vertical, 12)

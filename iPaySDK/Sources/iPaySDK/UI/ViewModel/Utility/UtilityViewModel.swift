@@ -12,12 +12,16 @@ public class UtilityViewModel: ObservableObject {
     @Published public var countriesError: String?    = nil
     @Published public var countrySearch: String = ""
     private var cancellables = Set<AnyCancellable>()
+    private var cancellablesProviders = Set<AnyCancellable>()
 
 
     // ── Providers ───────────────────────────────────────────────
     @Published public var providers: [ProviderItem] = []
+    @Published public var filteredProviders: [ProviderItem] = []
     @Published public var isLoadingProviders: Bool  = false
     @Published public var providersError: String?   = nil
+    @Published var providerSearch: String = ""
+
     
     // ── Saved Bills ──────────────────────────────────────────
     @Published public var savedBills:          [SavedBillsItem] = []
@@ -47,6 +51,13 @@ public class UtilityViewModel: ObservableObject {
                     self?.filterCountries(by: value)
                 }
                 .store(in: &cancellables)
+        $providerSearch
+                .removeDuplicates()
+                .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+                .sink { [weak self] value in
+                    self?.filterProviders(by: value)
+                }
+                .store(in: &cancellablesProviders)
     }
     
     // MARK: – Countries
@@ -94,6 +105,16 @@ public class UtilityViewModel: ObservableObject {
         }
     }
     
+    public func filterProviders(by text: String) {
+        guard !text.isEmpty else {
+            filteredProviders = providers
+            return
+        }
+        filteredProviders = providers.filter {
+            $0.name.localizedCaseInsensitiveContains(text)
+        }
+    }
+    
     // MARK: – Providers
     public func loadProviders(for countryIso: String) async {
         isLoadingProviders = true
@@ -109,6 +130,7 @@ public class UtilityViewModel: ObservableObject {
                 targetNumber: ""
             )
             providers = items
+            filteredProviders  = items
         } catch let netErr as NetworkError {
             // unwrap your NetworkError enum
             switch netErr {

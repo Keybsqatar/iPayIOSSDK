@@ -21,9 +21,7 @@ public struct OtpAlertModalView: View {
                 HStack {
                     Spacer()
                     Button {
-                        //coord.dismissSDK()
-                        isPresented = false
-                        onHomepage?()
+                        coord.dismissSDK()
 
                     } label: {
                         Image("ic_close", bundle: .module)
@@ -43,7 +41,7 @@ public struct OtpAlertModalView: View {
                         AnimatedImage(url: url)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 55)
+                            .frame(idealWidth: 215, maxHeight: 75)
                     }
                     
                     Text(message)

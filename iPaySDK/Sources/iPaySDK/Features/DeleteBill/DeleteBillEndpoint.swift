@@ -3,7 +3,7 @@ import Foundation
 enum DeleteBillEndpoint: Endpoint {
     case delete(id: String)
     
-    var path: String { "api/deleteBill" }
+    var path: String { "api/deleteBillSDK" }
     var method: HTTPMethod { .post }
     var headers: [String: String]? { ["Content-Type":"application/json"] }
     var queryItems: [URLQueryItem]? { nil }

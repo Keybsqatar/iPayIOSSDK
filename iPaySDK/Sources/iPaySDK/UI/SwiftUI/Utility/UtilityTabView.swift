@@ -18,7 +18,11 @@ public struct UtilityTabView: View {
             .resizable()
             
             HStack(spacing: 0) {
-                Button(action: { selection = .new }) {
+                Button(action: {
+                    selection = .new
+                    TopUpTabBus.selection.send(.new)
+
+                }) {
                     HStack(spacing: 8) {
                         if selection == .new {
                             Image("ic_file", bundle: .module)
@@ -35,7 +39,10 @@ public struct UtilityTabView: View {
                 .padding(.top, selection == .new ? 0 : 15)
                 .buttonStyle(.plain)
                 
-                Button(action: { selection = .saved }) {
+                Button(action: {
+                    selection = .saved
+                    TopUpTabBus.selection.send(.saved)
+                }) {
                     HStack(spacing: 8) {
                         if selection == .saved {
                             Image("ic_file", bundle: .module)

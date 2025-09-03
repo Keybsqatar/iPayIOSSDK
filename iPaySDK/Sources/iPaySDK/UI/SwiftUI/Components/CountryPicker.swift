@@ -113,6 +113,7 @@ public struct CountryPicker<VM: CountryFilterable>: View {
             }
             .background(Color.white)
             .onAppear {
+                vm.countrySearch=""
                 vm.filterCountries(by: "")
             }
         // }

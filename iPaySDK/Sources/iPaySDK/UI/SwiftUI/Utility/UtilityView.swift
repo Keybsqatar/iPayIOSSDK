@@ -31,6 +31,12 @@ public struct UtilityView: View {
     
     @State private var selectedSavedBill: SavedBillsItem?
     
+    @ObservedObject private var kb = KeyboardHeight()
+    
+    @State private var shwoDeleteTipModal = false
+
+
+    
     // a merged publisher of both error streams
     private var errorStream: AnyPublisher<String?, Never> {
         Publishers.Merge3(vm.$countriesError, vm.$providersError, vm.$savedBillsError)
@@ -94,6 +100,7 @@ public struct UtilityView: View {
                     
                     // Tabs
                     UtilityTabView(selection: $tab)
+
                     
                     // Content
                     if tab == .new {
@@ -103,6 +110,7 @@ public struct UtilityView: View {
                     }
                 }
                 .background(Color.white)
+
                 
                 if showDeletionModal {
                     DeletionSuccessModalView(
@@ -115,6 +123,12 @@ public struct UtilityView: View {
                         }
                     )
                 }
+                if (shwoDeleteTipModal) {
+                    DeleteTipView(
+                        isPresented: $shwoDeleteTipModal,
+                    )
+                }
+
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showPicker) {
@@ -147,6 +161,21 @@ public struct UtilityView: View {
                 if let m = msg {
                     toastMessage = m
                     showToast    = true
+                }
+            }
+            .onReceive(TopUpTabBus.selection) { tab in
+                if tab == .saved {
+                    if vm.savedBills.count>0 {
+                        var tipCount = UserDefaults.standard.integer(forKey: "deleteTipShowCount")
+                        if tipCount < 3 {
+                            shwoDeleteTipModal = true
+                            tipCount += 1
+                            UserDefaults.standard.set(tipCount, forKey: "deleteTipShowCount")
+                        }
+
+
+                        
+                    }
                 }
             }
             .toast(isShowing: $showToast, message: toastMessage)
@@ -203,6 +232,8 @@ public struct UtilityView: View {
                                 .scaledToFit()
                         }
                         .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())    // <- taps count on the whole frame, not just text
+
                     }
                     .buttonStyle(.plain)
                     .padding(.bottom, 16)
@@ -210,7 +241,9 @@ public struct UtilityView: View {
                         Rectangle()
                             .frame(height: 1)
                             .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module)),
+                        
                         alignment: .bottom
+
                     )
                 }
                 .padding(.horizontal, 16)
@@ -220,6 +253,7 @@ public struct UtilityView: View {
                 ZStack(alignment: .top) {
                     // Operator Dropdown
                     VStack(spacing: 8) {
+                        
                         if selectedProvider != nil {
                             Text("Select Utility")
                                 .font(.custom("VodafoneRg-Regular", size: 16.0))
@@ -264,6 +298,9 @@ public struct UtilityView: View {
                                         .frame(width: 20, height: 20)
                                         .scaledToFit()
                                 }
+                                .frame(maxWidth: .infinity)
+                                .contentShape(Rectangle())    // <- taps count on the whole frame, not just text
+
                             }
                             .buttonStyle(.plain)
                             .padding(.bottom, 16)
@@ -279,8 +316,30 @@ public struct UtilityView: View {
                         // The dropdown list
                         if showProvidersList {
                             ScrollView {
+                                
+                                    HStack(spacing: 8) {
+                                        Image("ic_search", bundle: .module)
+                                            .frame(width: 16, height: 16)
+                                            .scaledToFit()
+                                        
+                                        TextField("Search", text: $vm.providerSearch)
+                                            .foregroundColor(.primary)
+                                            .autocapitalization(.none)
+                                            .disableAutocorrection(true)
+                                        
+                                    }
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 16)
+                                    .background(Color("keyBs_white", bundle: .module))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
+                                    )
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 16)
+                                
                                 VStack(spacing: 0) {
-                                    ForEach(vm.providers) { p in
+                                    ForEach(vm.filteredProviders) { p in
                                         Button {
                                             selectedProvider = p
                                             showProvidersList = false
@@ -312,7 +371,7 @@ public struct UtilityView: View {
                                                     : Color.white
                                                 )
                                                 
-                                                if p.providerCode != vm.providers.last?.providerCode {
+                                                if p.providerCode != vm.filteredProviders.last?.providerCode {
                                                     Divider()
                                                         .overlay(Color("keyBs_bg_gray_1", bundle: .module))
                                                         .padding(.horizontal, 16)
@@ -324,7 +383,7 @@ public struct UtilityView: View {
                                 }
                             }
                             .frame(
-                                maxHeight: min(CGFloat(vm.providers.count) * 56, 300)
+                                maxHeight: min((CGFloat(vm.providers.count) * 56)+56, 300)
                             )
                             .cornerRadius(8, corners: [.topLeft, .topRight, .bottomLeft, .bottomRight])
                             .background(
@@ -335,10 +394,15 @@ public struct UtilityView: View {
                             )
                             .offset(y: 0)
                             .zIndex(1)
+                            .onAppear { kb.start() }
+                            .onDisappear { kb.stop() }
                         }
                     }
                     .padding(.horizontal, 16)
                 }
+                .offset(y: -max(0, kb.height - 150))
+
+
                 
                 Spacer()
                 
@@ -411,6 +475,8 @@ public struct UtilityView: View {
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
         .sdkDismissKeyboardOnTap()
 
+
+
     }
     
     //    ----------------------
@@ -430,32 +496,7 @@ public struct UtilityView: View {
                                                .resizable()
                                                .scaledToFit()
                                                .frame(height: 300)
-                        /*
-                                           AnimatedImage(url: url)
-                                               .resizable()
-                                               .scaledToFit()
-                                               .frame(height: 220)
-                         */
-
-                   // }
                      
-                    /*
-                    Spacer().frame(height: 26)
-                    
-                    VStack(spacing: 8) {
-                        Text("No Voucher Yet")
-                            .font(.custom("VodafoneRg-Bold", size: 28))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                        
-                        Text("Do a transaction to get started")
-                            .font(.custom("VodafoneRg-Regular", size: 18))
-                            .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                    }
-                    
-                    Spacer()
-                     */
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {
@@ -552,55 +593,150 @@ public struct UtilityView: View {
         
         @State private var offsetX: CGFloat = 0
         @State private var isOpen: Bool = false
-        
-        // The width of the delete button area
+        @GestureState private var dragOffset: CGFloat = 0
+
         private let deleteWidth: CGFloat = 90
-        
+
         var body: some View {
             ZStack(alignment: .trailing) {
-                // Main content
-                Button(action: {
-                    if !isOpen {
-                        onTap()
-                    } else {
+                // Background: Delete button
+                HStack {
+                    Spacer()
+                    Button(action: {
                         withAnimation {
                             offsetX = 0
                             isOpen = false
                         }
+                        onDelete()
+                    }) {
+                        Image("ic_delete", bundle: .module)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                            .padding()
+                            .background(Color("keyBs_bg_gray_4", bundle: .module))
+                            .cornerRadius(12)
                     }
-                }) {
-                    HStack(spacing: 16) {
-                        VStack{
-                            SVGImageView(url: bill.countryFlagUrl)
-                                .frame(width: 30, height: 30)
-                                .scaledToFit()
-                                .cornerRadius(15)
-                        }
-                        .frame(width: 48, height: 48)
-                        .background(Color("keyBs_bg_gray_4", bundle: .module))
-                        .cornerRadius(16)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(bill.targetIdentifierSetting != nil ? bill.targetIdentifierSetting! : bill.targetIdentifier)
-                                .font(.custom("VodafoneRg-Bold", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                            
-                            Text(bill.providerName)
-                                .font(.custom("VodafoneRg-Regular", size: 14))
-                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 31)
-                    .background(Color.white)
+                    .frame(width: deleteWidth, height: 60)
+                    .padding(.trailing, 16)
+                    .contentShape(Rectangle()) // <-- fixes button tap zone
                 }
-                .buttonStyle(.plain)
+
+                // Foreground: Swipeable row content
+                HStack(spacing: 16) {
+                    VStack{
+                        SVGImageView(url: bill.countryFlagUrl)
+                            .frame(width: 30, height: 30)
+                            .scaledToFit()
+                            .cornerRadius(15)
+                    }
+                    .frame(width: 48, height: 48)
+                    .background(Color("keyBs_bg_gray_4", bundle: .module))
+                    .cornerRadius(16)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(bill.targetIdentifierSetting != nil ? bill.targetIdentifierSetting! : bill.targetIdentifier)
+                            .font(.custom("VodafoneRg-Bold", size: 16))
+                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                        
+                        Text(bill.providerName)
+                            .font(.custom("VodafoneRg-Regular", size: 14))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 31)
+                .background(Color.white)
+                .contentShape(Rectangle())
+                .offset(x: offsetX + dragOffset)
+                .simultaneousGesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, state, _ in
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            if horizontal > vertical {
+                                state = max(value.translation.width, -deleteWidth)
+                            }
+                        }
+                        .onEnded { value in
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            guard horizontal > vertical else { return }
+
+                            //withAnimation(.easeOut(duration: 0.2)) {
+                                if value.translation.width < -deleteWidth / 2 {
+                                    offsetX = -deleteWidth
+                                    isOpen = true
+                                } else {
+                                    offsetX = 0
+                                    isOpen = false
+                                }
+                           // }
+                        }
+                )
+                .onTapGesture {
+                    // Close swipe if it's open
+                    if isOpen {
+                        withAnimation {
+                            offsetX = 0
+                            isOpen = false
+                        }
+                    } else {
+                        onTap()
+                    }
+                }
             }
             .clipped()
+            .background(Color.white)
+            
+//            {
+//                // Main content
+//                Button(action: {
+//                    if !isOpen {
+//                        onTap()
+//                    } else {
+//                        withAnimation {
+//                            offsetX = 0
+//                            isOpen = false
+//                        }
+//                    }
+//                }) {
+//                    HStack(spacing: 16) {
+//                        VStack{
+//                            SVGImageView(url: bill.countryFlagUrl)
+//                                .frame(width: 30, height: 30)
+//                                .scaledToFit()
+//                                .cornerRadius(15)
+//                        }
+//                        .frame(width: 48, height: 48)
+//                        .background(Color("keyBs_bg_gray_4", bundle: .module))
+//                        .cornerRadius(16)
+//                        
+//                        VStack(alignment: .leading, spacing: 4) {
+//                            Text(bill.targetIdentifierSetting != nil ? bill.targetIdentifierSetting! : bill.targetIdentifier)
+//                                .font(.custom("VodafoneRg-Bold", size: 16))
+//                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+//                                .multilineTextAlignment(.leading)
+//                            
+//                            Text(bill.providerName)
+//                                .font(.custom("VodafoneRg-Regular", size: 14))
+//                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+//                                .multilineTextAlignment(.leading)
+//                        }
+//                        
+//                        Spacer()
+//                    }
+//                    .padding(.horizontal, 16)
+//                    .padding(.vertical, 31)
+//                    .background(Color.white)
+//                }
+//                .buttonStyle(.plain)
+//            }
+//            .clipped()
         }
     }
 }

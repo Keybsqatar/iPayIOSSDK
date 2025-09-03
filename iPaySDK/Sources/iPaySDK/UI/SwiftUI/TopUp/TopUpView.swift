@@ -4,6 +4,12 @@ import ContactsUI
 import UIKit
 import SDWebImageSwiftUI
 
+enum TopUpTab { case new, saved }
+
+enum TopUpTabBus {
+  static let selection = PassthroughSubject<TopUpTab, Never>()
+}
+
 
 public struct TopUpView: View {
     @EnvironmentObject private var coord: SDKCoordinator
@@ -13,6 +19,8 @@ public struct TopUpView: View {
 //    @State private var isActive: Bool = true // For pop
     
     @ObservedObject private var vm: TopUpViewModel
+    
+    private let userDefaults = UserDefaults.standard
     
     @State private var showDeletionModal = false
     @State private var deletionMessage = ""
@@ -36,6 +44,10 @@ public struct TopUpView: View {
     
     @State private var disabledProceed = true
     @State private var showProducts = false
+    
+    @State private var shwoDeleteTipModal = false
+
+
     
     @State private var selectedSavedBill: SavedBillsItem?
     
@@ -141,6 +153,12 @@ public struct TopUpView: View {
                     }
                 )
             }
+            
+            if (shwoDeleteTipModal) {
+                DeleteTipView(
+                    isPresented: $shwoDeleteTipModal,
+                )
+            }
         }
         .navigationBarHidden(true)
         .sheet(isPresented: $showPicker) {
@@ -153,9 +171,10 @@ public struct TopUpView: View {
                 vm.mobileMaxLength = (Int(selectedCountry.maximumLength) ?? 0) - selectedCountry.prefix.count
                 vm.mobileMinLength = (Int(selectedCountry.minimumLength) ?? 0) - selectedCountry.prefix.count
                 
-                if !phone.isEmpty {
-                    cleanAndSetPhone(selected: phone)
-                }
+//                if !phone.isEmpty {
+//                    cleanAndSetPhone(selected: phone)
+//                }
+                phone = ""
                 
                 if(!showProviders){
                     if(!phone.isEmpty) {
@@ -188,6 +207,7 @@ public struct TopUpView: View {
             }
         }
         .onAppear {
+            
             Task { await vm.loadCountries() }
             Task { await vm.loadSavedBills() }
         }
@@ -197,6 +217,22 @@ public struct TopUpView: View {
                 showToast    = true
             }
         }
+        .onReceive(TopUpTabBus.selection) { tab in
+            if tab == .saved {
+                if vm.savedBills.count>0 {
+                    var tipCount = UserDefaults.standard.integer(forKey: "deleteTipShowCount")
+                    if tipCount < 3 {
+                        shwoDeleteTipModal = true
+                        tipCount += 1
+                        UserDefaults.standard.set(tipCount, forKey: "deleteTipShowCount")
+                    }
+
+
+                    
+                }
+            }
+        }
+        
         .toast(isShowing: $showToast, message: toastMessage)
         //.contentShape(Rectangle())
         //.onTapGesture {
@@ -249,6 +285,8 @@ public struct TopUpView: View {
                                     .scaledToFit()
                             }
                             .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())    // <- taps count on the whole frame, not just text
+
                         }
                         .buttonStyle(.plain)
                         .padding(.bottom, 16)
@@ -360,6 +398,8 @@ public struct TopUpView: View {
                                             .frame(width: 20, height: 20)
                                             .scaledToFit()
                                     }
+                                    .contentShape(Rectangle())    // <- taps count on the whole frame, not just text
+
                                 }
                                 .buttonStyle(.plain)
                                 .padding(.bottom, 16)
@@ -440,25 +480,7 @@ public struct TopUpView: View {
                 
                 Spacer()
                 
-                // Checkbox
-                HStack(spacing: 16) {
-                    Button(action: { saveRecharge.toggle() }) {
-                        Image(
-                            saveRecharge ? "ic_checkbox_checked" : "ic_checkbox_unchecked",
-                            bundle: .module
-                        )
-                        .frame(width: 24, height: 24)
-                        .scaledToFit()
-                    }
-                    
-                    Text("Save my recharges")
-                        .font(.custom("VodafoneRg-Regular", size: 16))
-                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                        .multilineTextAlignment(.leading)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                
+
                 Spacer().frame(height: 25)
                 
                 Button(action: {
@@ -467,7 +489,11 @@ public struct TopUpView: View {
                         showToast = true
                         return
                     }
-                    
+                    if (phone.hasPrefix(String(country!.prefix))) {
+                        toastMessage = "Please enter mobile number without the country prefix."
+                        showToast = true
+                        return
+                    }
                     if(!showProviders){
                         Task {
                             if let c = country {
@@ -595,8 +621,8 @@ public struct TopUpView: View {
     private func cleanAndSetPhone(selected: String) {
         if let selectedCountry = country {
             var cleanedPhone = selected
-            let mobileMaxLength = vm.mobileMaxLength
-            if cleanedPhone.count > mobileMaxLength {
+            let mobileMinLength = vm.mobileMinLength
+            if cleanedPhone.count > mobileMinLength {
                 let prefix = selectedCountry.prefix
                 if !prefix.isEmpty {
                     let prefixWithZeros = "00" + prefix
@@ -632,25 +658,6 @@ public struct TopUpView: View {
                                                .frame(height: 300)
                          
 
-                   // }
-                     
-                    /*
-                    Spacer().frame(height: 26)
-                    
-                    VStack(spacing: 8) {
-                        Text("No Voucher Yet")
-                            .font(.custom("VodafoneRg-Bold", size: 28))
-                            .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                        
-                        Text("Do a transaction to get started")
-                            .font(.custom("VodafoneRg-Regular", size: 18))
-                            .foregroundColor(Color("keyBs_font_gray_1", bundle: .module))
-                            .multilineTextAlignment(.leading)
-                    }
-                    
-                    Spacer()
-                     */
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {
@@ -707,6 +714,8 @@ public struct TopUpView: View {
 
                         }
                     }
+
+
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

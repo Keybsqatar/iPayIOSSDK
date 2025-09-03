@@ -7,7 +7,7 @@ public struct EnterAmountView: View {
     
     @ObservedObject private var vm: EnterAmountViewModel
     
-    @State private var amount: String = "0"
+    @State private var amount: String = ""
     
     @State private var showToast = false
     @State private var toastMessage = ""
@@ -129,7 +129,9 @@ public struct EnterAmountView: View {
                         vm: vm,
                         amount: $amount,
                         toastMessage: $toastMessage,
-                        showToast: $showToast
+                        showToast: $showToast,
+                       // sendValue: vm.selectedProduct?.sendValue!,
+                       // sendValueMax: vm.selectedProduct?.sendValueMax!
                     )
                 } else {
                     ProductsListView(vm: vm)
@@ -200,9 +202,16 @@ public struct EnterAmountView: View {
                 )
                 .hidden()
                 .allowsHitTesting(false)     // ← add this line
-
+                Image("bottom_pattern3", bundle: .module)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .edgesIgnoringSafeArea(.all)
             }
             .background(Color.white)
+            .edgesIgnoringSafeArea(.bottom)
+
+            
         }
         .id(vm.products.count)
         .onAppear {
@@ -234,11 +243,12 @@ public struct EnterAmountView: View {
             productsCount = products.count
         }
         .toast(isShowing: $showToast, message: toastMessage)
+
         //.contentShape(Rectangle())
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-        //.sdkDismissKeyboardOnTap() 
+        .sdkDismissKeyboardOnTap()
     }
     
     // MARK: – Products List View
@@ -333,7 +343,9 @@ public struct EnterAmountView: View {
         @Binding var amount: String
         @Binding var toastMessage: String
         @Binding var showToast: Bool
-        
+       // @Binding var sendValue: String
+       // @Binding var sendValueMax: String
+
         var body: some View {
             
             VStack(alignment: .leading, spacing: 8) {
@@ -349,23 +361,55 @@ public struct EnterAmountView: View {
             .padding(.top, 8)
             
             VStack(spacing: 0) {
-                Spacer()
-                
+                Spacer().frame(height: 16)
+
                 // Amount display
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(vm.selectedProduct?.sendCurrencyIso ?? "")
                         .font(.custom("VodafoneRg-Bold", size: 28))
-                        .foregroundColor(Color(amount == "0" ? "keyBs_bg_gray_1" : "keyBs_font_gray_2", bundle: .module))
+                        .foregroundColor(Color(amount == "" ? "keyBs_bg_gray_1" : "keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
                     
+                    TextField("", text: $amount)
+                        .font(.custom("VodafoneRg-Bold", size: 64))
+                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: true, vertical: false)  // ← key line
+                        .placeholder(when: amount.isEmpty) {
+                            Text("0")
+                                .font(.custom("VodafoneRg-Bold", size: 64))
+                                .foregroundColor(Color("keyBs_bg_gray_1", bundle: .module))
+                                .multilineTextAlignment(.leading)
+                        }
+                        .keyboardType(.numberPad)
+                        .onReceive(Just(amount)) { newValue in
+                            //var newAmount = amount == "0" ? newValue : amount + newValue
+                            
+                            // Limit to max value
+                            if let max = Float(vm.selectedProduct?.sendValueMax ?? "0"),
+                               let entered = Float(newValue),
+                               entered > max {
+                                // Do not update amount if over max
+                                toastMessage = "Amount must be between \(vm.selectedProduct?.sendValue ?? "0") and \(vm.selectedProduct?.sendValueMax ?? "0")"
+                                showToast = true
+                                return
+                            }
+                            amount = newValue
+                            //                                    let allFieldsFilled = product.settingDefinitions.allSatisfy {
+
+                        }
+                    /*
                     Text(amount.isEmpty ? "0" : amount)
                         .font(.custom("VodafoneRg-Bold", size: 64))
                         .foregroundColor(Color(amount == "0" ? "keyBs_bg_gray_1" : "keyBs_font_gray_2", bundle: .module))
                         .multilineTextAlignment(.leading)
+                     */
                 }
-                
+                .frame(maxWidth: .infinity, alignment: .center)   // ← centers the whole row
+
+
                 Spacer()
-                
+                /*
                 // Keypad
                 NumberPad(
                     amount: $amount,
@@ -374,10 +418,13 @@ public struct EnterAmountView: View {
                     toastMessage: $toastMessage,
                     showToast: $showToast
                 )
+                 */
                 
             }
             .padding(. horizontal, 16)
-            .padding(.top, 32)
+            .padding(.top, 16)
+
+            
         }
     }
     

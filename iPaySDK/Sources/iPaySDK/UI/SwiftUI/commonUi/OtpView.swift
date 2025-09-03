@@ -159,9 +159,9 @@ public struct OtpView: View {
                         .scaledToFit()
                     
                     Text(
-                        vm.serviceCode == "INT_TOP_UP" ? "Intl Top up" :
-                            vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
-                            vm.serviceCode == "INT_UTIL_PAYMENT" ? "Intl Utility" : ""
+                        vm.serviceCode == "INT_TOP_UP" ? "International Recharge" :
+                            vm.serviceCode == "INT_VOUCHER" ? "Gift Voucher" :
+                            vm.serviceCode == "INT_UTIL_PAYMENT" ? "Utility Payment -Int" : ""
                     )
                     .font(.custom("VodafoneRg-Bold", size: 16))
                     .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
@@ -239,23 +239,18 @@ public struct OtpView: View {
                         .frame(width: 20, height: 20)
 //                        .frame(height: 20)
                 }
-                //else if vm.showMsgImageType == 2{
-                //                    AnimatedImage(name: "oops.gif", bundle: .mySwiftUIPackage)
-                //                    //                        .indicator(.activity)
-                //                        .resizable()
-                //                        .scaledToFit()
-                //                        .frame(height: 56)
-               //                 }
                 
                 Spacer()
             }
             .background(Color.white)
             
-            if showAlertModal {
+            if vm.showMsgImageType == 2{
                 
                 OtpAlertModalView(
                     isPresented: $showAlertModal,
-                    message:      alertMessage,
+                    message:      vm.serviceCode == "INT_TOP_UP" ? "Unfortunately, your international recharge didn't go through. Please retry." :
+                        vm.serviceCode == "INT_VOUCHER" ? "Unfortunately, your gift voucher didn't go through. Please retry." :
+                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Unfortunately, your international utility payment didn't go through. Please retry." : "",
                     onHomepage: {
                         showAlertModal = false
                         alertMessage = ""
@@ -304,9 +299,9 @@ public struct OtpView: View {
                     status: tx.status, // ✅ Show PENDING when processing
                     amount: "\(tx.currency) \(tx.amount)",
                     dateTime: tx.dateTime,
-                    type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
-                        vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
-                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
+                    type: vm.serviceCode == "INT_TOP_UP" ? "International Recharge" :
+                        vm.serviceCode == "INT_VOUCHER" ? "Gift Voucher" :
+                        vm.serviceCode == "INT_UTIL_PAYMENT" ? "Utility Payment -Int" : "",
                     number: tx.targetIdentifier,
                     operatorName: tx.providerName,
                     refId: tx.billingRef,
@@ -336,9 +331,9 @@ public struct OtpView: View {
                 status: tx.status, // ✅ Update status based on pending state
                 amount: "\(tx.currency) \(tx.amount)",
                 dateTime: tx.dateTime,
-                type: vm.serviceCode == "INT_TOP_UP" ? "Top up – IMT" :
-                    vm.serviceCode == "INT_VOUCHER" ? "Voucher" :
-                    vm.serviceCode == "INT_UTIL_PAYMENT" ? "Top up - Utility" : "",
+                type: vm.serviceCode == "INT_TOP_UP" ? "International Recharge" :
+                    vm.serviceCode == "INT_VOUCHER" ? "Gift Voucher" :
+                    vm.serviceCode == "INT_UTIL_PAYMENT" ? "Utility Payment -Int" : "",
                 number: tx.targetIdentifier,
                 operatorName: tx.providerName,
                 refId: tx.billingRef,
@@ -443,19 +438,19 @@ public struct OtpView: View {
         .onReceive(vm.$iPayOtpError) { msg in
             if let m = msg {
                 toastMessage = m
-                showToast    = true
-                if(vm.showMsgImageType == 2)
-                {
-                    showAlertModal = true
-                }
+                //showToast    = true
+                
                 
             }
         }
+
+        /*
         .toast(isShowing: $showToast, message: toastMessage)
         .toast(isShowing: Binding(
             get: { vm.otpError != nil },
             set: { if !$0 { vm.otpError = nil } }
         ), message: vm.otpError ?? "")
+         */
         .contentShape(Rectangle())
         .onTapGesture {
             UIApplication.shared.endEditing()

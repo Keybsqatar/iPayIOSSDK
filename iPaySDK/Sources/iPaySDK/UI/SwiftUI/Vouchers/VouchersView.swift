@@ -10,7 +10,8 @@ public struct VouchersView: View {
     @EnvironmentObject private var coord: SDKCoordinator
     
     @ObservedObject private var vm: VouchersViewModel
-    
+    private let userDefaults = UserDefaults.standard
+
     @State private var showDeletionModal = false
     @State private var deletionMessage = ""
     
@@ -31,6 +32,9 @@ public struct VouchersView: View {
     @State private var showProducts = false
     
     @State private var selectedSavedBill: SavedBillsItem?
+    
+    @State private var shwoDeleteTipModal = false
+
     
     // a merged publisher of both error streams
     private var errorStream: AnyPublisher<String?, Never> {
@@ -138,6 +142,11 @@ public struct VouchersView: View {
                         }
                     )
                 }
+                if (shwoDeleteTipModal) {
+                    DeleteTipView(
+                        isPresented: $shwoDeleteTipModal,
+                    )
+                }
             }
             .navigationBarHidden(true)
             .sheet(isPresented: $showPicker) {
@@ -168,6 +177,21 @@ public struct VouchersView: View {
                 if let m = msg {
                     toastMessage = m
                     showToast    = true
+                }
+            }
+            .onReceive(TopUpTabBus.selection) { tab in
+                if tab == .saved {
+                    if vm.savedBills.count>0 {
+                        var tipCount = UserDefaults.standard.integer(forKey: "deleteTipShowCount")
+                        if tipCount < 3 {
+                            shwoDeleteTipModal = true
+                            tipCount += 1
+                            UserDefaults.standard.set(tipCount, forKey: "deleteTipShowCount")
+                        }
+
+
+                        
+                    }
                 }
             }
             .toast(isShowing: $showToast, message: toastMessage)
@@ -375,8 +399,8 @@ public struct VouchersView: View {
                     .frame(maxWidth: .infinity)  // center horizontally
                 }
                 .aspectRatio(contentMode: .fit) // size from width; no hard height
-                .frame(minHeight: cardWidth * 0.6) // 60% of card height for image
-                .clipShape(RoundedCorner(radius: corner, corners: [.topLeft, .topRight]))
+                .frame(minHeight: cardWidth * 0.6, maxHeight:cardWidth * 0.65) // 60% of card height for image
+                //.clipShape(RoundedCorner(radius: corner, corners: [.topLeft, .topRight]))
 
                 // TITLE BAR
                 Text(provider.name)
@@ -389,6 +413,7 @@ public struct VouchersView: View {
                     .background(Color("keyBs_bg_gray_3", bundle: .module))
                     .clipShape(RoundedCorner(radius: corner, corners: [.bottomLeft, .bottomRight]))
             }
+            .clipShape(RoundedCorner(radius: corner, corners: [.topLeft, .topRight]))
             .overlay(
                 RoundedRectangle(cornerRadius: corner, style: .continuous)
                     .stroke(Color("keyBs_bg_gray_1", bundle: .module), lineWidth: 1)
@@ -544,6 +569,9 @@ public struct VouchersView: View {
         return ("\(key)", "\(value)")
     }
 
+    
+    
+    
     /// One row in the “Saved Top-Up” list
     private struct SavedBillRow: View {
         let bill: SavedBillsItem
@@ -552,113 +580,121 @@ public struct VouchersView: View {
         
         @State private var offsetX: CGFloat = 0
         @State private var isOpen: Bool = false
-        
-        // The width of the delete button area
+        @GestureState private var dragOffset: CGFloat = 0
+
         private let deleteWidth: CGFloat = 90
-        
+
         var body: some View {
+            
             ZStack(alignment: .trailing) {
-                // Delete button background
-//                HStack {
-//                    Spacer()
-//                    Button(action: {
-//                        withAnimation {
-//                            offsetX = 0
-//                            isOpen = false
-//                        }
-//                        onDelete()
-//                    }) {
-//                        Image("ic_delete", bundle: .module)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 24, height: 24)
-//                            .padding()
-//                            .background(Color("keyBs_bg_gray_4", bundle: .module))
-//                            .cornerRadius(12)
-//                    }
-//                    .frame(width: deleteWidth, height: 60)
-//                    .padding(.trailing, 16)
-//                }
-                
-                // Main content
-                Button(action: {
-                    if !isOpen {
-                        onTap()
-                    } else {
+                // Background: Delete button
+                HStack {
+                    Spacer()
+                    Button(action: {
                         withAnimation {
                             offsetX = 0
                             isOpen = false
                         }
+                        onDelete()
+                    }) {
+                        Image("ic_delete", bundle: .module)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                            .padding()
+                            .background(Color("keyBs_bg_gray_4", bundle: .module))
+                            .cornerRadius(12)
                     }
-                }) {
-                    HStack(spacing: 16) {
-                        VStack{
-                            RemoteImage(
-                                url: bill.providerImgUrl,
-                                placeholder: AnyView(Color.gray.opacity(0.3)),
-                                isResizable: true
-                            )
-                          //  .frame(width: 24, height: 24)
-                            .aspectRatio(contentMode: .fit) // maintain aspect ratio
-                          //  .scaledToFit()
-                            .padding(10)
+                    .frame(width: deleteWidth, height: 60)
+                    .padding(.trailing, 16)
+                    .contentShape(Rectangle()) // <-- fixes button tap zone
+                }
+
+                // Foreground: Swipeable row content
+                HStack(spacing: 16) {
+                    VStack{
+                        RemoteImage(
+                            url: bill.providerImgUrl,
+                            placeholder: AnyView(Color.gray.opacity(0.3)),
+                            isResizable: true
+                        )
+                      //  .frame(width: 24, height: 24)
+                        .aspectRatio(contentMode: .fit) // maintain aspect ratio
+                      //  .scaledToFit()
+                        .padding(10)
 
 
-                        }
-                        .frame(width: 48, height: 48)
-                        .background(Color("keyBs_bg_gray_4", bundle: .module))
-                        .cornerRadius(12)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(bill.productDisplayText)
-                                .font(.custom("VodafoneRg-Bold", size: 16))
-                                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                            
-                            Text(bill.dateTime)
-                                .font(.custom("VodafoneRg-Regular", size: 14))
-                                .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
-                                .multilineTextAlignment(.leading)
-                        }
-                        
-                        Spacer()
-                        
-                        Text("\(bill.currency) \(bill.amount)")
-                            .font(.custom("VodafoneRg-Bold", size: 18))
+                    }
+                    .frame(width: 48, height: 48)
+                    .background(Color("keyBs_bg_gray_4", bundle: .module))
+                    .cornerRadius(12)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(bill.productDisplayText)
+                            .font(.custom("VodafoneRg-Bold", size: 16))
                             .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                             .multilineTextAlignment(.leading)
-                                
+                        
+                        Text(bill.dateTime)
+                            .font(.custom("VodafoneRg-Regular", size: 14))
+                            .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
+                            .multilineTextAlignment(.leading)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 31)
-                    .background(Color.white)
+                    
+                    Spacer()
+                    
+                    Text("\(bill.currency) \(bill.amount)")
+                        .font(.custom("VodafoneRg-Bold", size: 18))
+                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                            
                 }
-                .buttonStyle(.plain)
-//                .offset(x: offsetX)
-//                .highPriorityGesture(
-//                    DragGesture()
-//                        .onChanged { value in
-//                            // Only allow left swipe, clamp to -deleteWidth
-//                            if value.translation.width < 0 {
-//                                offsetX = max(value.translation.width, -deleteWidth)
-//                            }
-//                        }
-//                        .onEnded { value in
-//                            withAnimation {
-//                                if value.translation.width < -deleteWidth / 2 {
-//                                    offsetX = -deleteWidth
-//                                    isOpen = true
-//                                } else {
-//                                    offsetX = 0
-//                                    isOpen = false
-//                                }
-//                            }
-//                        }
-//                    
-//                )
-//                .animation(.easeOut(duration: 0.2), value: offsetX)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 31)
+                .background(Color.white)
+                .contentShape(Rectangle())
+                .offset(x: offsetX + dragOffset)
+                .simultaneousGesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, state, _ in
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            if horizontal > vertical {
+                                state = max(value.translation.width, -deleteWidth)
+                            }
+                        }
+                        .onEnded { value in
+                            let horizontal = abs(value.translation.width)
+                            let vertical = abs(value.translation.height)
+                            guard horizontal > vertical else { return }
+
+                            //withAnimation(.easeOut(duration: 0.2)) {
+                                if value.translation.width < -deleteWidth / 2 {
+                                    offsetX = -deleteWidth
+                                    isOpen = true
+                                } else {
+                                    offsetX = 0
+                                    isOpen = false
+                                }
+                           // }
+                        }
+                )
+                .onTapGesture {
+                    // Close swipe if it's open
+                    if isOpen {
+                        withAnimation {
+                            offsetX = 0
+                            isOpen = false
+                        }
+                    } else {
+                        onTap()
+                    }
+                }
             }
             .clipped()
+            .background(Color.white)
+            
+
         }
     }
 }

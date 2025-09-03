@@ -124,11 +124,7 @@ public struct ReviewUtilityView: View {
                         detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
                         detailRow(label: "Company",value: providerName, logoIconURL: providerLogoUrl)
                         DashedDivider()
-                        if billAmount != "0" {
-                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
-                        }else{
-                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(product.sendValue)")
-                        }
+                        
                         
                         if let data = settingsData.data(using: .utf8),
                            let json = try? JSONSerialization.jsonObject(with: data) as? [String: String] {
@@ -141,6 +137,11 @@ public struct ReviewUtilityView: View {
                             }
                         }
                         detailRow(label: "Mobile Number",value: "\(countryPrefix) \(receiverMobileNumber)")
+                        if billAmount != "0" {
+                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
+                        }else{
+                            detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(product.sendValue)")
+                        }
                     }
                     .padding(.top, 24)
                     .padding(.horizontal, 16)

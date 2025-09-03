@@ -162,7 +162,7 @@ public struct ReviewVoucherView: View {
                     }
                     showOtp = true
                 }) {
-                    Text("Pay")
+                    Text("Proceed")
                         .font(.custom("VodafoneRg-Bold", size: 16))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.leading)

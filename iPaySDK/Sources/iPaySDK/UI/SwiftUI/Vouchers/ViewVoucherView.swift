@@ -33,7 +33,9 @@ public struct ViewVoucherView: View {
     @State private var showOtp = false
     @State private var showToast = false
     @State private var showShareSheet = false
-    
+    @State private var shareImage: UIImage? = nil
+    @State private var isSharing = false
+
     public init(
         close:                 Bool = true,
         displayText:         String,
@@ -175,20 +177,6 @@ public struct ViewVoucherView: View {
                         .background(Color("keyBs_bg_gray_4", bundle: .module))
                         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                         
-                        //                    VStack(spacing: 0) {
-                        //                        VStack(spacing: 0) {
-                        //                            RemoteImage(
-                        //                                url: providerLogoUrl,
-                        //                                placeholder: AnyView(Color.gray.opacity(0.3))
-                        //                            )
-                        //                            .frame(height: 120)
-                        //                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        //                            .padding(.vertical, 12)
-                        //                            .padding(.horizontal, 87)
-                        //                        }
-                        //                    }
-                        //                    .background(Color("keyBs_bg_gray_7", bundle: .module))
-                        //                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
                         
                         HStack {
                             Spacer()
@@ -239,25 +227,6 @@ public struct ViewVoucherView: View {
                             }
                         )
                         
-                        // Details card
-                        //                    VStack(spacing: 24) {
-                        //                        detailRow(label: "Country", value: countryName, svgIconURL: countryFlagUrl)
-                        //                        detailRow(label: "Purchase Date",value: dateTime)
-                        //                        detailRow(label: "Consumer ID",value: refId)
-                        //                    }
-                        //                    .padding(.all, 16)
-                        //                    .background(
-                        //                        Color("keyBs_white_2", bundle: .module)
-                        //                    )
-                        //                    .cornerRadius(8)
-                        //                    .overlay(
-                        //                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        //                            .stroke(
-                        //                                Color("keyBs_bg_gray_1", bundle: .module),
-                        //                                lineWidth: 1
-                        //                            )
-                        //                    )
-                        
                         // Key Information
                         let infoArr: [String] = {
                             var arr: [String] = []
@@ -303,7 +272,7 @@ public struct ViewVoucherView: View {
                 Spacer().frame(height: 16)
                 
                 // Share Receipt button
-                Button(action: { showShareSheet = true }) {
+                Button(action: { shareReceipt() }) {
                     HStack(spacing: 8) {
                         Image("ic_share2", bundle: .module)
                             .frame(width: 24, height: 24)
@@ -321,9 +290,18 @@ public struct ViewVoucherView: View {
                     .cornerRadius(60)
                 }
                 .padding(.horizontal, 16)
-                .sheet(isPresented: $showShareSheet) {
-                    ShareSheet(activityItems: [receiptText])
+                .sheet(
+                        isPresented: Binding(
+                            get: { isSharing && shareImage != nil },
+                            set: { if !$0 { isSharing = false; shareImage = nil } }
+                        )
+                    ) {
+                        // shareImage! is safe because of the binding guard above
+                        ShareSheet(activityItems: [shareImage!])
                 }
+//                .sheet(isPresented: $showShareSheet) {
+//                    ShareSheet(activityItems: [receiptText])
+//                }
                 
                 // Bottom pattern
                 Image("bottom_pattern3", bundle: .module)
@@ -340,6 +318,227 @@ public struct ViewVoucherView: View {
         //    UIApplication.shared.endEditing()
         //}
        // .sdkDismissKeyboardOnTap() 
+    }
+    @MainActor
+    private func shareReceipt() {
+        if let img = makeReceiptImage() {
+            shareImage = img
+            isSharing = true
+        } else {
+            // optional: show a toast/alert if capture failed
+            // toastMessage = "Couldn’t create snapshot"
+        }
+    }
+    @MainActor
+    private func makeReceiptImage() -> UIImage? {
+        let cardWidth: CGFloat = 340
+        let content = cardContent
+            .frame(width: cardWidth)
+            .fixedSize(horizontal: false, vertical: true)
+
+        // iOS 16+: SwiftUI-native renderer (best quality)
+        if #available(iOS 16.0, *) {
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = UIScreen.main.scale
+            renderer.isOpaque = false
+            return renderer.uiImage
+        }
+
+        // iOS 13–15: render a UIHostingController off-screen
+        let host = UIHostingController(rootView: content)
+        let view = host.view!
+        view.backgroundColor = .clear
+
+        // Put the view in a sizing container so Auto Layout can resolve its height
+        let container = UIView(frame: CGRect(origin: .zero, size: .zero))
+        container.backgroundColor = .clear
+        container.addSubview(view)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            view.topAnchor.constraint(equalTo: container.topAnchor),
+            view.widthAnchor.constraint(equalToConstant: cardWidth)   // key for correct height
+        ])
+
+        // Force layout to get the final size
+        container.setNeedsLayout()
+        container.layoutIfNeeded()
+
+        // Compute the fitting height now that constraints are set
+        let targetSize = container.systemLayoutSizeFitting(
+            CGSize(width: cardWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        container.frame = CGRect(origin: .zero, size: targetSize)
+        view.frame = container.bounds
+
+        // Render (layer.render is more reliable than drawHierarchy for off-screen)
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = UIScreen.main.scale
+        format.opaque = false
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+        let image = renderer.image { ctx in
+            container.layer.render(in: ctx.cgContext)
+        }
+
+        return image
+    }
+    
+    private var cardContent: some View {
+        VStack(alignment: .leading) {
+            Text(displayText)
+                .font(.custom("VodafoneRg-Bold", size: 18))
+                .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        
+        Spacer().frame(height: 40)
+        
+        return VStack(spacing: 32) {
+            // Card with image
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    ZStack {
+                        Color.white // ensures white bg even if logo has transparency
+                        RemoteImage(
+                            url: providerLogoUrl,
+                            placeholder: AnyView(Color.gray.opacity(0.3)),
+                            isResizable: true
+                        )
+                        .scaledToFit()               // keep logo aspect
+                        //.padding(logoInset)          // breathing room inside well
+                        .frame(maxWidth: UIScreen.main.bounds.width * 0.4,
+                               alignment: .leading
+                        )  // center horizontally
+
+                    }
+                    .aspectRatio(contentMode: .fit) // size from width; no hard height
+                    .frame(maxWidth: UIScreen.main.bounds.width * 0.4, alignment: .leading) // 60% of card height for image
+                    .clipShape(RoundedCorner(radius: 16, corners: [.topLeft, .topRight]))
+                    Spacer()
+                    
+                }
+                .padding(.top, 24)
+                .padding(.horizontal, 24)
+                
+                HStack(spacing: 8) {
+                    Text(providerName)
+                        .font(.custom("VodafoneRg-Bold", size: 20))
+                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    SVGImageView(url: countryFlagUrl)
+                        .frame(width: 20, height: 20)
+                        .scaledToFit()
+                        .cornerRadius(20)
+                    
+                    Text(countryName)
+                        .font(.custom("VodafoneRg-Regular", size: 18))
+                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                        .multilineTextAlignment(.leading)
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 24)
+                .background(Color("keyBs_bg_gray_3", bundle: .module))
+            }
+            .background(Color("keyBs_bg_gray_4", bundle: .module))
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            
+            
+            HStack {
+                Spacer()
+                Text(valuePin)
+                    .font(.custom("VodafoneRg-Bold", size: 32))
+                    .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                    .multilineTextAlignment(.center)
+                
+                Button(action: {
+                    UIPasteboard.general.string = refId
+                    withAnimation {
+                        showToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        withAnimation {
+                            showToast = false
+                        }
+                    }
+                }) {
+                    Image("ic_copy_content", bundle: .module)
+                        .frame(width: 24, height: 24)
+                        .scaledToFit()
+                }
+                .buttonStyle(PlainButtonStyle())
+                Spacer()
+            }
+            .padding(.vertical, 8)
+            .background(Color("keyBs_bg_pink_1", bundle: .module))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color("keyBs_bg_red_1", bundle: .module), style: StrokeStyle(lineWidth: 2, dash: [4]))
+            )
+            .cornerRadius(12)
+            .overlay(
+                Group {
+                    if showToast {
+                        Text("Copied!")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.black.opacity(0.8))
+                            .cornerRadius(16)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .zIndex(1)
+                            .offset(y: -56)
+                    }
+                }
+            )
+            
+            // Key Information
+            let infoArr: [String] = {
+                var arr: [String] = []
+                if !readMoreMarkdown.isEmpty {
+                    arr.append(readMoreMarkdown)
+                } else if !descriptionMarkdown.isEmpty {
+                    arr.append(descriptionMarkdown)
+                }
+                return arr
+            }()
+            if !infoArr.isEmpty {
+                AccordionView(
+                    title: "Key Information",
+                    content: {
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(infoArr, id: \.self) { item in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "circle.fill")
+                                        .resizable()
+                                        .frame(width: 6, height: 6)
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .padding(.top, 6)
+                                    
+                                    Text(item)
+                                        .font(.custom("VodafoneRg-Regular", size: 16))
+                                        .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
+                                        .multilineTextAlignment(.leading)
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+        .padding(.horizontal, 16)
+        
+        
+        
+        
     }
     
     @ViewBuilder
@@ -384,7 +583,7 @@ public struct ViewVoucherView: View {
     struct AccordionView<Content: View>: View {
         let title: String
         @ViewBuilder let content: Content
-        @State private var expanded = false
+        @State private var expanded = true
         
         var body: some View {
             VStack(alignment: .leading, spacing: 0) {

@@ -223,6 +223,7 @@ public struct SelectAmountView: View {
                         }
                         .aspectRatio(contentMode: .fit) // size from width; no hard height
                         .frame(maxWidth: UIScreen.main.bounds.width * 0.4, alignment: .leading) // 60% of card height for image
+
                         .clipShape(RoundedCorner(radius: 16, corners: [.topLeft, .topRight]))
                         Spacer()
                         

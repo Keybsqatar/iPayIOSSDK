@@ -243,6 +243,9 @@ public class OtpViewModel: ObservableObject {
                 transactionId: String(txId)
             )
             
+//            var status = orderResp.status
+//            status = "FAILED"
+            
             if orderResp.status != "SUCCESS" {
                 await MainActor.run {
                     if let message = orderResp.message, message.contains("4023") {
@@ -261,6 +264,9 @@ public class OtpViewModel: ObservableObject {
             let reference = orderResp.transactionReference!
             let checkRepo = CheckTransactionRepository()
             var checkResp: CheckTransactionResponse? = nil
+            
+            try await Task.sleep(nanoseconds: 3_000_000_000)
+
             
             for pollAttempt in 1...13 {
                 

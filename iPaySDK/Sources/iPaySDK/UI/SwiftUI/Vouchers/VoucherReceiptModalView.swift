@@ -28,6 +28,9 @@ public struct VoucherReceiptModalView: View {
     @State private var showShareSheet = false
     @State private var showView = false
     
+    @State private var shareImage: UIImage? = nil
+    @State private var isSharing = false
+    
     
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -123,7 +126,7 @@ public struct VoucherReceiptModalView: View {
 
                         
                         // Share Receipt button
-                        Button(action: { showShareSheet = true }) {
+                        Button(action: { shareReceipt()}) {
                             HStack(spacing: 8) {
                                 Image("ic_share", bundle: .module)
                                     .frame(width: 24, height: 24)
@@ -147,9 +150,18 @@ public struct VoucherReceiptModalView: View {
                                     )
                             )
                         }
-                        .sheet(isPresented: $showShareSheet) {
-                            ShareSheet(activityItems: [receiptText])
+                        .sheet(
+                                isPresented: Binding(
+                                    get: { isSharing && shareImage != nil },
+                                    set: { if !$0 { isSharing = false; shareImage = nil } }
+                                )
+                            ) {
+                                // shareImage! is safe because of the binding guard above
+                                ShareSheet(activityItems: [shareImage!])
                         }
+//                        .sheet(isPresented: $showShareSheet) {
+//                            ShareSheet(activityItems: [receiptText])
+//                        }
                     }
                     .padding(.horizontal, 24)
                     .padding(.bottom, 16)
@@ -161,6 +173,74 @@ public struct VoucherReceiptModalView: View {
             }
             .padding(.horizontal, 52)
         }
+    }
+    
+    @MainActor
+    private func shareReceipt() {
+        if let img = makeReceiptImage() {
+            shareImage = img
+            isSharing = true
+        } else {
+            // optional: show a toast/alert if capture failed
+            // toastMessage = "Couldn’t create snapshot"
+        }
+    }
+    @MainActor
+    private func makeReceiptImage() -> UIImage? {
+        let cardWidth: CGFloat = 340
+        let content = cardContent
+            .frame(width: cardWidth)
+            .fixedSize(horizontal: false, vertical: true)
+
+        // iOS 16+: SwiftUI-native renderer (best quality)
+        if #available(iOS 16.0, *) {
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = UIScreen.main.scale
+            renderer.isOpaque = false
+            return renderer.uiImage
+        }
+
+        // iOS 13–15: render a UIHostingController off-screen
+        let host = UIHostingController(rootView: content)
+        let view = host.view!
+        view.backgroundColor = .clear
+
+        // Put the view in a sizing container so Auto Layout can resolve its height
+        let container = UIView(frame: CGRect(origin: .zero, size: .zero))
+        container.backgroundColor = .clear
+        container.addSubview(view)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            view.topAnchor.constraint(equalTo: container.topAnchor),
+            view.widthAnchor.constraint(equalToConstant: cardWidth)   // key for correct height
+        ])
+
+        // Force layout to get the final size
+        container.setNeedsLayout()
+        container.layoutIfNeeded()
+
+        // Compute the fitting height now that constraints are set
+        let targetSize = container.systemLayoutSizeFitting(
+            CGSize(width: cardWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        container.frame = CGRect(origin: .zero, size: targetSize)
+        view.frame = container.bounds
+
+        // Render (layer.render is more reliable than drawHierarchy for off-screen)
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = UIScreen.main.scale
+        format.opaque = false
+
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
+        let image = renderer.image { ctx in
+            container.layer.render(in: ctx.cgContext)
+        }
+
+        return image
     }
     
     private func captureSnapshot() {
@@ -195,7 +275,7 @@ public struct VoucherReceiptModalView: View {
                 AnimatedImage(url: url)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 55)
+                    .frame(idealWidth: 215, maxHeight: 75)
             }
 
             // Amount & date

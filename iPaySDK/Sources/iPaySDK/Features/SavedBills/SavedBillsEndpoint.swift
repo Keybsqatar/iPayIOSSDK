@@ -3,7 +3,7 @@ import Foundation
 enum SavedBillsEndpoint: Endpoint {
     case getSavedBills(mobileNumber: String, iPayCustomerID: String, serviceCode: String)
     
-    var path: String { "api/getSavedBills" }
+    var path: String { "api/getSavedBillsSDK" }
     var method: HTTPMethod { .post }
     var queryItems: [URLQueryItem]? { nil }
     var headers: [String:String]? { ["Content-Type":"application/json"] }
