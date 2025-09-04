@@ -44,6 +44,25 @@ public final class SDKNavigationController: UINavigationController {
                                                name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kbHide(_:)),
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(textBegan(_:)),
+            name: UITextField.textDidBeginEditingNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(textBegan(_:)),
+            name: UITextView.textDidBeginEditingNotification, object: nil)
+
+    }
+
+    @objc private func textBegan(_ n: Notification) {
+        guard let v = n.object as? UIView else { return }
+        // Only intervene for inputs inside our SDK’s UI
+        guard v.isDescendant(of: self.view) else { return }
+
+        if let tf = v as? UITextField, tf.inputAccessoryView is UIToolbar {
+            tf.inputAccessoryView = nil
+            tf.reloadInputViews()
+        } else if let tv = v as? UITextView, tv.inputAccessoryView is UIToolbar {
+            tv.inputAccessoryView = nil
+            tv.reloadInputViews()
+        }
     }
 
     // keep: accessory.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)

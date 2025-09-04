@@ -28,10 +28,16 @@ struct SDKDismissOnBackgroundTap: ViewModifier {
             .simultaneousGesture(TapGesture().onEnded {
                 UIApplication.sdkDismissKeyboard()
             })
+//            .highPriorityGesture(TapGesture().onEnded(
+//                {
+//                    _ in
+//                    UIApplication.sdkDismissKeyboard()
+//                }
+//            ))
             
-            //.highPriorityGesture(DragGesture(minimumDistance: 1).onChanged { _ in
-            //    UIApplication.sdkDismissKeyboard()
-            //})
+//            .highPriorityGesture(DragGesture(minimumDistance: 1).onChanged { _ in
+//                UIApplication.sdkDismissKeyboard()
+//            })
     }
 }
 

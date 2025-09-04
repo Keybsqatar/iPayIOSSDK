@@ -238,7 +238,7 @@ public struct TopUpView: View {
         //.onTapGesture {
         //    UIApplication.shared.endEditing()
         //}
-       // .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
+        .sdkDismissKeyboardOnTap()    // ← add this, and delete the old onTapGesture
 
     }
     
@@ -585,7 +585,7 @@ public struct TopUpView: View {
             .edgesIgnoringSafeArea(.all)
         }
         .background(Color("keyBs_bg_red_tabs", bundle: .module))
-        .sdkDismissKeyboardOnTap() 
+        .sdkDismissKeyboardOnTap()
     }
     
     class ContactDelegate: NSObject, CNContactPickerDelegate {

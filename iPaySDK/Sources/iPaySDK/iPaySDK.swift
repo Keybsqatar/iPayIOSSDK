@@ -63,8 +63,8 @@ public struct iPaySDK {
             }()
 
             let hosting = UIHostingController(rootView: content)
-        let sdkNav  = UINavigationController(rootViewController: hosting)
-        //let sdkNav  = SDKNavigationController(rootViewController: hosting)
+//        let sdkNav  = UINavigationController(rootViewController: hosting)
+        let sdkNav  = SDKNavigationController(rootViewController: hosting)
             sdkNav.modalPresentationStyle = .fullScreen
 
             holder.nav = sdkNav            // assign AFTER creating it
@@ -123,8 +123,8 @@ public struct iPaySDK {
             
         }
         let hosting = UIHostingController(rootView: content)
-        let sdkNav  = UINavigationController(rootViewController: hosting)
-        //let sdkNav  = SDKNavigationController(rootViewController: hosting)
+//        let sdkNav  = UINavigationController(rootViewController: hosting)
+        let sdkNav  = SDKNavigationController(rootViewController: hosting)
         sdkNav.modalPresentationStyle = .fullScreen
 
         holder.nav = sdkNav            // assign AFTER creating it
@@ -219,8 +219,8 @@ public struct iPaySDK {
             
         }
         let hosting = UIHostingController(rootView: content)
-        let sdkNav  = UINavigationController(rootViewController: hosting)
-        //let sdkNav  = SDKNavigationController(rootViewController: hosting)
+//        let sdkNav  = UINavigationController(rootViewController: hosting)
+        let sdkNav  = SDKNavigationController(rootViewController: hosting)
         sdkNav.modalPresentationStyle = .fullScreen
 
         holder.nav = sdkNav            // assign AFTER creating it
