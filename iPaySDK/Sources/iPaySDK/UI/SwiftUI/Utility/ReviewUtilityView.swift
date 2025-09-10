@@ -137,7 +137,7 @@ public struct ReviewUtilityView: View {
                             }
                         }
                         detailRow(label: "Mobile Number",value: "\(countryPrefix) \(receiverMobileNumber)")
-                        if billAmount != "0" {
+                        if billAmount != "" {
                             detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(billAmount)")
                         }else{
                             detailRow(label: "Amount",value: "\(product.sendCurrencyIso) \(product.sendValue)")

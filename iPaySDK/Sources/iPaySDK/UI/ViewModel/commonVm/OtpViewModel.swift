@@ -268,7 +268,7 @@ public class OtpViewModel: ObservableObject {
             try await Task.sleep(nanoseconds: 3_000_000_000)
 
             
-            for pollAttempt in 1...13 {
+            for pollAttempt in 1...20 {
                 
                 let currentCheckResp = try await checkRepo.checkTransaction(reference: reference)
                 checkResp = currentCheckResp // Store for later use outside the loop
