@@ -77,8 +77,8 @@ public struct UtilityReceiptModalView: View {
                 HStack {
                     Spacer()
                     Button {
-                        isPresented = false
                         coord.dismissSDK()
+                        isPresented = false
                     } label: {
                         Image("ic_close", bundle: .module)
                             .frame(width: 16, height: 16)
