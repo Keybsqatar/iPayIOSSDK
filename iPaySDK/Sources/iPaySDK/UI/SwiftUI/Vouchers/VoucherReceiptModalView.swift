@@ -67,7 +67,7 @@ public struct VoucherReceiptModalView: View {
                     Spacer()
                     Button {
                         coord.dismissSDK()
-                        isPresented = false
+                        //isPresented = false
                     } label: {
                         Image("ic_close", bundle: .module)
                             .frame(width: 16, height: 16)

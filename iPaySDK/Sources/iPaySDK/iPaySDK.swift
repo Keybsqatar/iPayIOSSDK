@@ -30,9 +30,9 @@ public struct iPaySDK {
                         return
                     }
                     if nav.presentingViewController != nil {
-                        nav.dismiss(animated: true)        // presented → close whole SDK
+                        nav.dismiss(animated: false)        // presented → close whole SDK
                     } else {
-                        nav.popViewController(animated: true) // pushed → pop
+                        nav.popViewController(animated: false) // pushed → pop
                     }
                 },
                 popSwiftUI: { [holder] in
