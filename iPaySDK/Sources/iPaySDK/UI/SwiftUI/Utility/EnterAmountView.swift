@@ -296,6 +296,9 @@ public struct EnterAmountView: View {
                                 .frame(width: 32, height: 32)
                                 .scaledToFit()
                             }
+                            .frame(maxWidth: .infinity)
+                            .contentShape(Rectangle())    // <- taps count on the whole frame, not just text
+
                         }
                         .padding(.vertical, 16)
                         .padding(.horizontal, 24)
@@ -326,6 +329,7 @@ public struct EnterAmountView: View {
                             x: 0,
                             y: 2
                         )
+
                     }
                     .buttonStyle(.plain)
                 }
