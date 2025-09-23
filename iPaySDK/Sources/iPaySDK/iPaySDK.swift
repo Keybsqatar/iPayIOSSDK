@@ -105,11 +105,8 @@ public struct iPaySDK {
                     holder.nav?.popViewController(animated: true)
                 }
             )
-        
-        let content: AnyView
-        switch serviceCode {
-        case "INT_TOP_UP":
-            content = AnyView(
+                
+        let content = AnyView(
                 OpenSavedTopupView(vm: OpenSavedTopupViewModel(
                     serviceCode:    serviceCode,
                     mobileNumber:   mobileNumber,
@@ -118,10 +115,7 @@ public struct iPaySDK {
                 ))
                 .environmentObject(coordinator)
             )
-        default:
-            return nil // <-- Do nothing
-            
-        }
+       
         let hosting = UIHostingController(rootView: content)
 //        let sdkNav  = UINavigationController(rootViewController: hosting)
         let sdkNav  = SDKNavigationController(rootViewController: hosting)
