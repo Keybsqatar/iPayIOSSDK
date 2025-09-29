@@ -156,7 +156,7 @@ public struct TopUpView: View {
             
             if (shwoDeleteTipModal) {
                 DeleteTipView(
-                    isPresented: $shwoDeleteTipModal,
+                    isPresented: $shwoDeleteTipModal
                 )
             }
         }

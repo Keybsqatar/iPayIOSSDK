@@ -4,7 +4,8 @@ public final class HTTPClient {
     public static let shared = HTTPClient()
     private init() {}
     
-    private static let defaultBaseURL = URL(string: "https://keybs.ai/")!
+    private static let defaultBaseURL = URL(string: "https://keybs.ai/")! // production
+//    private static let defaultBaseURL = URL(string: "https://staging.keybs.ai/")! // staging
     //    private static let defaultBaseURL = URL(string: "http://192.168.1.100/")!
     private let baseURL: URL = HTTPClient.defaultBaseURL
     private var secretKey: String?

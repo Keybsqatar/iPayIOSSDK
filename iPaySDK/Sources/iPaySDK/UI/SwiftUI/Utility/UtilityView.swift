@@ -125,7 +125,7 @@ public struct UtilityView: View {
                 }
                 if (shwoDeleteTipModal) {
                     DeleteTipView(
-                        isPresented: $shwoDeleteTipModal,
+                        isPresented: $shwoDeleteTipModal
                     )
                 }
 

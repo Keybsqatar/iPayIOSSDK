@@ -129,7 +129,7 @@ public struct EnterAmountView: View {
                         vm: vm,
                         amount: $amount,
                         toastMessage: $toastMessage,
-                        showToast: $showToast,
+                        showToast: $showToast
                        // sendValue: vm.selectedProduct?.sendValue!,
                        // sendValueMax: vm.selectedProduct?.sendValueMax!
                     )

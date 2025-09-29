@@ -173,7 +173,8 @@ public struct EnterUtilityDetailsView: View {
                                         setting in
                                         !(dynamicFields[setting.Name] ?? "").isEmpty
                                     }
-                                    if allFieldsFilled && phone.count >= countryMinimumLength {
+//                                    if allFieldsFilled && phone.count >= countryMinimumLength {
+                                    if allFieldsFilled && !phone.isEmpty {
                                         disabledProceed = false
                                     } else {
                                         disabledProceed = true
@@ -194,7 +195,7 @@ public struct EnterUtilityDetailsView: View {
                     // ─── Phone Field ────────────────────────────────────────────
                     VStack(spacing: 8) {
                         if phone != "" {
-                            Text("Mobile Number")
+                            Text("Enter Account Number")
                                 .font(.custom("VodafoneRg-Regular", size: 16.0))
                                 .foregroundColor(Color("keyBs_font_gray_3", bundle: .module))
                                 .multilineTextAlignment(.leading)
@@ -207,12 +208,12 @@ public struct EnterUtilityDetailsView: View {
                                 .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                 .multilineTextAlignment(.leading)
                                 .placeholder(when: phone.isEmpty) {
-                                    Text("Mobile Number")
+                                    Text("Enter Account Number")
                                         .font(.custom("VodafoneRg-Regular", size: 16.0))
                                         .foregroundColor(Color("keyBs_font_gray_2", bundle: .module))
                                         .multilineTextAlignment(.leading)
                                 }
-                                .keyboardType(.numberPad)
+//                                .keyboardType(.numberPad)
                                 .frame(maxWidth: .infinity)
                                 .onReceive(Just(phone)) { newValue in
                                     //                                    let allFieldsFilled = product.settingDefinitions.allSatisfy {
@@ -220,7 +221,8 @@ public struct EnterUtilityDetailsView: View {
                                         setting in
                                         !(dynamicFields[setting.Name] ?? "").isEmpty
                                     }
-                                    if allFieldsFilled && newValue.count >= countryMinimumLength {
+//                                    if allFieldsFilled && newValue.count >= countryMinimumLength {
+                                    if allFieldsFilled && !newValue.isEmpty {
                                         disabledProceed = false
                                     } else {
                                         disabledProceed = true
@@ -253,18 +255,18 @@ public struct EnterUtilityDetailsView: View {
                 Spacer()
                 
                 Button(action: {
-                    if (phone.count < countryMinimumLength) || (phone.count > countryMaximumLength) {
-                        toastMessage = "Mobile number must be between \(countryMinimumLength) and \(countryMaximumLength) digits."
-                        showToast = true
-                        return
-                    }
+//                    if (phone.count < countryMinimumLength) || (phone.count > countryMaximumLength) {
+//                        toastMessage = "Account number must be between \(countryMinimumLength) and \(countryMaximumLength) digits."
+//                        showToast = true
+//                        return
+//                    }
                     
                    /* let regexPattern = selectedProvider?.validationRegex ?? ""
                     let fullReceiverMobileNumber = (country?.prefix ?? "") + phone
                     
                     if !regexPattern.isEmpty {
                         if fullReceiverMobileNumber.range(of: regexPattern, options: .regularExpression) == nil {
-                            toastMessage = "Invalid mobile number format for the selected provider."
+                            toastMessage = "Invalid account number format for the selected provider."
                             showToast = true
                             return
                         }
@@ -273,12 +275,12 @@ public struct EnterUtilityDetailsView: View {
                     
                     let regexPattern = providerValidationRegex ?? ""
                     //let fullReceiverMobileNumber = phone//(countryPrefix ?? "") + phone
-                    
+                    // print("Regex Pattern: \(regexPattern)")
                     if !regexPattern.isEmpty {
                         if phone.range(of: regexPattern, options: .regularExpression) == nil {
                             let fullReceiverMobileNumber = (countryPrefix ?? "") + phone
                             if fullReceiverMobileNumber.range(of: regexPattern, options: .regularExpression) == nil {
-                                toastMessage = "Invalid mobile number format for the selected provider."
+                                toastMessage = "Invalid account number format for the selected provider."
                                 showToast = true
                                 return
                             }
